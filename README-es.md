@@ -1,98 +1,208 @@
-# Paso 3: Agregar vistas sin react
+# Paso 4: agregar modelos de Django
 
-[Volver al paso 2](https://gitlab.com/FedeG/django-react-workshop/tree/step2_create_django_app)
+[Volver al paso 3](https://gitlab.com/FedeG/django-react-workshop/tree/step3_add_non_react_views)
 
-## Agregar urls
+## Agregar modelos (Link y Tags)
 
 Queremos mostrar que ReactJS se puede usar fácilmente con un proyecto existente, por lo que
-agregaremos algunas "vistas heredadas" para simular que esta es una proyecto existente de Django.
+agregaremos algunos modelos para simular que este es un projecto existente
+de Django.
 
-#### Agregué las siguientes líneas a **workshop/urls.py**:
+#### Agregué las siguientes líneas a **workshop/links/models.py**:
 
 ```python
-from django.conf.urls import include, url
+from django.db import models
+from django.contrib.auth.models import User
+from django.utils.translation import ugettext as _
+
+
+class Tag(models.Model):
+    name = models.CharField(_('name'), max_length=30)
+    description = models.TextField(_('description'), blank=True, null=True)
+    user = models.ForeignKey(
+        User, verbose_name=_('user'), blank=True, null=True)
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name = _('tag')
+        verbose_name_plural = _('tags')
+
+
+class Link(models.Model):
+    name = models.CharField(_('name'), max_length=30)
+    url = models.URLField(_('url'))
+    pending = models.BooleanField(_('pending'), default=False)
+    description = models.TextField(_('description'), blank=True, null=True)
+    tags = models.ManyToManyField(Tag, through='LinkTag', editable=True)
+    user = models.ForeignKey(User, verbose_name=_('user'))
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name = _('link')
+        verbose_name_plural = _('links')
+
+
+class LinkTag(models.Model):
+    link = models.ForeignKey(Link, verbose_name=_('link'))
+    tag = models.ForeignKey(Tag, verbose_name=_('tag'))
+
+    class Meta:
+        unique_together = (('link', 'tag'))
+        verbose_name = _('link x tag')
+        verbose_name_plural = _('link x tag')
+```
+
+##### Notas
+- Si nunca viste `gettext` para las traducciones, te recomiendo que aprendas primero sobre [traducción](https://docs.djangoproject.com/en/1.11/topics/i18n/translation/).
+- Si nunca viste `ManyToManyField` con` through`, podrías tomarte un tiempo
+y aprender sobre [campos adicionales en relaciones muchos a muchos] (https://docs.djangoproject.com/en/1.11/topics/db/models/#extra-fields-on-many-to-many-relationships) primero.
+
+## Agregar modelos al admin de Django
+
+#### Agregué las siguientes líneas a **workshop/links/admin.py**:
+
+```python
 from django.contrib import admin
+from .models import Link, Tag, LinkTag
 
-urlpatterns = [
-    url(r'^admin/', admin.site.urls),
-    url(r'^links/', include('links.urls')),
-]
+
+class LinkTagInline(admin.TabularInline):
+    model = LinkTag
+
+
+@admin.register(Link)
+class LinkAdmin(admin.ModelAdmin):
+    inlines = [LinkTagInline]
+
+
+@admin.register(Tag)
+class TagAdmin(admin.ModelAdmin):
+    pass
 ```
 
-#### Agregué las siguientes líneas a **links/urls.py**:
+#### Crear migraciones para crear nuevos modelos en la db
+Generemos migraciones:
+```bash
+# con docker
+docker exec -it workshop ./workshop/manage.py makemigrations
+
+# sin docker
+./workshop/manage.py makemigrations
+```
+
+#### Actualizar db con nuevos modelos
+Actualicemos la db:
+```bash
+# con docker
+docker exec -it workshop ./workshop/manage.py migrate
+
+# sin docker
+./workshop/manage.py migrate
+```
+
+#### Importar datos de ejemplo
+
+A continuación, vamos a agregar algunos ejemplos a los modelos.
 
 ```python
-from django.conf.urls import url
-from django.views import generic
+## Exportado con
+## docker exec -it workshop ./workshop/manage.py dumpdata --indent 2 -o links.json links
+##   o
+## ./workshop/manage.py dumpdata --indent 2 -o links.json links
 
-urlpatterns = [
-    url(r'^view2/',
-        generic.TemplateView.as_view(template_name='view2.html')),
-    url(r'^$',
-        generic.TemplateView.as_view(template_name='view1.html')),
+# con docker
+docker exec -it workshop ./workshop/manage.py loaddata data/links.json
+
+# sin docker
+./workshop/manage.py loaddata data/links.json
+```
+
+## Añadir traducciones
+Si nunca vista traducciones de Django, podría tomarse un tiempo
+y aprender primero sobre [traducciones](https://docs.djangoproject.com/en/1.11/topics/i18n/translation/).
+
+#### Agregar configuraciones para la traducción en la configuración de Django
+
+```diff
+...
+ import os
++from django.utils.translation import ugettext_lazy as _
+...
+
+...
+MIDDLEWARE = [
+     ...
+     'django.contrib.sessions.middleware.SessionMiddleware',
++    'django.middleware.locale.LocaleMiddleware',
+     'django.middleware.common.CommonMiddleware',
+     ...
 ]
+
+...
+
+     TEMPLATES = [
+         {
+             'BACKEND': 'django.template.backends.django.DjangoTemplates',
+             'DIRS': [os.path.join(BASE_DIR, 'links/templates')],
+             'APP_DIRS': True,
+             'OPTIONS': {
+                 'context_processors': [
+                     'django.template.context_processors.debug',
+                     'django.template.context_processors.request',
+                     'django.contrib.auth.context_processors.auth',
+                     'django.contrib.messages.context_processors.messages',
++                     'django.template.context_processors.i18n',
+                 ],
+             },
+         },
+     ]
+
+...
+
++LOCALE_PATHS = (
++    os.path.join(BASE_DIR, 'locale'),
++)
++LANGUAGES = [
++    ('es', _('Spanish')),
++    ('en', _('English')),
++]
 ```
 
-## Añadir carpeta de templates a la configuración de Django
+#### Crear traducción para nuevos idiomas (es)
 
-A continuación, agregué algunas templates a la carpeta `templates` y finalmente me aseguré
-que Django conozca estas templates al poner esto en `settings.py`:
+```bash
+# con docker
+docker exec -it workshop bash -c "apt update; apt --force-yes install -y gettext"
+mkdir workshop/locale
+docker exec -it workshop ./workshop/manage.py makemessages --locale=es
 
-```python
-TEMPLATES = [
-    {
-        ...
-        'DIRS': [os.path.join(BASE_DIR, 'links/templates')],
-        ...
-    },
-]
+# sin docker
+apt update
+apt --force-yes install -y gettext
+mkdir workshop/locale
+./workshop/manage.py makemessages --locale=es
+```
+Completar las traducciones del archivo: **workshop/locale/es/LC_MESSAGES/django.po**
+
+#### Compilar la traducción para el nuevo idioma (es)
+
+```
+# con docker
+docker exec -it workshop ./workshop/manage.py compilemessages
+
+# sin docker
+./workshop/manage.py compilemessages
 ```
 
-### Agregar templates
-
-La template base es el archivo **links/templates/base.html**. Este importa
-[Twitter Bootstrap CSS Framework](http://getbootstrap.com):
-
-```html
-<!doctype html>
-<html class="no-js" lang="">
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
-  </head>
-  <body>
-    {% block main %}{% endblock %}
-  </body>
-</html>
-```
-
-Las templates para las vistas son **links/templates/view1.html**:
-
-```html
-{% extends "base.html" %}
-
-{% block main %}
-<div class="container">
-  <h1>View 1</h1>
-</div>
-{% endblock %}
-```
-
-y **links/templates/view2.html**:
-
-```html
-{% extends "base.html" %}
-
-{% block main %}
-<div class="container">
-  <h1>View 2</h1>
-</div>
-{% endblock %}
-```
+## Añadir nuevas entradas al gitignore
+Y finalmente debemos actualizar el archivo `.gitignore`, agregar `*.mo`.
 
 ## Resultado
-En este punto, puedes ejecutar un proyecto con el administrador de Django.
+En este punto, pudes ejecutar el proyecto con el admin y traducciones.
 
 #### Ejecutar proyecto
 ```
@@ -103,12 +213,7 @@ docker exec -it workshop ./workshop/manage.py runserver 0.0.0.0:8000
 ./workshop/manage.py runserver
 ```
 
-Debería ver la página de "View 1" en su navegador en `http://localhost:8000/links/`.
-Puedes cambiar la url a `http://localhost:8000/links/view2/` y debería ver la página de "View 2".
+Deberías ver los "Links" en tu navegador en `http://localhost:8000/admin/links/link/`.
+Podes cambiar la url a `http://localhost:8000/admin/links/tag/` y deberías ver los "Tags".
 
-Estoy importando Twitter Bootstrap aquí porque también quiero mostrar que ReactJS
-no se interpondrá en tu camino incluso si ya estás usando un CSS complejo
-Más sobre esto en futuros pasos.
-
-
-[Paso 4: Agregar modeles de Django](https://gitlab.com/FedeG/django-react-workshop/tree/step4_add_django_models)
+[Paso 5: Agregar Django webpack loader](https://gitlab.com/FedeG/django-react-workshop/tree/step5_add_django_webpack_loader)
