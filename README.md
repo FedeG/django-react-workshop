@@ -1,43 +1,95 @@
-# Step 2: Create your Django app
+# Step 3: Add non-reactJS views
 
-[Back to Step 1](https://gitlab.com/FedeG/django-react-workshop/tree/step1_create_project)
+[Back to Step 2](https://gitlab.com/FedeG/django-react-workshop/tree/step2_create_django_app)
 
-## Create django app
-Let's just create a new app:
+## Add urls
 
-```bash
-# with docker
-docker exec -it workshop bash -c "cd workshop && ./manage.py startapp links"
+We want to show that ReactJS can easily be used with an existing project, so
+we will add a few "legacy-views" to simulate that this is an old existing
+Django project.
 
-# without docker
-cd workshop
-./manage.py startapp links
-```
-This creates a new Django app in Django project folder (__./workshop/links__).
+#### I added the following lines to **workshop/urls.py**:
 
-## Add new aplication to INSTALLED_APPS:
-Add application name (`links`) to **INSTALLED_APPS** in __./workshop/workshop/settings.py__.
+```python
+from django.conf.urls import include, url
+from django.contrib import admin
 
-## Add django admin
-
-### Create db with initial state (migrate django auth models)
-Let's just migrate db:
-```bash
-# with docker
-docker exec -it workshop ./workshop/manage.py migrate
-
-# without docker
-./workshop/manage.py migrate
+urlpatterns = [
+    url(r'^admin/', admin.site.urls),
+    url(r'^links/', include('links.urls')),
+]
 ```
 
-### Add admin user
-Let's just create super user:
-```bash
-# with docker
-docker exec -it workshop ./workshop/manage.py createsuperuser
+#### I added the following lines to **links/urls.py**:
 
-# without docker
-./workshop/manage.py createsuperuser
+```python
+from django.conf.urls import url
+from django.views import generic
+
+urlpatterns = [
+    url(r'^view2/',
+        generic.TemplateView.as_view(template_name='view2.html')),
+    url(r'^$',
+        generic.TemplateView.as_view(template_name='view1.html')),
+]
+```
+
+## Add template folder to Django settings
+
+Next, I added a few templates to the `templates` folder and finally I made sure
+that Django is aware of these templates by putting this into `settings.py`:
+
+```python
+TEMPLATES = [
+    {
+        ...
+        'DIRS': [os.path.join(BASE_DIR, 'links/templates')],
+        ...
+    },
+]
+```
+
+### Add templates
+
+The base-template is the file **links/templates/base.html**. It imports the
+[Twitter Bootstrap CSS Framework](http://getbootstrap.com):
+
+```html
+<!doctype html>
+<html class="no-js" lang="">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+  </head>
+  <body>
+    {% block main %}{% endblock %}
+  </body>
+</html>
+```
+
+The templates for the two views are **links/templates/view1.html**:
+
+```html
+{% extends "base.html" %}
+
+{% block main %}
+<div class="container">
+  <h1>View 1</h1>
+</div>
+{% endblock %}
+```
+
+and **links/templates/view2.html**:
+
+```html
+{% extends "base.html" %}
+
+{% block main %}
+<div class="container">
+  <h1>View 2</h1>
+</div>
+{% endblock %}
 ```
 
 ## Result
@@ -52,7 +104,12 @@ docker exec -it workshop ./workshop/manage.py runserver 0.0.0.0:8000
 ./workshop/manage.py runserver
 ```
 
-You should see the Django admin page in your browser at `http://localhost:8000/admin/`.
+You should see the "View 1" page in your browser at `http://localhost:8000/links/`.
+You can change the URL to `http://localhost:8000/links/view2/` and you should see
+"View 2".
 
-[Step 3: Add non-React views](https://gitlab.com/FedeG/django-react-workshop/tree/step3_add_non_react_views)
+I'm importing Twitter Bootstrap here because I also want to show that ReactJS
+will not stand in your way even if you are already using a complex CSS
+framework. More on this in a later step.
 
+[Step 4: Add django models](https://gitlab.com/FedeG/django-react-workshop/tree/step4_add_django_models)
