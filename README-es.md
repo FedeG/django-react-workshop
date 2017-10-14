@@ -1,273 +1,136 @@
-# Paso 5: Agregar django-webpack-loader
+# Paso 6: Crear la primer componente de React
 
-[Volver al paso 4](https://gitlab.com/FedeG/django-react-workshop/tree/step4_add_django_models)
+[Volver al paso 5](https://gitlab.com/FedeG/django-react-workshop/tree/step5_add_django_webpack_loader)
 
-Desafortunadamente, en este paso muchas cosas sucederán todas a la vez. Esto es
-el paso donde la mayoría de la gente se rinde, porque Webpack es una herramienta
- muy grande y difícil de entender y configurar.
+## Conceptos de React que vamos a usar en este paso
+Si nunca has visto estos conceptos, puedes tomarse tu tiempo y leer sobre ellos accediendo a los enlaces.
+Usaremos:
+- Componentes de presentación y contenedores: [presentational vs container components](https://medium.com/@dan_abramov/smart-and-dumb-components-7ca2f9a7c7d0)
+- Composición: [composition vs inheritance](https://reactjs.org/docs/composition-vs-inheritance.html)
+- Jsx: [introducing jsx](https://reactjs.org/docs/introducing-jsx.html) and [jsx in depth](https://reactjs.org/docs/jsx-in-depth.html)
+- Children prop: [this.props.children](https://learn.co/lessons/react-this-props-children)
 
-Vamos paso a paso.
+## Crear una vista
+Primero, creamos una vista en la carpeta `src/views` (en `workshop/front/src/views`) y
+agregamos el archivo `App.jsx` adentro. Este va a ser uno de nuestros puntos de entrada para **webpack**.
+**webpack** buscará ese archivo, luego seguirá todas sus importaciones y las agregará
+al paquete, para que al final tengamos un gran archivo `App.jsx` que pueda ser utilizado por el navegador.
 
-## Antes que nada, necesitamos instalar webpack-loader:
+```javascript
+import React from "react"
+import { render } from "react-dom"
+import App from '../containers/App'
 
-#### Instalar django-webpack-loader
-```bash
-# con docker
-docker exec -it workshop pip install django-webpack-loader
-
-# sin docker
-pip install django-webpack-loader
+render(<App/>, document.getElementById('app'))
 ```
 
-#### Actualizamos requirements
+## Crear un contenedor
+Después, creamos una carpeta `src/containers` (en `workshop/front/src/containers`) y
+agreguamos el archivo `App.jsx` adentro. Este es el primer componente de React,
+en su interior tendrá una función de renderizado con el componente de presentación **App**.
 
-También vamos a agregararlo al `requirements.txt`.
-Sugerencia: cada vez que instales algo con `pip`, ejecuta `pip freeze`
-inmediatamente después y agrega los paquetes con su número de versión a `requirements.txt`.
+```javascript
+import React from "react"
 
-##### Comando:
-```bash
-# con docker
-docker exec -it workshop pip freeze > requirements.txt
+import AppComponent from "../components/App"
 
-# sin docker
-pip freeze > requirements.txt
-```
-
-#### Agregar webpack_loader a INSTALLED_APPS en Django settings
-A continuación, tenemos que agregar esta aplicación a la configuración  de
-`INSTALLED_APPS` en nuestro **workshop/workshop/settings.py**:
-
-```python
-INSTALLED_APPS = [
-    ...
-    'webpack_loader',
-]
-```
-
-#### Agregar carpetas con archivos estáticos
-Webpack se trata de crear "paquetes" (también conocidos como archivos
-minificados de JavaScript). Estos paquetes se guardarán en nuestra carpeta `static`,
-como todos los archivos css y js que siempre usamos en Django.
-Entonces, tenemos que hacer que Django sea consciente de estos estáticos.
-Agregamos la carpeta en **workshop/workshop/settings.py**:
-
-
-```python
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'links/static'),
-]
-```
-
-#### Instalar ReactJs y sus dependencias
-Luego tenemos que crear un archivo `package.json` (en **workshop/front/package.json**),
-que es similar a el archivo `requirements.txt` de Python:
-
-```json
-{
-  "name": "links",
-  "version": "0.0.1",
-  "scripts": {
-    "start": "node server.js",
-    "react-devtools": "react-devtools"
-  },
-  "devDependencies": {
-    "babel": "^6.23.0",
-    "babel-core": "^6.26.0",
-    "babel-loader": "^6.4.1",
-    "babel-plugin-transform-decorators-legacy": "^1.3.4",
-    "babel-preset-es2015": "^6.24.1",
-    "babel-preset-react": "^6.24.1",
-    "babel-preset-stage-0": "^6.24.1",
-    "react-test-renderer": "^16.0.0",
-    "webpack": "^1.12.13",
-    "webpack-bundle-tracker": "0.0.93",
-    "webpack-dev-server": "^1.14.1"
-  },
-  "dependencies": {
-    "babel-polyfill": "^6.26.0",
-    "es6-promise": "^4.1.1",
-    "isomorphic-fetch": "^2.2.1",
-    "js-cookie": "^2.1.4",
-    "lodash": "^4.17.4",
-    "prop-types": "^15.6.0",
-    "radium": "^0.19.4",
-    "raf": "^3.4.0",
-    "react": "^16.0.0",
-    "react-cookie": "^2.1.1",
-    "react-dom": "^16.0.0",
-    "react-websocket": "^1.2.0"
+export default class App extends React.Component {
+  render() {
+    return (
+      <AppComponent />
+    )
   }
 }
 ```
 
-No explicaré en detalle para qué sirve cada paquete. Descubrir lo que realmente
-necesitas es una de las partes realmente difíciles al comenzar con ReactJS.
-Describir las razones detrás de cada uno de estos paquetes iría
-mucho más allá del alcance de este paso. Mucho de esto tiene que ver con
-[Babel](http://babeljs.io), que es una herramienta que "transpila" la nueva
-sintaxis de JavaScript en algo que admiten los navegadores actuales.
-
-#### Instalar nodejs, npm y yarn
-```bash
-# con docker
-docker run -d -it --name workshopjs -v $PWD:/src -p 3000:3000 --workdir /src/workshop/front node:8 bash
-docker exec -it workshopjs npm install yarn --global
-
-# sin docker
-curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
-sudo apt-get install -y build-essential nodejs
-npm install yarn --global
-```
-Si nunca has visto el comando `yarn`, te aconsejo que leas sobre [yarn vs npm](https://medium.com/@nikjohn/facebooks-yarn-vs-npm-is-yarn-really-better-1890b3ea6515) primero.
-
-#### Instalat dependencias
-Cuando haya creado el archivo **package.json**, podes instalar los paquetes:
-
-```bash
-# con docker
-docker exec -it workshopjs yarn install
-
-# sin docker
-cd workshop/front
-yarn install
-```
-Este comando creará un `yarn.lock` con todas las versiones de dependencias (similar a `requirements.txt`)
-y crea una carpeta `node_modules` con las dependencias, por lo que también deberíamos agregar esa carpeta a
-`.gitignore`.
-
-#### Agregar configuración de webpack
-Después de ejecutar `yarn install`, deberías poder utilizar `webpack` (en teoría).
-En la práctica, primero necesitas crear una configuración. Voy a adelantar un
-poco y ya lo divido en dos archivos porque esto será bastante
-útil más tarde. El primer archivo se llama `webpack.base.config.js` y tiene las siguientes lineas:
+## Crear una componente
+Como podes ver, **App** intenta importar otra componente llamada `AppComponent`.
+Ahora vamos a crear el archivo que intenta importar, `workshop/front/src/components/App/index.jsx`:
 
 ```javascript
-const path = require('path')
-const webpack = require('webpack')
+import React from "react"
 
-module.exports = {
-  context: __dirname,
+import Headline from "../Headline"
 
-  entry: {
-    // Add as many entry points as you have container-react-components here
-    vendors: ['react', 'babel-polyfill'],
-  },
-
-  output: {
-      path: path.resolve('./workshop/static/bundles/local/'),
-      filename: '[name]-[hash].js'
-  },
-
-  externals: [
-  ], // add all vendor libs
-
-  plugins: [
-    new webpack.optimize.CommonsChunkPlugin('vendors', 'vendors.js'),
-  ], // add all common plugins here
-
-  module: {
-    loaders: [] // add all common loaders here
-  },
-
-  resolve: {
-    modulesDirectories: ['node_modules', 'bower_components'],
-    extensions: ['', '.js', '.jsx']
-  },
+export default class App extends React.Component {
+  render() {
+    return (
+      <div className="container">
+        <div className="row">
+          <div className="col-sm-12">
+            <Headline>Sample App!</Headline>
+          </div>
+        </div>
+      </div>
+    )
+  }
 }
 ```
 
-Hace muchas cosas:
+## Agregar sub-componente
+Y otra vez, esa componente importa otra componente llamada `Headline`.
+Vamos a crearla en `workshop/front/src/components/Headline/index.jsx`:
 
-1. Define el punto de entrada. Ese es el archivo JS que debe cargarse primero.
-2. Define la ruta de salida. Aquí es donde queremos guardar nuestro paquete.
-3. Utiliza el `CommonsChunksPlugin`, esto asegura que ReactJS será
-   guardado como un archivo diferente (`vendors.js`), para que nuestro paquete de aplicaciones no se vuelve demasiado grande
-
-El segundo archivo se llama `webpack.local.config.js` y se ve así:
 ```javascript
-const webpack = require('webpack')
-const BundleTracker = require('webpack-bundle-tracker')
+import React from "react"
 
-const config = require('./webpack.base.config.js')
-const localSettings = require('./webpack.local-settings.js')
+export default class Headline extends React.Component {
+  render() {
+    return (
+      <h1>{ this.props.children }</h1>
+    )
+  }
+}
+```
 
-const port = 3000
-const ip = localSettings.ip
+## Agregar la vista App a las entidades de webpack
 
-const addDevVendors = (module) => [
-  `webpack-dev-server/client?http://${ip}:${port}`,
-  'webpack/hot/only-dev-server',
-  module
-];
+En `workshop/front/webpack.base.config.js`:
+```diff
+entry: {
+  // Add as many entry points as you have container-react-components here
++ App: ['./src/views/App'],
+  vendors: ['react', 'babel-polyfill'],
+},
+```
 
-config.devtool = "#eval-source-map"
-config.ip = ip
-
+En `workshop/front/webpack.local.config.js`:
+```diff
 // Use webpack dev server
 config.entry = {
++ App: ['./src/views/App'],
   vendors: ['react', 'babel-polyfill'],
-}
-
-// override django's STATIC_URL for webpack bundles
-config.output.publicPath = `http://${ip}:${port}/assets/bundles/`
-
-// Add HotModuleReplacementPlugin and BundleTracker plugins
-config.plugins = config.plugins.concat([
-  new webpack.HotModuleReplacementPlugin(),
-  new webpack.NoErrorsPlugin(),
-  new BundleTracker({filename: './webpack-stats-local.json'}),
-  new webpack.DefinePlugin({
-    'process.env': {
-      'NODE_ENV': JSON.stringify('development')
-    }
-  }),
-
-])
-
-// Add a loader for JSX files
-config.module.loaders.push(
-  { test: /\.jsx?$/, exclude: /node_modules/, loaders: ['babel'] }
-)
-
-module.exports = config
-```
-
-Esto esencialmente carga la configuración base y luego le agrega algunas cosas, lo mas
-notable es un plugin llamado `BundleTracker`.
-Este modulo crea un archivo JSON cada vez que generamos traspilados de ReactJs.
-Django puede entonces leer ese archivo JSON y sabrá qué paquete pertenece a qué
-nombre en la aplicación (este tendrá más sentido más adelante).
-
-#### Agregar la configuración base para webpack local
-Vamos a crear un archivo con configuración base para el webpack local,
-`workshop/front/webpack.local-settings.js`  y se ve así:
-```javascript
-module.exports = {
-  ip: '127.0.0.1',
-}
-```
-
-#### Agregar configuración de babel
-Usaremos la sintaxis de JavaScript de ES2015 para todos nuestro códifo JavaScript.
-Un complemento llamado `babel` transpilara nuevamente el código avanzado a
-algo que los navegadores pueden entender. Para que esto funcione, tenemos que crear
-el siguiente archivo **workshop/front/.babelrc**:
-
-```json
-{
-  "presets": ["es2015", "react", "stage-0"],
-  "plugins": [
-    ["transform-decorators-legacy"],
-  ]
 }
 ```
 
 ## Actualizar gitignore
-Y finalmente tenemos que actualizar el archivo `.gitignore` y agregarle `webpack-stats-local.json`.
+Y finalmente debemos actualizar el archivo `.gitignore` y agregarle el archivo `workshop/front/workshop/static/`.
 
 ## Resultado
-Ahora podríamos usar `webpack` para crear un compilado, pero no hemos escrito ningún
-código JavaScript o ReactJS, aún. Vamos a agregar el primer componente React en el próximo paso
+Puede que te preguntes por qué estoy usando la componente `App` (container) y otra
+`AppComponent`. Esto tendrá más sentido en posteriores pasos. Usaremos `Redux` para administrar el estado de nuestra aplicación y veremos que Redux
+requiere varias configuraciones para envolver su aplicación y manejar sus estados.
+Para mantener mis archivos más limpios, me gusta tener un archivo contenedor, que luego
+importa el componente real de ReactJS que quiero construir.
 
-[Paso 6: Crear el primer componente de React](https://gitlab.com/FedeG/django-react-workshop/tree/step6_create_first_react_component)
+También notarás que separé mis componentes en una carpeta `containers`
+y en una carpeta `components`. Puedes pensar en esto un poco como las vistas de Django.
+La template principal es tu contenedor. Contiene la estructura general y dependencias para tu página. En la carpeta `componentes` tendremos mucho
+componentes más pequeñas que hacen una unica cosa. Estos componentes serán
+reutilizados y orquestados por `containers`, por ende las componentes serían las
+equivalentes a las templates parciales más pequeñas que usted importa en Django usando el
+etiqueta `{% import %}`.
+
+En este punto puedes ejecutar el build:
+```bash
+# con docker
+docker exec -it workshopjs ./node_modules/.bin/webpack --config webpack.local.config.js
+
+# sin docker
+cd front/src
+./node_modules/.bin/webpack --config webpack.local.config.js
+```
+
+Y esto debe generar algunos archivos en `workshop/front/workshop/static/bundles/`.
+
+[Paso 7: Usar el paquete](https://gitlab.com/FedeG/django-react-workshop/tree/step7_use_the_bundle)
