@@ -6,7 +6,7 @@
 Como no tenemos un proyecto a mano, creamos uno nuevo:
 
 ```bash
-docker run -d -it --name workshop -v $PWD:/src -p 8080:8000 --workdir /src python:3.6 bash
+docker run -d -it --name workshop -v $PWD:/src -p 8000:8000 --workdir /src python:3.6 bash
 docker exec -it workshop bash
 
 # dentro del container de docker
