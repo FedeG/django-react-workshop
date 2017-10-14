@@ -55,3 +55,4 @@ docker exec -it workshop ./workshop/manage.py runserver 0.0.0.0:8000
 You should see the Django admin page in your browser at `http://localhost:8000/admin/`.
 
 [Step 3: Add non-React views](https://gitlab.com/FedeG/django-react-workshop/tree/step3_add_non_react_views)
+
