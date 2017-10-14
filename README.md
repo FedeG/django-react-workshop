@@ -1,47 +1,45 @@
-# Step 1: Create your Django project
+INSTALLED_APPS
+docker exec -it workshop ./workshop/manage.py makemigrations links
+migrate
+# Step 2: Create your Django app
 
-[Back to master branch](https://gitlab.com/FedeG/django-react-workshop/tree/master)
+[Back to Step 1](https://gitlab.com/FedeG/django-react-workshop/tree/step1_create_project)
 
-## Create django project
-Since we don't have a project at hand, let's just create a new one:
+## Create django app
+Let's just create a new app:
 
-```bash
-docker run -d -it --name workshop -v $PWD:/src -p 8000:8000 --workdir /src python:3.6 bash
-docker exec -it workshop bash
-
-# within docker container
-pip install Django
-django-admin startproject workshop
-```
-If you have never seen this `docker` command, you should take some time
-and learn about [docker](https://docs.docker.com) first.
-
-Option without `docker` (with `mkvirtualenv`):
-```bash
-mkvirtualenv djreact
-pip install Django
-django-admin startproject workshop
-```
-If you have never seen this `mkvirtualenv` command, you could take some time
-and learn about [virtualenvwrapper](http://virtualenvwrapper.readthedocs.org/en/latest/) first.
-
-This creates a new Django project in the root folder of your repository.
-
-## Add requirements
-You also want to create a `requirements.txt`:
 ```bash
 # with docker
-docker exec -it workshop pip freeze > requirements.txt
+docker exec -it workshop bash -c "cd workshop && ./manage.py startapp links"
 
 # without docker
-pip freeze > requirements.txt
+cd workshop
+./manage.py startapp links
 ```
-If you have never used a `requirements.txt` file, have a look at the
-[pip documentation](https://pip.readthedocs.org/en/1.1/requirements.html).
+This creates a new Django app in Django project folder (__./workshop/links__).
 
-## Add gitignore
-And finally we should create a `.gitignore` file and add `*.pyc` files and
-`db.sqlite3`.
+## Add new aplication to INSTALLED_APPS:
+Add application name (`links`) to **INSTALLED_APPS** in __./workshop/workshop/settings.py__.
+
+## Create db
+Let's just migrate db:
+```bash
+# with docker
+docker exec -it workshop ./workshop/manage.py migrate
+
+# without docker
+./workshop/manage.py migrate
+```
+
+## Add admin user
+You also want to migrate db:
+```bash
+# with docker
+docker exec -it workshop ./workshop/manage.py createsuperuser
+
+# without docker
+./workshop/manage.py createsuperuser
+```
 
 ## Result
 At this point, you can run project.
@@ -55,6 +53,6 @@ docker exec -it workshop ./workshop/manage.py runserver 0.0.0.0:8000
 ./workshop/manage.py runserver
 ```
 
-You should see the Django welcome page in your browser at `http://localhost:8000/`.
+You should see the Django admin page in your browser at `http://localhost:8000/admin/`.
 
-[Step 2: Create Django app](https://gitlab.com/FedeG/django-react-workshop/tree/step2_create_django_app)
+[Step 3: Add non-React views](https://gitlab.com/FedeG/django-react-workshop/tree/step3_create_django_app)
