@@ -1,12 +1,21 @@
 stages:
+  - documentation
   - deploy
 
-pages:
-  stage: deploy
+mkdocs_build:
+  stage: documenation
   image: python:3.5
   script:
     - pip install -r requirements-doc.txt
     - mkdocs build
+  only:
+    - master
+
+pages:
+  stage: deploy
+  dependencies:
+    - mkdocs_build
+  script:
     - mv site public
   artifacts:
     paths:
