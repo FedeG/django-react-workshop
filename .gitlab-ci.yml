@@ -1,4 +1,4 @@
-image: python3.5
+image: python:3.5
 stages:
   - documentation
   - deploy
