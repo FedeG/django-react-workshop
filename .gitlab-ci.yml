@@ -1,0 +1,15 @@
+stages:
+  - documentation
+
+pages:
+  stage: documentation
+  image: python:3.5
+  script:
+    - pip install -r requirements-doc.txt
+    - mkdocs build
+    - mv site public
+  artifacts:
+    paths:
+      - public
+  only:
+    - master
