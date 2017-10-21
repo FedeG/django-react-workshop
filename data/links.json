@@ -1,0 +1,155 @@
+[
+{
+  "model": "links.tag",
+  "pk": 1,
+  "fields": {
+    "name": "React",
+    "description": "",
+    "user": null
+  }
+},
+{
+  "model": "links.tag",
+  "pk": 2,
+  "fields": {
+    "name": "Python",
+    "description": "",
+    "user": null
+  }
+},
+{
+  "model": "links.tag",
+  "pk": 3,
+  "fields": {
+    "name": "Pycon2017",
+    "description": "",
+    "user": 1
+  }
+},
+{
+  "model": "links.tag",
+  "pk": 4,
+  "fields": {
+    "name": "Workshop/Talk",
+    "description": "",
+    "user": null
+  }
+},
+{
+  "model": "links.tag",
+  "pk": 5,
+  "fields": {
+    "name": "Django",
+    "description": "",
+    "user": null
+  }
+},
+{
+  "model": "links.link",
+  "pk": 1,
+  "fields": {
+    "name": "Gitlab with workshop",
+    "url": "https://gitlab.com/FedeG/django-react-workshop/",
+    "pending": false,
+    "description": "",
+    "user": 1
+  }
+},
+{
+  "model": "links.link",
+  "pk": 2,
+  "fields": {
+    "name": "Django tranlations",
+    "url": "https://docs.djangoproject.com/en/1.11/topics/i18n/translation/",
+    "pending": false,
+    "description": "",
+    "user": 1
+  }
+},
+{
+  "model": "links.link",
+  "pk": 3,
+  "fields": {
+    "name": "Bootstrap",
+    "url": "http://getbootstrap.com",
+    "pending": false,
+    "description": "",
+    "user": 1
+  }
+},
+{
+  "model": "links.link",
+  "pk": 4,
+  "fields": {
+    "name": "Extra fields on many to many",
+    "url": "https://docs.djangoproject.com/en/1.11/topics/db/models/#extra-fields-on-many-to-many-relationships",
+    "pending": false,
+    "description": "",
+    "user": 1
+  }
+},
+{
+  "model": "links.linktag",
+  "pk": 1,
+  "fields": {
+    "link": 1,
+    "tag": 1
+  }
+},
+{
+  "model": "links.linktag",
+  "pk": 2,
+  "fields": {
+    "link": 1,
+    "tag": 2
+  }
+},
+{
+  "model": "links.linktag",
+  "pk": 3,
+  "fields": {
+    "link": 1,
+    "tag": 3
+  }
+},
+{
+  "model": "links.linktag",
+  "pk": 4,
+  "fields": {
+    "link": 1,
+    "tag": 4
+  }
+},
+{
+  "model": "links.linktag",
+  "pk": 5,
+  "fields": {
+    "link": 2,
+    "tag": 2
+  }
+},
+{
+  "model": "links.linktag",
+  "pk": 6,
+  "fields": {
+    "link": 2,
+    "tag": 5
+  }
+},
+{
+  "model": "links.linktag",
+  "pk": 7,
+  "fields": {
+    "link": 4,
+    "tag": 2
+  }
+},
+{
+  "model": "links.linktag",
+  "pk": 8,
+  "fields": {
+    "link": 4,
+    "tag": 5
+  }
+}
+]
