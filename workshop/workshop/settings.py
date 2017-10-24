@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'links',
+    'webpack_loader',
 ]
 
 MIDDLEWARE = [
@@ -129,3 +130,6 @@ LANGUAGES = [
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 
 STATIC_URL = '/static/'
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'links/static'),
+]
