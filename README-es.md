@@ -13,8 +13,8 @@ docker exec -it workshop bash
 pip install Django
 django-admin startproject workshop
 ```
-Si nunca viste `docker`, deberías tomarte un tiempo
-y aprender primero sobre [docker] (https://docs.docker.com).
+Si nunca has visto `docker`, deberías tomarte un tiempo
+y aprender primero sobre [docker](https://docs.docker.com).
 
 Opción sin `docker` (con `mkvirtualenv`):
 ```bash
@@ -23,7 +23,7 @@ pip install Django
 django-admin startproject workshop
 ```
 Si nunca viste el comando `mkvirtualenv`, podrías tomarte un tiempo
-y aprender sobre [virtualenvwrapper] (http://virtualenvwrapper.readthedocs.org/en/latest/) primero.
+y aprender sobre [virtualenvwrappler](http://virtualenvwrapper.readthedocs.org/en/latest/) primero.
 
 Esto crea un nuevo proyecto de Django en la carpeta raíz de su repositorio.
 
@@ -43,9 +43,9 @@ Si nunca usaste `requirements.txt`, te recomiendo ver la
 Y finalmente deberíamos crear un archivo `.gitignore` y agregar `*.pyc` y
 `db.sqlite3` para ignorarlos en el repositorio.
 
-En este punto, podes correr el proyecto.
+En este punto, podes ejecutar el proyecto.
 
-#### Run project
+#### Ejecutar projecto
 ```
 # con docker
 docker exec -it workshop ./workshop/manage.py runserver 0.0.0.0:8000
