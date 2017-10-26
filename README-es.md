@@ -43,6 +43,7 @@ Si nunca usaste `requirements.txt`, te recomiendo ver la
 Y finalmente deberíamos crear un archivo `.gitignore` y agregar `*.pyc` y
 `db.sqlite3` para ignorarlos en el repositorio.
 
+## Resultado
 En este punto, podes ejecutar el proyecto.
 
 #### Ejecutar projecto
