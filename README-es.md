@@ -1,136 +1,106 @@
-# Paso 6: Crear la primer componente de React
+# Step 7: Use the bundle
 
-[Volver al paso 5](https://gitlab.com/FedeG/django-react-workshop/tree/step5_add_django_webpack_loader)
+[Back to step 6](https://gitlab.com/FedeG/django-react-workshop/tree/step6_create_first_react_component)
 
-## Conceptos de React que vamos a usar en este paso
-Si nunca has visto estos conceptos, puedes tomarse tu tiempo y leer sobre ellos accediendo a los enlaces.
-Usaremos:
-- Componentes de presentación y contenedores: [presentational vs container components](https://medium.com/@dan_abramov/smart-and-dumb-components-7ca2f9a7c7d0)
-- Composición: [composition vs inheritance](https://reactjs.org/docs/composition-vs-inheritance.html)
-- Jsx: [introducing jsx](https://reactjs.org/docs/introducing-jsx.html) and [jsx in depth](https://reactjs.org/docs/jsx-in-depth.html)
-- Children prop: [this.props.children](https://learn.co/lessons/react-this-props-children)
+In the last step we have create our first bundle, but we haven't seen the result
+in the browser. Let's update our template to use our fancy new ReactJS app now.
 
-## Crear una vista
-Primero, creamos una vista en la carpeta `src/views` (en `workshop/front/src/views`) y
-agregamos el archivo `App.jsx` adentro. Este va a ser uno de nuestros puntos de entrada para **webpack**.
-**webpack** buscará ese archivo, luego seguirá todas sus importaciones y las agregará
-al paquete, para que al final tengamos un gran archivo `App.jsx` que pueda ser utilizado por el navegador.
+## Update template view1
+Change `workshop/links/templates/view1.html` so that it looks like this:
 
-```javascript
-import React from "react"
-import { render } from "react-dom"
-import App from '../containers/App'
+```html
+{% extends "base.html" %}
+{% load render_bundle from webpack_loader %}
 
-render(<App/>, document.getElementById('app'))
+{% block main %}
+  <div id="app"></div>
+
+  {% render_bundle 'vendors' %}
+  {% render_bundle 'App' %}
+{% endblock %}
 ```
 
-## Crear un contenedor
-Después, creamos una carpeta `src/containers` (en `workshop/front/src/containers`) y
-agreguamos el archivo `App.jsx` adentro. Este es el primer componente de React,
-en su interior tendrá una función de renderizado con el componente de presentación **App**.
+## Update Django settings
 
-```javascript
-import React from "react"
+#### Add WEBPACK_LOADER settings
+We also need to add a new setting to `settings.py`:
 
-import AppComponent from "../components/App"
-
-export default class App extends React.Component {
-  render() {
-    return (
-      <AppComponent />
-    )
-  }
+```python
+WEBPACK_LOADER = {
+    'DEFAULT': {
+        'BUNDLE_DIR_NAME': 'bundles/local/',  # end with slash
+        'STATS_FILE': os.path.join(BASE_DIR, 'front/webpack-stats-local.json'),
+    }
 }
 ```
 
-## Crear una componente
-Como podes ver, **App** intenta importar otra componente llamada `AppComponent`.
-Ahora vamos a crear el archivo que intenta importar, `workshop/front/src/components/App/index.jsx`:
+##### Notes:
+- `BUNDLE_DIR_NAME` tells Django in which folder within the `static` folder it
+can find our bundle.
+- `STATS_FILE` tells Django where it can find the JSON-file that maps entry-point
+names to bundle files. It is because of this stats file that we can use
+`{% render_bundle 'App' %}` in our template. You will also find this `App`
+name in your `webpack.base.config.js` file under the `entry` attribute.
 
-```javascript
-import React from "react"
-
-import Headline from "../Headline"
-
-export default class App extends React.Component {
-  render() {
-    return (
-      <div className="container">
-        <div className="row">
-          <div className="col-sm-12">
-            <Headline>Sample App!</Headline>
-          </div>
-        </div>
-      </div>
-    )
-  }
-}
-```
-
-## Agregar sub-componente
-Y otra vez, esa componente importa otra componente llamada `Headline`.
-Vamos a crearla en `workshop/front/src/components/Headline/index.jsx`:
-
-```javascript
-import React from "react"
-
-export default class Headline extends React.Component {
-  render() {
-    return (
-      <h1>{ this.props.children }</h1>
-    )
-  }
-}
-```
-
-## Agregar la vista App a las entidades de webpack
-
-En `workshop/front/webpack.base.config.js`:
+#### Add STATIC_ROOT and update STATICFILES_DIRS
 ```diff
-entry: {
-  // Add as many entry points as you have container-react-components here
-+ App: ['./src/views/App'],
-  vendors: ['react', 'babel-polyfill'],
-},
+STATIC_URL = '/static/'
++STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'links/static'),
++   os.path.join(BASE_DIR, 'front/workshop/static'),
+]
 ```
 
-En `workshop/front/webpack.local.config.js`:
+## Change webpack publicpath
+Change publicpath in **workshop/front/webpack.local.config.js**:
 ```diff
-// Use webpack dev server
-config.entry = {
-+ App: ['./src/views/App'],
-  vendors: ['react', 'babel-polyfill'],
-}
+// override django's STATIC_URL for webpack bundles
+-config.output.publicPath = `http://${ip}:${port}/assets/bundles/`
++config.output.publicPath = `/static/bundles/local/`
 ```
 
-## Actualizar gitignore
-Y finalmente debemos actualizar el archivo `.gitignore` y agregarle el archivo `workshop/front/workshop/static/`.
-
-## Resultado
-Puede que te preguntes por qué estoy usando la componente `App` (container) y otra
-`AppComponent`. Esto tendrá más sentido en posteriores pasos. Usaremos `Redux` para administrar el estado de nuestra aplicación y veremos que Redux
-requiere varias configuraciones para envolver su aplicación y manejar sus estados.
-Para mantener mis archivos más limpios, me gusta tener un archivo contenedor, que luego
-importa el componente real de ReactJS que quiero construir.
-
-También notarás que separé mis componentes en una carpeta `containers`
-y en una carpeta `components`. Puedes pensar en esto un poco como las vistas de Django.
-La template principal es tu contenedor. Contiene la estructura general y dependencias para tu página. En la carpeta `componentes` tendremos mucho
-componentes más pequeñas que hacen una unica cosa. Estos componentes serán
-reutilizados y orquestados por `containers`, por ende las componentes serían las
-equivalentes a las templates parciales más pequeñas que usted importa en Django usando el
-etiqueta `{% import %}`.
-
-En este punto puedes ejecutar el build:
+## Build the packages
 ```bash
-# con docker
-docker exec -it workshopjs ./node_modules/.bin/webpack --config webpack.local.config.js
+# with docker
+docker exec -it workshopjs node_modules/.bin/webpack --config webpack.local.config.js
 
-# sin docker
-cd front/src
-./node_modules/.bin/webpack --config webpack.local.config.js
+# without docker
+cd workshop/front
+node_modules/.bin/webpack --config webpack.local.config.js
 ```
 
-Y esto debe generar algunos archivos en `workshop/front/workshop/static/bundles/`.
+## Collect static files in Django
+```bash
+mkdir workshop/links/static
+# with docker
+docker exec -it workshop ./workshop/manage.py collectstatic
 
-[Paso 7: Usar el paquete](https://gitlab.com/FedeG/django-react-workshop/tree/step7_use_the_bundle)
+# without docker
+./workshop/manage.py collectstatic
+```
+
+## Result
+At this point, you can run project.
+
+#### Run project
+```
+# with docker
+docker exec -it workshop ./workshop/manage.py runserver 0.0.0.0:8000
+
+# without docker
+./workshop/manage.py runserver
+```
+
+You should see the React App page in your browser at `http://localhost:8000/`.
+
+Now try to make a change to your ReactJS app. Change `Sample App!` to
+`Something New!` in `workshop/front/src/components/App/index.jsx`.
+
+Then run build and collectstatic again, make sure that runserver is still running and visit your site
+in the browser. It should say "Something New!" now.
+
+Amazing, right?
+We will add hot reloading for this case in next step.
+
+[Step 8: Hot Reloading](https://gitlab.com/FedeG/django-react-workshop/tree/step8_hot_reloading)
