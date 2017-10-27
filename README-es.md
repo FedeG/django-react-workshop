@@ -1,13 +1,13 @@
-# Step 7: Use the bundle
+# Paso 7: Usar el paquete
 
-[Back to step 6](https://gitlab.com/FedeG/django-react-workshop/tree/step6_create_first_react_component)
+[Volver al paso 6](https://gitlab.com/FedeG/django-react-workshop/tree/step6_create_first_react_component)
 
-In the last step we have create our first bundle, but we haven't seen the result
-in the browser. Let's update our template to use our fancy new ReactJS app now.
+En el último paso, hemos creado nuestro primer paquete, pero no hemos visto el resultado
+en el navegador.
+Ahora actualicemos nuestra plantilla para usar nuestra nueva y elegante aplicación ReactJS.
 
-## Update template view1
-Change `workshop/links/templates/view1.html` so that it looks like this:
-
+## Actualizar la template view1
+Cambiamos `workshop/links/templates/view1.html` para que se vea así:
 ```html
 {% extends "base.html" %}
 {% load render_bundle from webpack_loader %}
@@ -20,11 +20,10 @@ Change `workshop/links/templates/view1.html` so that it looks like this:
 {% endblock %}
 ```
 
-## Update Django settings
+## Actualizar la configuración de Django
 
-#### Add WEBPACK_LOADER settings
-We also need to add a new setting to `settings.py`:
-
+#### Agregar la configuración de WEBPACK_LOADER
+En `workshop/workshop/settings.py`:
 ```python
 WEBPACK_LOADER = {
     'DEFAULT': {
@@ -34,15 +33,14 @@ WEBPACK_LOADER = {
 }
 ```
 
-##### Notes:
-- `BUNDLE_DIR_NAME` tells Django in which folder within the `static` folder it
-can find our bundle.
-- `STATS_FILE` tells Django where it can find the JSON-file that maps entry-point
-names to bundle files. It is because of this stats file that we can use
-`{% render_bundle 'App' %}` in our template. You will also find this `App`
-name in your `webpack.base.config.js` file under the `entry` attribute.
+##### Notas:
+- `BUNDLE_DIR_NAME` le dice a Django en qué carpeta dentro de la carpeta `static`
+puede encontrar nuestro paquete.
+- `STATS_FILE` le dice a Django dónde puede encontrar el archivo JSON que mapea los
+nombres de la componentes con los paquetes. Es por este archivo que podemos usar
+`{% render_bundle 'App'%}` en nuestra template.
 
-#### Add STATIC_ROOT and update STATICFILES_DIRS
+#### Añadir STATIC_ROOT y actualizar STATICFILES_DIRS
 ```diff
 STATIC_URL = '/static/'
 +STATIC_ROOT = os.path.join(BASE_DIR, 'static')
@@ -52,55 +50,57 @@ STATICFILES_DIRS = [
 ]
 ```
 
-## Change webpack publicpath
-Change publicpath in **workshop/front/webpack.local.config.js**:
+## Cambiar el publicpath de webpack
+Cambiar el publicpath en **workshop/front/webpack.local.config.js**:
 ```diff
 // override django's STATIC_URL for webpack bundles
 -config.output.publicPath = `http://${ip}:${port}/assets/bundles/`
 +config.output.publicPath = `/static/bundles/local/`
 ```
 
-## Build the packages
+## Compilar los paquetes
 ```bash
-# with docker
+# con docker
 docker exec -it workshopjs node_modules/.bin/webpack --config webpack.local.config.js
 
-# without docker
+# sin docker
 cd workshop/front
 node_modules/.bin/webpack --config webpack.local.config.js
 ```
 
-## Collect static files in Django
+## Obtener archivos estáticos en Django
 ```bash
 mkdir workshop/links/static
-# with docker
+
+# con docker
 docker exec -it workshop ./workshop/manage.py collectstatic
 
-# without docker
+# sin docker
 ./workshop/manage.py collectstatic
 ```
 
-## Result
-At this point, you can run project.
+## Resultado
+En este punto, puedes correr el proyecto.
 
-#### Run project
+#### Correr el proyecto
 ```
-# with docker
+# con docker
 docker exec -it workshop ./workshop/manage.py runserver 0.0.0.0:8000
 
-# without docker
+# sin docker
 ./workshop/manage.py runserver
 ```
 
-You should see the React App page in your browser at `http://localhost:8000/`.
+Deberías ver la página de App en tu navegador en `http://localhost:8000/`.
 
-Now try to make a change to your ReactJS app. Change `Sample App!` to
-`Something New!` in `workshop/front/src/components/App/index.jsx`.
+Ahora intenta hacer un cambio en tu aplicación ReactJS. Cambia `Sample App!` por
+`Something New!` en `workshop/front/src/components/App/index.jsx`.
 
-Then run build and collectstatic again, make sure that runserver is still running and visit your site
-in the browser. It should say "Something New!" now.
+A continuación, ejecutamos build y collectstatic nuevamente, asegurando de que
+runserver aún se esté ejecutando y visitaremos el sitio
+en el navegador. Debería decir "Something New!" ahora.
 
-Amazing, right?
-We will add hot reloading for this case in next step.
+Increíble, ¿verdad?
+Añadiremos  para este caso en el siguiente paso.
 
-[Step 8: Hot Reloading](https://gitlab.com/FedeG/django-react-workshop/tree/step8_hot_reloading)
+[Paso 8: Recarga automatica](https://gitlab.com/FedeG/django-react-workshop/tree/step8_hot_reloading)

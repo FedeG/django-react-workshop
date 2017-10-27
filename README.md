@@ -23,8 +23,7 @@ Change `workshop/links/templates/view1.html` so that it looks like this:
 ## Update Django settings
 
 #### Add WEBPACK_LOADER settings
-We also need to add a new setting to `settings.py`:
-
+In `workshop/workshop/settings.py`:
 ```python
 WEBPACK_LOADER = {
     'DEFAULT': {
