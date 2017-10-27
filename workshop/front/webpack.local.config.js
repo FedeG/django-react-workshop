@@ -18,7 +18,7 @@ config.ip = ip
 
 // Use webpack dev server
 config.entry = {
-  App: addDevVendors('./src/views/App'),
+  App: ['./src/views/App'],
   vendors: ['react', 'babel-polyfill'],
 }
 
