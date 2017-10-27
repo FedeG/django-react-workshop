@@ -1,7 +1,9 @@
 {% extends "base.html" %}
+{% load render_bundle from webpack_loader %}
 
 {% block main %}
-<div class="container">
-  <h1>View 1</h1>
-</div>
+  <div id="app"></div>
+
+  {% render_bundle 'vendors' %}
+  {% render_bundle 'App' %}
 {% endblock %}
