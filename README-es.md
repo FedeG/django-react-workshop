@@ -1,88 +1,67 @@
-# Paso 7: Usar el paquete
+# Paso 8: Recarga automática
 
-[Volver al paso 6](https://gitlab.com/FedeG/django-react-workshop/tree/step6_create_first_react_component)
+[Volver al paso 7](https://gitlab.com/FedeG/django-react-workshop/tree/step7_use_the_bundle)
 
-En el último paso, hemos creado nuestro primer paquete, pero no hemos visto el resultado
-en el navegador.
-Ahora actualicemos nuestra plantilla para usar nuestra nueva y elegante aplicación ReactJS.
+El paso 7 fue interesante e impresionante, pero no alucinante. Hagámoslo alucinante ahora.
+Realmente no queremos ejecutar el comando `webpack` cada vez que cambiamos código de
+ReactJS (y crear miles de paquetes locales en el proceso).
+Queremos ver los cambios en el navegador de inmediato.
 
-## Actualizar la template view1
-Cambiamos `workshop/links/templates/view1.html` para que se vea así:
-```html
-{% extends "base.html" %}
-{% load render_bundle from webpack_loader %}
+## Agregar servidor de desarrollo para React
+Primero, necesitamos un archivo `server.js` (en `workshop/front/server.js`) que iniciará un webpack-dev-server para nosotros:
+```javascript
+const webpack = require('webpack')
+const WebpackDevServer = require('webpack-dev-server')
+const config = require('./webpack.local.config')
+const host = '0.0.0.0'
+const port = 3000
 
-{% block main %}
-  <div id="app"></div>
-
-  {% render_bundle 'vendors' %}
-  {% render_bundle 'App' %}
-{% endblock %}
+new WebpackDevServer(webpack(config), {
+  publicPath: config.output.publicPath,
+  hot: true,
+  inline: true,
+  historyApiFallback: true,
+  headers: { 'Access-Control-Allow-Origin': '*' }
+}).listen(port, host, (err) => {
+  if (err) console.log(err);
+  console.log(`Listening at ${host}:${port}`);
+})
 ```
 
-## Actualizar la configuración de Django
+## Convierte el webpack local a la configuración del webpack de desarrollo
+A continuación, debemos reemplazar lo siguiente en nuestro `webpack.local.config.js`:
+```javascript
+-  App: ['./src/views/App'],
++  App: addDevVendors('./src/views/App')
 
-#### Agregar la configuración de WEBPACK_LOADER
-En `workshop/workshop/settings.py`:
-```python
-WEBPACK_LOADER = {
-    'DEFAULT': {
-        'BUNDLE_DIR_NAME': 'bundles/local/',  # end with slash
-        'STATS_FILE': os.path.join(BASE_DIR, 'front/webpack-stats-local.json'),
-    }
-}
+-config.output.publicPath = `/static/bundles/local/`
++config.output.publicPath = `http://${ip}:${port}/assets/bundles/`
 ```
 
-##### Notas:
-- `BUNDLE_DIR_NAME` le dice a Django en qué carpeta dentro de la carpeta `static`
-puede encontrar nuestro paquete.
-- `STATS_FILE` le dice a Django dónde puede encontrar el archivo JSON que mapea los
-nombres de la componentes con los paquetes. Es por este archivo que podemos usar
-`{% render_bundle 'App'%}` en nuestra template.
-
-#### Añadir STATIC_ROOT y actualizar STATICFILES_DIRS
-```diff
-STATIC_URL = '/static/'
-+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'links/static'),
-+   os.path.join(BASE_DIR, 'front/workshop/static'),
-]
-```
-
-## Cambiar el publicpath de webpack
-Cambiar el publicpath en **workshop/front/webpack.local.config.js**:
-```diff
-// override django's STATIC_URL for webpack bundles
--config.output.publicPath = `http://${ip}:${port}/assets/bundles/`
-+config.output.publicPath = `/static/bundles/local/`
-```
-
-## Compilar los paquetes
-```bash
-# con docker
-docker exec -it workshopjs node_modules/.bin/webpack --config webpack.local.config.js
-
-# sin docker
-cd workshop/front
-node_modules/.bin/webpack --config webpack.local.config.js
-```
-
-## Obtener archivos estáticos en Django
-```bash
-mkdir workshop/links/static
-
-# con docker
-docker exec -it workshop ./workshop/manage.py collectstatic
-
-# sin docker
-./workshop/manage.py collectstatic
+## Aceptar la recarga automática a la vista
+Añadiremos esta línea en `workshop/front/src/views/App.jsx`:
+```javascript
+if (module.hot) module.hot.accept();
 ```
 
 ## Resultado
-En este punto, puedes correr el proyecto.
+Listo?
 
-#### Correr el proyecto
+#### Ejecutar servidor desarrollo de webpack
+En una terminal, iniciaremos el servidor de desarrollo de webpack con:
+```javascript
+# npm start es igual a node server.js
+
+# con docker
+docker exec -it workshopjs npm start
+
+# sin docker
+cd workshop/front
+npm start
+```
+
+#### Ejecute el servidor Django Dev
+En otra ventana de terminal, inicie el servidor de desarrollo de Django:
 ```
 # con docker
 docker exec -it workshop ./workshop/manage.py runserver 0.0.0.0:8000
@@ -91,16 +70,17 @@ docker exec -it workshop ./workshop/manage.py runserver 0.0.0.0:8000
 ./workshop/manage.py runserver
 ```
 
-Deberías ver la página de App en tu navegador en `http://localhost:8000/`.
+Asegúrate de que aún puedas ver "Something New!" in `http://localhost:8000/links/`.
 
-Ahora intenta hacer un cambio en tu aplicación ReactJS. Cambia `Sample App!` por
-`Something New!` en `workshop/front/src/components/App/index.jsx`.
+Y ahora cámbialo a `Sample App!` en `workshop/front/src/components/App/index.jsx` y
+vuelve a tu navegador.
+Si eres muy rápido, puedes ver cómo se actualiza automática.
 
-A continuación, ejecutamos build y collectstatic nuevamente, asegurando de que
-runserver aún se esté ejecutando y visitaremos el sitio
-en el navegador. Debería decir "Something New!" ahora.
+Hay otra cosa interesante: si abrís el sitio en Google Chrome, abrís
+las herramientas de desarrollador con `COMMAND + OPTION + i` y luego abrir la pestaña `Sources`,
+puedes ver `webpack://` en la barra lateral.
+Tiene una carpeta llamada `.` donde estan las fuentes originales de ReactJS.
+Incluso puedes poner puntos de interrupción aquí y depurar su aplicación como un profesional.
+No más `console.log()` en tu código JavaScript.
 
-Increíble, ¿verdad?
-Añadiremos  para este caso en el siguiente paso.
-
-[Paso 8: Recarga automatica](https://gitlab.com/FedeG/django-react-workshop/tree/step8_hot_reloading)
+[Paso 9: Python linter](https://github.com/mbrochh/django-reactjs-boilerplate/tree/step9_python_linter)
