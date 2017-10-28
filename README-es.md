@@ -99,44 +99,10 @@ npm run eslint
 ##### Leer reporte en consola de eslint
 El comando **eslint** retorna:
 ```javascript
-/src/workshop/front/src/components/App/index.jsx
-  1:19  error  Strings must use singlequote  quotes
-  3:22  error  Strings must use singlequote  quotes
-
-/src/workshop/front/src/components/Headline/index.js
-  1:19  error  Strings must use singlequote               quotes
-  6:24  error  'children' is missing in props validation  react/prop-types
-
-/src/workshop/front/src/containers/App.jsx
-  1:19  error  Strings must use singlequote  quotes
-  3:26  error  Strings must use singlequote  quotes
-
-/src/workshop/front/src/views/App.jsx
-  1:19  error  Strings must use singlequote  quotes
-  2:24  error  Strings must use singlequote  quotes
-
-✖ 8 problems (8 errors, 0 warnings)
-  7 errors, 0 warnings potentially fixable with the `--fix` option.
-```
-
-#### Corrección automática de errores
-**Eslint** tiene una función que arregle automaticamente algunos errores
-```bash
-# con docker
-docker exec -it workshopjs ./node_modules/.bin/eslint --ext .jsx --ext .js src --fix
-
-# sin docker
-cd workshop/front
-./node_modules/.bin/eslint --ext .jsx --ext .js src --fix
-```
-
-##### Leer reporte en consola de eslint despues de **--fix**
-El comando **eslint** retorna:
-```javascript
 /src/workshop/front/src/components/Headline/index.js
   6:24  error  'children' is missing in props validation  react/prop-types
 
-✖ 1 problems (1 errors, 0 warnings)
+✖ 1 problem (1 error, 0 warnings)
 ```
 
 #### Ejecutar eslint con reporte html
@@ -152,7 +118,4 @@ npm run eslint-report
 ##### Leer reporte html de eslint
 Abri **workshop/front/report.html** en tu navegador.
 
-Y finalmente, podrías arreglar los eslints que el linter nos devuelve.
-Si quieres, podrías ver cómo los soluciono en este commit: [correcciones](https://gitlab.com/FedeG/django-react-workshop/commit/375ac6c510708e44b51a6606d93f4e1efbd152e0)
-
-[Paso 11: Python testing](https://gitlab.com/FedeG/django-react-workshop/tree/step11_python_testing)
+[Paso 11: Python testing](https://github.com/mbrochh/django-reactjs-boilerplate/tree/step11_python_testing)

@@ -93,44 +93,10 @@ npm run eslint
 ##### Read eslint console report
 **eslint** command returns:
 ```javascript
-/src/workshop/front/src/components/App/index.jsx
-  1:19  error  Strings must use singlequote  quotes
-  3:22  error  Strings must use singlequote  quotes
-
-/src/workshop/front/src/components/Headline/index.js
-  1:19  error  Strings must use singlequote               quotes
-  6:24  error  'children' is missing in props validation  react/prop-types
-
-/src/workshop/front/src/containers/App.jsx
-  1:19  error  Strings must use singlequote  quotes
-  3:26  error  Strings must use singlequote  quotes
-
-/src/workshop/front/src/views/App.jsx
-  1:19  error  Strings must use singlequote  quotes
-  2:24  error  Strings must use singlequote  quotes
-
-✖ 8 problems (8 errors, 0 warnings)
-  7 errors, 0 warnings potentially fixable with the `--fix` option.
-```
-
-#### Automatically fix some problems
-**Eslint** have automatically fix function
-```bash
-# with docker
-docker exec -it workshopjs ./node_modules/.bin/eslint --ext .jsx --ext .js src --fix
-
-# without docker
-cd workshop/front
-./node_modules/.bin/eslint --ext .jsx --ext .js src --fix
-```
-
-##### Read eslint console report after **--fix**
-**eslint** command returns:
-```javascript
 /src/workshop/front/src/components/Headline/index.js
   6:24  error  'children' is missing in props validation  react/prop-types
 
-✖ 1 problems (1 errors, 0 warnings)
+✖ 1 problem (1 error, 0 warnings)
 ```
 
 #### Run eslint with html report
@@ -146,7 +112,4 @@ npm run eslint-report
 ##### Read eslint html report
 Open **workshop/front/report.html** in your browser.
 
-And finally, you could fix the eslints that the linter returns us.
-If you want, you could see how I fix them in this commit: [Fixes](https://gitlab.com/FedeG/django-react-workshop/commit/375ac6c510708e44b51a6606d93f4e1efbd152e0)
-
-[Step 11: Python testing](https://gitlab.com/FedeG/django-react-workshop/tree/step11_python_testing)
+[Step 11: Python testing](https://github.com/mbrochh/django-reactjs-boilerplate/tree/step11_python_testing)
