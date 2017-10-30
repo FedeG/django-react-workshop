@@ -1,6 +1,6 @@
-import React from "react"
+import React from 'react'
 
-import AppComponent from "../components/App"
+import AppComponent from '../components/App'
 
 export default class App extends React.Component {
   render() {

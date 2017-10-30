@@ -1,6 +1,6 @@
-import React from "react"
+import React from 'react'
 
-import Headline from "../Headline"
+import Headline from '../Headline'
 
 export default class App extends React.Component {
   render() {
