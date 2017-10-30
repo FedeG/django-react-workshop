@@ -1,14 +1,16 @@
 """
-from django.db import models
-
-# Create your models here.
+    Django models for link application
 """
+
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils.translation import ugettext as _
 
 
 class Tag(models.Model):
+    """
+        Tag model
+    """
     name = models.CharField(_('name'), max_length=30)
     description = models.TextField(_('description'), blank=True, null=True)
     user = models.ForeignKey(
@@ -23,6 +25,9 @@ class Tag(models.Model):
 
 
 class Link(models.Model):
+    """
+        Link model
+    """
     name = models.CharField(_('name'), max_length=30)
     url = models.URLField(_('url'))
     pending = models.BooleanField(_('pending'), default=False)
@@ -39,6 +44,9 @@ class Link(models.Model):
 
 
 class LinkTag(models.Model):
+    """
+        Model for link-tag relationship
+    """
     link = models.ForeignKey(Link, verbose_name=_('link'))
     tag = models.ForeignKey(Tag, verbose_name=_('tag'))
 
