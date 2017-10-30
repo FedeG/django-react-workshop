@@ -24,6 +24,7 @@ extends:
  - plugin:import/errors
  - plugin:import/warnings
 rules:
+ quotes: [2, "single"]
  no-var: 2
  no-console: 0
  prefer-const: 2
