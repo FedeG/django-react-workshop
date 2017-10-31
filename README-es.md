@@ -1,110 +1,158 @@
-# Paso 9: Python linter
+# Paso 10: React linter
 
-[Volver al paso 8](https://gitlab.com/FedeG/django-react-workshop/tree/step8_hot_reloading)
+[Volver al paso 9](https://gitlab.com/FedeG/django-react-workshop/tree/step9_python_linter)
 
-**Pylint** es una herramienta que busca errores en el código Python, intenta aplicar un estándar
-de codificación y busca code smells. También puede buscar ciertos errores de tipo,
-puede recomendar sugerencias sobre cómo se pueden refactorizar determinados bloques
-y puede ofrecerle detalles sobre la complejidad del código.
+**ESLint** es una herramienta JavaScript de código abierto creada originalmente por Nicholas C. Zakas en junio de 2013. Code linting es un tipo de análisis estático que se utiliza con frecuencia para encontrar patrones problemáticos o códigos que no se adhieren a ciertas pautas de estilo.
+Existen linters de código para la mayoría de los lenguajes de programación.
 
-Otros proyectos similares son **pychecker**, **pyflakes**, **flake8** y **mypy**.
-El estilo de codificación utilizado por Pylint está cerca de PEP8.
+JavaScript, al ser un lenguaje dinámico y poco definido, es especialmente propenso a errores de desarrollador.
+Sin el beneficio de un proceso de compilación, el código JavaScript se ejecuta en orden para encontrar la sintaxis u otros errores.
+Las herramientas de linting como **ESLint** permiten a los desarrolladores descubrir problemas con su código JavaScript sin ejecutarlo.
 
-Pylint mostrará una cantidad de mensajes mientras analiza el código y también se
-puede usar para mostrar algunas estadísticas sobre el número de advertencias y
-errores encontrados en diferentes archivos.
-Los mensajes se clasifican en varias categorías como errores y advertencias.
+El motivo principal por el que se creó **ESLint** fue permitir a los desarrolladores crear sus propias reglas de linting.
+**ESLint** está diseñado para tener todas las reglas completamente configurables.
+Las reglas predeterminadas se escriben tal como lo haría cualquier otra regla de linter.
+Si bien **ESLint** incluirá algunas reglas integradas para que sea útil desde el principio, podrá cargar dinámicamente las reglas en cualquier momento.
 
-Por último, pero no por ello menos importante, al código se le asigna un puntaje general,
-según el número y la gravedad de las advertencias y los errores.
+**ESLint** está escrito con **Node.js** para proporcionar un entorno de ejecución rápido y una instalación sencilla mediante **npm** o **yarn**.
 
-## Instalar dependencias para pylint
-Instalar **pylint** y **pylint-django**:
-```bash
-# con docker
-docker exec -it workshop pip install pylint pylint-django
+## Instalar eslint
 
-# sin docker
-pip install pylint pylint-django
-```
-
-#### Crear requirements-dev
-Vamos a usar requirements-dev porque estas dependencias son solo de desarrollo.
-```bash
-# con docker
-docker exec -it workshop pip freeze | grep pylint > requirements-dev.txt
-
-# sin docker
-pip freeze | grep pylint > requirements-dev.txt
-```
-
-## Crear .pylintrc
-El archivo **.pylintrc** tiene todas las reglas para **pytlint**.
-
-#### Generar archivo rc base
-```bash
-# con docker
-docker exec -it workshop pylint --generate-rcfile > .pylintrc
-
-# sin docker
-pylint --generate-rcfile > .pylintrc
-```
-
-#### Personalizar nuestro archivo rc
+#### Actualizar dependencias en package.json
+Vamos a usar devDependencies porque estas dependencias son de desarrollo.
+Necesitamos agregar lo siguiente en nuestro `workshop/front/package.json`:
 ```diff
- # Add files or directories to the blacklist. They should be base names, not
- # paths.
--ignore=CVS
-+ignore=tests.py, urls.py, wsgi.py, migrations
-
- # Add files or directories matching the regex patterns to the blacklist. The
- # regex matches against base names, not paths.
--ignore-patterns=
-+ignore-patterns=migrations
+"devDependencies": {
+  "babel": "^6.23.0",
+  "babel-core": "^6.26.0",
++ "babel-eslint": "^8.0.1",
+  "babel-loader": "^6.4.1",
+  "babel-plugin-transform-decorators-legacy": "^1.3.4",
+  "babel-preset-es2015": "^6.24.1",
+  "babel-preset-react": "^6.24.1",
+  "babel-preset-stage-0": "^6.24.1",
+  "react-test-renderer": "^16.0.0",
++ "eslint": "^4.8.0",
++ "eslint-html-reporter": "^0.5.2",
++ "eslint-import-resolver-node": "^0.3.1",
++ "eslint-plugin-import": "^2.7.0",
++ "eslint-plugin-jest": "^21.2.0",
++ "eslint-plugin-react": "^7.4.0",
+  "webpack": "^1.12.13",
+  "webpack-bundle-tracker": "0.0.93",
+  "webpack-dev-server": "^1.14.1"
+  ...
 ```
+
+#### Actualizar scripts de package.json
+Necesitamos agregar lo siguiente en nuestro `workshop/front/package.json`:
+```diff
+"scripts": {
+     "start": "node server.js",
+-    "react-devtools": "react-devtools"
++    "react-devtools": "react-devtools",
++    "eslint": "./node_modules/.bin/eslint --ext .jsx --ext .js src",
++    "eslint-report": "./node_modules/.bin/eslint -f node_modules/eslint-html-reporter/reporter.js -o report.html --ext .jsx --ext .js src || true"
+   },
+```
+
+#### Instalar dependencias
+```bash
+# con docker
+docker exec -it workshopjs yarn install
+
+# sin docker
+cd workshop/front
+yarn install
+```
+
+## Crear .eslintrc.yaml
+El archivo **.eslintrc.yaml** tiene todas las reglas para **eslint**.
+Yo voy a subir mi **.eslintrc.yaml** (en **workshop/front/.eslintrc.yaml**) pero vos podes crearte uno con:
+- [generador](http://rapilabs.github.io/eslintrc-generator/)
+- o crear **.eslintrc.yaml** con el comando **eslint**:
+```bash
+# con docker
+docker exec -it workshopjs ./node_modules/.bin/eslint --init
+
+# sin docker
+cd workshop/front
+./node_modules/.bin/eslint --init
+```
+
+## Actualizar gitignore
+Y finalmente vamos a actualizar el archivo `.gitignore` y agregar `workshop/front/report.html`.
 
 ## Resultado
-En esta punto, podes ejecutar **pylint**.
+En este punto, podes ejecutar **eslint**.
 
-#### Ejecutar pylint
+#### Ejecutar eslint con reporte en consola
 ```bash
 # con docker
-docker exec -it workshop pylint --output-format=colorized --load-plugins pylint_django workshop/workshop workshop/links
+docker exec -it workshopjs npm run eslint
 
 # sin docker
-pylint --output-format=colorized --load-plugins pylint_django workshop/workshop workshop/links
+cd workshop/front
+npm run eslint
 ```
 
-#### Leer el reporte de pylint
-El comando **pylint** retorna:
-```c++
-************* Module links.models
-C: 11, 0: Missing class docstring (missing-docstring)
-C: 25, 0: Missing class docstring (missing-docstring)
-C: 41, 0: Missing class docstring (missing-docstring)
-************* Module links.admin
-C: 11, 0: Missing class docstring (missing-docstring)
-C: 15, 0: Missing class docstring (missing-docstring)
-C: 20, 0: Missing class docstring (missing-docstring)
-************* Module links.views
-C:  1, 0: Missing module docstring (missing-docstring)
-W:  1, 0: Unused render imported from django.shortcuts (unused-import)
-************* Module links.apps
-C:  1, 0: Missing module docstring (missing-docstring)
-C:  4, 0: Missing class docstring (missing-docstring)
+##### Leer reporte en consola de eslint
+El comando **eslint** retorna:
+```javascript
+/src/workshop/front/src/components/App/index.jsx
+  1:19  error  Strings must use singlequote  quotes
+  3:22  error  Strings must use singlequote  quotes
 
-------------------------------------------------------------------
-Your code has been rated at 8.51/10 (previous run: 6.74/10, +1.76)
+/src/workshop/front/src/components/Headline/index.js
+  1:19  error  Strings must use singlequote               quotes
+  6:24  error  'children' is missing in props validation  react/prop-types
+
+/src/workshop/front/src/containers/App.jsx
+  1:19  error  Strings must use singlequote  quotes
+  3:26  error  Strings must use singlequote  quotes
+
+/src/workshop/front/src/views/App.jsx
+  1:19  error  Strings must use singlequote  quotes
+  2:24  error  Strings must use singlequote  quotes
+
+✖ 8 problems (8 errors, 0 warnings)
+  7 errors, 0 warnings potentially fixable with the `--fix` option.
 ```
 
-El tipo de mensaje puede ser:
-- **R**: Refactor, una infracción de "buena práctica"
-- **C**: Convenio para la codificación de violación estándar (PEP8)
-- **W**: Advertencia de problemas de diseño o problemas menores de programación
-- **E**: Error para problemas importantes de programación (es decir, probablemente sea un error)
-- **F**: Fatal para los errores que impidieron el procesamiento posterior
+#### Corrección automática de errores
+**Eslint** tiene una función que arregle automaticamente algunos errores
+```bash
+# con docker
+docker exec -it workshopjs ./node_modules/.bin/eslint --ext .jsx --ext .js src --fix
 
-Y finalmente, podrías arreglar los pylints que el linter nos devuelve.
-Si quieres, podrías ver cómo los soluciono en este commit:  [correcciones](https://gitlab.com/FedeG/django-react-workshop/commit/e462a19f96b8ad44e026df84ecddaa8639b1a5a6)
+# sin docker
+cd workshop/front
+./node_modules/.bin/eslint --ext .jsx --ext .js src --fix
+```
 
-[Paso 10: React linter](https://gitlab.com/FedeG/django-react-workshop/tree/step10_react_linter)
+##### Leer reporte en consola de eslint despues de **--fix**
+El comando **eslint** retorna:
+```javascript
+/src/workshop/front/src/components/Headline/index.js
+  6:24  error  'children' is missing in props validation  react/prop-types
+
+✖ 1 problems (1 errors, 0 warnings)
+```
+
+#### Ejecutar eslint con reporte html
+```bash
+# con docker
+docker exec -it workshopjs npm run eslint-report
+
+# sin docker
+cd workshop/front
+npm run eslint-report
+```
+
+##### Leer reporte html de eslint
+Abri **workshop/front/report.html** en tu navegador.
+
+Y finalmente, podrías arreglar los eslints que el linter nos devuelve.
+Si quieres, podrías ver cómo los soluciono en este commit: [correcciones](https://gitlab.com/FedeG/django-react-workshop/commit/375ac6c510708e44b51a6606d93f4e1efbd152e0)
+
+[Paso 11: Python testing](https://gitlab.com/FedeG/django-react-workshop/tree/step11_python_testing)
