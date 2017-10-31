@@ -1,86 +1,106 @@
-# Paso 8: Recarga automática
+# Paso 9: Python linter
 
-[Volver al paso 7](https://gitlab.com/FedeG/django-react-workshop/tree/step7_use_the_bundle)
+[Volver al paso 8](https://gitlab.com/FedeG/django-react-workshop/tree/step8_hot_reloading)
 
-El paso 7 fue interesante e impresionante, pero no alucinante. Hagámoslo alucinante ahora.
-Realmente no queremos ejecutar el comando `webpack` cada vez que cambiamos código de
-ReactJS (y crear miles de paquetes locales en el proceso).
-Queremos ver los cambios en el navegador de inmediato.
+**Pylint** es una herramienta que busca errores en el código Python, intenta aplicar un estándar
+de codificación y busca code smells. También puede buscar ciertos errores de tipo,
+puede recomendar sugerencias sobre cómo se pueden refactorizar determinados bloques
+y puede ofrecerle detalles sobre la complejidad del código.
 
-## Agregar servidor de desarrollo para React
-Primero, necesitamos un archivo `server.js` (en `workshop/front/server.js`) que iniciará un webpack-dev-server para nosotros:
-```javascript
-const webpack = require('webpack')
-const WebpackDevServer = require('webpack-dev-server')
-const config = require('./webpack.local.config')
-const host = '0.0.0.0'
-const port = 3000
+Otros proyectos similares son **pychecker**, **pyflakes**, **flake8** y **mypy**.
+El estilo de codificación utilizado por Pylint está cerca de PEP8.
 
-new WebpackDevServer(webpack(config), {
-  publicPath: config.output.publicPath,
-  hot: true,
-  inline: true,
-  historyApiFallback: true,
-  headers: { 'Access-Control-Allow-Origin': '*' }
-}).listen(port, host, (err) => {
-  if (err) console.log(err);
-  console.log(`Listening at ${host}:${port}`);
-})
+Pylint mostrará una cantidad de mensajes mientras analiza el código y también se
+puede usar para mostrar algunas estadísticas sobre el número de advertencias y
+errores encontrados en diferentes archivos.
+Los mensajes se clasifican en varias categorías como errores y advertencias.
+
+Por último, pero no por ello menos importante, al código se le asigna un puntaje general,
+según el número y la gravedad de las advertencias y los errores.
+
+## Instalar dependencias para pylint
+Instalar **pylint** y **pylint-django**:
+```bash
+pip install pylint pylint-django
 ```
 
-## Convierte el webpack local a la configuración del webpack de desarrollo
-A continuación, debemos reemplazar lo siguiente en nuestro `webpack.local.config.js`:
-```javascript
--  App: ['./src/views/App'],
-+  App: addDevVendors('./src/views/App')
+#### Crear requirements-dev
+Vamos a usar requirements-dev porque estas dependencias son solo de desarrollo.
+```bash
+# con docker
+docker exec -it workshop pip freeze | grep pylint > requirements-dev.txt
 
--config.output.publicPath = `/static/bundles/local/`
-+config.output.publicPath = `http://${ip}:${port}/assets/bundles/`
+# sin docker
+pip freeze | grep pylint > requirements-dev.txt
 ```
 
-## Aceptar la recarga automática a la vista
-Añadiremos esta línea en `workshop/front/src/views/App.jsx`:
-```javascript
-if (module.hot) module.hot.accept();
+## Crear .pylintrc
+El archivo **.pylintrc** tiene todas las reglas para **pytlint**.
+
+#### Generar archivo rc base
+```bash
+# con docker
+docker exec -it workshop pylint --generate-rcfile > .pylintrc
+
+# sin docker
+pylint --generate-rcfile > .pylintrc
+```
+
+#### Personalizar nuestro archivo rc
+```diff
+ # Add files or directories to the blacklist. They should be base names, not
+ # paths.
+-ignore=CVS
++ignore=tests.py, urls.py, wsgi.py, migrations
+
+ # Add files or directories matching the regex patterns to the blacklist. The
+ # regex matches against base names, not paths.
+-ignore-patterns=
++ignore-patterns=migrations
 ```
 
 ## Resultado
-Listo?
+En esta punto, podes ejecutar **pylint**.
 
-#### Ejecutar servidor desarrollo de webpack
-En una terminal, iniciaremos el servidor de desarrollo de webpack con:
-```javascript
-# npm start es igual a node server.js
-
+#### Ejecutar pylint
+```bash
 # con docker
-docker exec -it workshopjs npm start
+docker exec -it workshop pylint --output-format=colorized --load-plugins pylint_django workshop/workshop workshop/links
 
 # sin docker
-cd workshop/front
-npm start
+pylint --output-format=colorized --load-plugins pylint_django workshop/workshop workshop/links
 ```
 
-#### Ejecute el servidor Django Dev
-En otra ventana de terminal, inicie el servidor de desarrollo de Django:
+#### Leer el reporte de pylint
+El comando **pylint** retorna:
+```c++
+************* Module links.models
+C: 11, 0: Missing class docstring (missing-docstring)
+C: 25, 0: Missing class docstring (missing-docstring)
+C: 41, 0: Missing class docstring (missing-docstring)
+************* Module links.admin
+C: 11, 0: Missing class docstring (missing-docstring)
+C: 15, 0: Missing class docstring (missing-docstring)
+C: 20, 0: Missing class docstring (missing-docstring)
+************* Module links.views
+C:  1, 0: Missing module docstring (missing-docstring)
+W:  1, 0: Unused render imported from django.shortcuts (unused-import)
+************* Module links.apps
+C:  1, 0: Missing module docstring (missing-docstring)
+C:  4, 0: Missing class docstring (missing-docstring)
+
+------------------------------------------------------------------
+Your code has been rated at 8.51/10 (previous run: 6.74/10, +1.76)
 ```
-# con docker
-docker exec -it workshop ./workshop/manage.py runserver 0.0.0.0:8000
 
-# sin docker
-./workshop/manage.py runserver
-```
+El tipo de mensaje puede ser:
+- **R**: Refactor, una infracción de "buena práctica"
+- **C**: Convenio para la codificación de violación estándar (PEP8)
+- **W**: Advertencia de problemas de diseño o problemas menores de programación
+- **E**: Error para problemas importantes de programación (es decir, probablemente sea un error)
+- **F**: Fatal para los errores que impidieron el procesamiento posterior
 
-Asegúrate de que aún puedas ver "Something New!" in `http://localhost:8000/links/`.
+Y finalmente, podrías arreglar los pylints que el linter nos devuelve.
+Si quieres, podrías ver cómo los soluciono en este commit:  [correcciones](https://gitlab.com/FedeG/django-react-workshop/commit/e462a19f96b8ad44e026df84ecddaa8639b1a5a6)
 
-Y ahora cámbialo a `Sample App!` en `workshop/front/src/components/App/index.jsx` y
-vuelve a tu navegador.
-Si eres muy rápido, puedes ver cómo se actualiza automática.
-
-Hay otra cosa interesante: si abrís el sitio en Google Chrome, abrís
-las herramientas de desarrollador con `COMMAND + OPTION + i` y luego abrir la pestaña `Sources`,
-puedes ver `webpack://` en la barra lateral.
-Tiene una carpeta llamada `.` donde estan las fuentes originales de ReactJS.
-Incluso puedes poner puntos de interrupción aquí y depurar su aplicación como un profesional.
-No más `console.log()` en tu código JavaScript.
-
-[Paso 9: Python linter](https://gitlab.com/FedeG/django-react-workshop/tree/step9_python_linter)
+[Paso 10: React linter](https://github.com/mbrochh/django-reactjs-boilerplate/tree/step10_react_linter)
