@@ -5,6 +5,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils.translation import ugettext as _
+from links.utils import is_similar
 
 
 class Tag(models.Model):
@@ -18,6 +19,14 @@ class Tag(models.Model):
 
     def __str__(self):
         return self.name
+
+    def get_similars(self):
+        """
+            Return similars links (search for name)
+        """
+        tags = Tag.objects.all().exclude(pk=self.pk)
+        similars = [tag for tag in tags if is_similar(self.name, tag.name)]
+        return similars
 
     class Meta:
         verbose_name = _('tag')
