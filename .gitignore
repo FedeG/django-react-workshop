@@ -7,4 +7,5 @@ workshop/front/workshop/static/
 workshop/static/
 workshop/front/report.html
 .coverage
+.cache
 htmlcov/
