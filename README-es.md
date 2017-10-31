@@ -83,4 +83,4 @@ Tiene una carpeta llamada `.` donde estan las fuentes originales de ReactJS.
 Incluso puedes poner puntos de interrupción aquí y depurar su aplicación como un profesional.
 No más `console.log()` en tu código JavaScript.
 
-[Paso 9: Python linter](https://github.com/mbrochh/django-reactjs-boilerplate/tree/step9_python_linter)
+[Paso 9: Python linter](https://gitlab.com/FedeG/django-react-workshop/tree/step9_python_linter)

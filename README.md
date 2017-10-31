@@ -84,4 +84,4 @@ you can see `webpack://` in the sidebar. It has a folder called `.` where you
 will find the original ReactJS sources. You can even put breakpoints here and
 debug your app like a pro. No more `console.log()` in your JavaScript code.
 
-[Step 9: Python linter](https://github.com/mbrochh/django-reactjs-boilerplate/tree/step9_python_linter)
+[Step 9: Python linter](https://gitlab.com/FedeG/django-react-workshop/tree/step9_python_linter)
