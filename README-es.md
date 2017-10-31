@@ -103,4 +103,4 @@ El tipo de mensaje puede ser:
 Y finalmente, podrías arreglar los pylints que el linter nos devuelve.
 Si quieres, podrías ver cómo los soluciono en este commit:  [correcciones](https://gitlab.com/FedeG/django-react-workshop/commit/e462a19f96b8ad44e026df84ecddaa8639b1a5a6)
 
-[Paso 10: React linter](https://github.com/mbrochh/django-reactjs-boilerplate/tree/step10_react_linter)
+[Paso 10: React linter](https://gitlab.com/FedeG/django-react-workshop/tree/step10_react_linter)
