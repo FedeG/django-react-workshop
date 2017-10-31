@@ -7,12 +7,10 @@ import pytest
 from links.utils import is_similar
 
 
-@pytest.mark.functional_tests
 def test_is_similar_should_return_true_when_strings_are_similars():
     assert is_similar('python', 'pytohn')
 
 
-@pytest.mark.functional_tests
 def test_is_similar_should_return_false_when_strings_not_are_similars():
     assert not is_similar('python', 'javascript')
 
