@@ -20,6 +20,10 @@ Last but not least, the code is given an overall mark, based on the number and s
 ## Install dependencies for pylint
 Install **pylint** and **pylint-django**:
 ```bash
+# with docker
+docker exec -it workshop pip install pylint pylint-django
+
+# without docker
 pip install pylint pylint-django
 ```
 

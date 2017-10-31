@@ -21,6 +21,10 @@ según el número y la gravedad de las advertencias y los errores.
 ## Instalar dependencias para pylint
 Instalar **pylint** y **pylint-django**:
 ```bash
+# con docker
+docker exec -it workshop pip install pylint pylint-django
+
+# sin docker
 pip install pylint pylint-django
 ```
 
