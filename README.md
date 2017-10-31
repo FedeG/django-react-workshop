@@ -65,7 +65,6 @@ yarn install
 I'll push my **.eslintrc.yaml** (in **workshop/front/.eslintrc.yaml**) but you could use:
 - [eslint](http://rapilabs.github.io/eslintrc-generator/)
 - or create **.eslintrc.yaml** with **eslint** command:
-
 ```bash
 # with docker
 docker exec -it workshopjs ./node_modules/.bin/eslint --init

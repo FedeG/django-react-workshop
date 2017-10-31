@@ -71,7 +71,6 @@ El archivo **.eslintrc.yaml** tiene todas las reglas para **eslint**.
 Yo voy a subir mi **.eslintrc.yaml** (en **workshop/front/.eslintrc.yaml**) pero vos podes crearte uno con:
 - [generador](http://rapilabs.github.io/eslintrc-generator/)
 - o crear **.eslintrc.yaml** con el comando **eslint**:
-
 ```bash
 # con docker
 docker exec -it workshopjs ./node_modules/.bin/eslint --init
