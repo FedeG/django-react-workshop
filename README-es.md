@@ -114,17 +114,17 @@ class Tag(models.Model):
 
 #### Crear tests:
 
-#### Notes:
-These concepts are important for this step:
+#### Notas:
+Estos conceptos son importantes para este paso:
 - [pytest.mark](https://docs.pytest.org/en/latest/mark.html)
 - [pytest.mark.django_db](http://pytest-django.readthedocs.io/en/latest/helpers.html#pytest-mark-django-db-transaction-false-request-database-access)
 - [django_dynamic_fixture](http://django-dynamic-fixture.readthedocs.io/en/latest/overview.html#basic-example-of-usage)
 
-#### Create tests folder:
-We create folder **workshop/links/tests/** and **workshop/links/tests/__init__.py** file.
+#### Crear carpeta de tests:
+Vamos a crear la carpeta **workshop/links/tests/** y el archivo **workshop/links/tests/__init__.py**.
 
-#### Create tests for utils
-In **workshop/links/tests/test_utils.py**:
+#### Crear tests para utils
+En **workshop/links/tests/test_utils.py**:
 ```python
 """
     Tests for utils module
@@ -152,8 +152,8 @@ def test_is_similar_should_call_SequenceMatcher(sequence_matcher_mock):
     sequence_matcher_mock.assert_called_with(a='python', b='pytohn')
 ```
 
-#### Create tests for Tag model
-In **workshop/links/tests/test_tag.py**:
+#### Crear tests para el modelo Tag
+En **workshop/links/tests/test_tag.py**:
 ```python
 """
     Tests for Tag model
@@ -213,38 +213,38 @@ def test_get_similars_should_call_is_similar_will_all_other_tags(similar_mock):
     similar_mock.assert_any_call(tag_python.name, tag_python3.name)
 ```
 
-## Create pytests and django-dynamic-fixture settings
-We create **workshop/setup.cfg** file with this content:
+## Crear configuración de pytests y de django-dynamic-fixture
+Vamos a crear el archivo **workshop/setup.cfg** con este contenido:
 ```
 [tool:pytest]
 addopts = --ds=workshop.settings
 ```
 
-## Update pylintrc rules
-We add tests folder to ignore rule:
+## Actualizar reglas de pylintrc
+Vamos a agregar la carpeta de tests a la regla de ignore de pylint:
 ```diff
 -ignore=tests.py, urls.py, wsgi.py, migrations
 +ignore=tests.py, urls.py, wsgi.py, migrations, tests
 ```
 
-## Update gitignore
-And finally we should update `.gitignore` file and add `.coverage`, `.cache` and `htmlcov/`.
+## Actualizar gitignore
+Y finalmente tenemos que actualizar el archivo `.gitignore` y agregarle `.coverage`, `.cache` y `htmlcov/`.
 
-## Result
-At this point, you can run **pytest** and read coverage report.
+## Resultado
+En este punto, podemos ejecutar **pytest** y leer los reportes.
 
-#### Run pytest
+#### Ejecutar pytest
 ```bash
-# with docker
+# con docker
 docker exec -it workshop bash -c 'cd workshop; py.test --cov-report term-missing --cov-report html --cov'
 
-# without docker
+# sin docker
 cd workshop
 py.test --cov-report term-missing --cov-report html --cov
 ```
 
-#### Read pytest report
-**pytest** command returns:
+#### Leer reporte de pytest
+El comando **pytest** retorna:
 ```c++
 ============================= test session starts ==============================
 platform linux -- Python 3.6.3, pytest-3.2.3, py-1.4.34, pluggy-0.4.0
@@ -280,7 +280,7 @@ Coverage HTML written to dir htmlcov
 =========================== 8 passed in 2.88 seconds ===========================
 ```
 
-#### Read pytest html report
-Open `workshop/htmlcov/index.html` in your browser.
+#### Leer reporte html de pytest
+Vamos a abrir `workshop/htmlcov/index.html` en el navegador para ver el reporte html.
 
-[Step 12: React testing](https://gitlab.com/FedeG/django-react-workshop/tree/step12_react_testing)
+[Paso 12: React testing](https://gitlab.com/FedeG/django-react-workshop/tree/step12_react_testing)
