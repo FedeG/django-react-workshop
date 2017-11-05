@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 export default class Headline extends React.Component {
   static propTypes = {
-    children: PropTypes.object
+    children: PropTypes.string
   }
 
   render() {
