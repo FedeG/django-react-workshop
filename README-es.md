@@ -1,286 +1,292 @@
-# Paso 11: Python testing
+# Paso 12: React testing
 
-[Volver al paso 10](https://gitlab.com/FedeG/django-react-workshop/tree/step10_react_linter)
+[Volver al paso 11](https://gitlab.com/FedeG/django-react-workshop/tree/step11_python_testing)
 
-## Tests framework: [Pytest](https://docs.pytest.org/en/latest/)
-El framework **pytest** hace que sea más fácil escribir pequeñas pruebas, pero puede escalar para soportar pruebas funcionales complejas para aplicaciones y bibliotecas.
+## Framework de tests:
+- [Jest](https://facebook.github.io/jest/).
+- [Enzyme](http://airbnb.io/enzyme/).
 
-## Instalar dependencias para pytest
-Instalamos **pytest**, **pytest-django**, **pytest-cov** (para reporte de cobertura) y **django_dynamic_fixture** (para testing con los modelos de Django e intereacción con la db):
-```bash
-pip install pytest pytest-django pytest-cov django_dynamic_fixture
+## Instalar jest y enzyme
+
+#### Actualizar dependencias en el package.json
+Usamos devDependencies porque estas dependencias porque son dependencias de desarrollo.
+Necesitamos agregar lo siguiente en nuestro `workshop/front/package.json`:
+```diff
+"devDependencies": {
+  "babel": "^6.23.0",
+  "babel-core": "^6.26.0",
+  "babel-eslint": "^8.0.1",
++ "babel-jest": "^21.2.0",
+  "babel-loader": "^6.4.1",
+  "babel-plugin-transform-decorators-legacy": "^1.3.4",
+  "babel-preset-es2015": "^6.24.1",
+  "babel-preset-react": "^6.24.1",
+  "babel-preset-stage-0": "^6.24.1",
++ "enzyme": "^3.1.0",
++ "enzyme-adapter-react-16": "^1.0.1",
+  "react-test-renderer": "^16.0.0",
+  "eslint": "^4.8.0",
+  "eslint-html-reporter": "^0.5.2",
+  ...
+  "eslint-plugin-import": "^2.7.0",
+  "eslint-plugin-jest": "^21.2.0",
+  "eslint-plugin-react": "^7.4.0",
++ "jest": "^21.2.1",
+  "webpack": "^1.12.13",
+  "webpack-bundle-tracker": "0.0.93",
+  "webpack-dev-server": "^1.14.1"
+  ...
+  "babel-polyfill": "^6.26.0",
+  "es6-promise": "^4.1.1",
+  "isomorphic-fetch": "^2.2.1",
++ "jest-cli": "^21.2.1",
+  "js-cookie": "^2.1.4",
+  "lodash": "^4.17.4",
+  "prop-types": "^15.6.0",
+  ...
 ```
 
-#### Actualizar requirements-dev
-Usamos requirements-dev porque estas dependencias son dependencias de desarrollo.
+#### Actualizar scripts del package.json
+Necesitamos agregar lo siguiente en nuestro `workshop/front/package.json`:
+```diff
+"scripts": {
+     "start": "node server.js",
+-    "react-devtools": "react-devtools"
++    "react-devtools": "react-devtools",
++    "eslint": "./node_modules/.bin/eslint --ext .jsx --ext .js src",
++    "eslint-report": "./node_modules/.bin/eslint -f node_modules/eslint-html-reporter/reporter.js -o report.html --ext .jsx --ext .js src || true"
+   },
+```
+
+#### Actualizar package.json con la configuración de jest
+Necesitamos agregar lo siguiente en nuestro `workshop/front/package.json`:
+```diff
++  "jest": {
++    "globals": {
++      "__PLATFORM__": "test"
++    },
++    "setupFiles": [
++      "raf/polyfill"
++    ],
++    "setupTestFrameworkScriptFile": "<rootDir>/jest-setup.js",
++    "modulePaths": [
++      "node_modules",
++      "src"
++    ],
++    "clearMocks": true,
++    "verbose": true,
++    "coverageReporters": [
++      "html",
++      "text",
++      "text-summary"
++    ],
++    "transform": {
++      "^.+\\.jsx?$": "babel-jest"
++    },
++    "moduleFileExtensions": [
++      "js",
++      "jsx",
++      "json",
++      "es6"
++    ],
++    "unmockedModulePathPatterns": [
++      "<rootDir>/node_modules/timeout-transition-group",
++      "<rootDir>/node_modules/expect",
++      "<rootDir>/node_modules/classnames",
++      "<rootDir>/node_modules/sinon",
++      "<rootDir>/node_modules/redux",
++      "<rootDir>/node_modules/redux-thunk",
++      "<rootDir>/node_modules/react",
++      "<rootDir>/node_modules/react-tools",
++      "<rootDir>/node_modules/react-devtools",
++      "react",
++      "enzyme",
++      "jest-enzyme"
++    ],
++    "modulePathIgnorePatterns": [
++      "/node_modules/",
++      "jest-setup.js"
++    ],
++    "collectCoverageFrom": [
++      "src/components/**/*.{js,jsx}",
++      "src/containers/**/*.{js,jsx}"
++    ]
++   }
+```
+
+#### Instalar las dependencias
 ```bash
 # con docker
-docker exec -it workshop pip freeze | grep pytest >> requirements-dev.txt
-docker exec -it workshop pip freeze | grep django-dynamic-fixture >> requirements-dev.txt
+docker exec -it workshopjs yarn install
 
 # sin docker
-pip freeze | grep pytest >> requirements-dev.txt
-pip freeze | grep django-dynamic-fixture >> requirements-dev.txt
+cd workshop/front
+yarn install
 ```
 
-## Crear .coveragerc
-El archivo **.coveragerc** tiene la configuración para **pytest-cov**.
-Necesitamos agregar lo siguiente en nuestro **workshop/.coveragerc**:
-```bash
-[run]
-source =
-    links/
-    workshop/
-omit =
-    links/migrations/*
-    links/test_*
-    links/tests/*
-    workshop/migrations/*
-    workshop/test_*
-    workshop/tests/*
+## Crear el script de configuración de jest
+**jest-setup.js** (en **workshop/front/jest-setup.js**) es el script de configuración de **jest**.
+
+```javascript
+import Enzyme from 'enzyme'
+import Adapter from 'enzyme-adapter-react-16'
+
+Enzyme.configure({ adapter: new Adapter() })
+
+global.gettext = jest.fn(text => text)
+global.$ = jest.fn()
 ```
 
 ## Crear tests
-Vamos a crear una nueva funcionalidad y crear tests para esa funcionalidad.
 
-### Crear nueva funcionalidad
-Vamos a crear funciones para buscar Tags similares.
-Necesitamos agregar lo siguiente en nuestro **workshop/links/constant.py**:
-```python
-"""
-    Constants for link application
-"""
-SIMILAR_RATIO = 0.5
+#### Crear tests para la componente Headline
+En **workshop/front/src/components/Headline/Headline.spec.jsx**:
+```javascript
+import React from 'react';
+import Headline from './index.js';
+import { shallow } from 'enzyme';
+
+describe('Headline Component', () => {
+
+  describe('props', () => {
+
+    it('should declare propsTypes', () => {
+      expect(Object.keys(Headline.propTypes)).toHaveLength(1);
+      expect(Headline.propTypes).toHaveProperty('children');
+    })
+
+  })
+
+  describe('render', () => {
+
+    it('should render the component properly', () => {
+      const wrapper = shallow(<Headline>Sample App!</Headline>);
+      const componentInDOM = '<h1>Sample App!</h1>';
+      expect(wrapper.html()).toBe(componentInDOM);
+    })
+
+  })
+
+})
 ```
 
-En **workshop/links/utils.py**:
-```python
-"""
-    Utils module for link application
-"""
-import difflib
-from .constant import SIMILAR_RATIO
+#### Crear tests para la componente App
+En **workshop/front/src/components/App/App.spec.jsx**:
+```javascript
+import React from 'react';
+import App from './index.jsx';
+import { shallow } from 'enzyme';
 
+describe('App Component', () => {
 
-def is_similar(source, target):
-    """
-        Return if source string is similar to target string
-    """
-    seq = difflib.SequenceMatcher(a=source, b=target)
-    ratio = seq.ratio()
-    return ratio >= SIMILAR_RATIO
+  describe('#render', () => {
+
+    it('should render the component properly', () => {
+      const wrapper = shallow(<App id="id" audioPath="path"/>);
+      const componentInDOM = '<div class="container"><div class="row"><div class="col-sm-12"><h1>Sample App!</h1></div></div></div>';
+      expect(wrapper.html()).toBe(componentInDOM);
+    })
+
+  })
+
+})
 ```
 
-En **workshop/links/utils.py**:
-```python
-"""
-    Utils module for link application
-"""
-import difflib
-from .constant import SIMILAR_RATIO
+#### Crear tests para el container App
+En **workshop/front/src/containers/App.spec.jsx**:
+```javascript
+import React from 'react';
+import App from './App.jsx';
+import { shallow } from 'enzyme';
 
+describe('App Component', () => {
 
-def is_similar(source, target):
-    """
-        Return if source string is similar to target string
-    """
-    seq = difflib.SequenceMatcher(a=source, b=target)
-    ratio = seq.ratio()
-    return ratio >= SIMILAR_RATIO
-```
+  describe('#render', () => {
 
-En **workshop/links/models.py**:
-```diff
-from django.db import models
-from django.contrib.auth.models import User
-from django.utils.translation import ugettext as _
-+from links.utils import is_similar
+    it('should render the component properly', () => {
+      const wrapper = shallow(<App id="id" audioPath="path"/>);
+      const componentInDOM = '<div class="container"><div class="row"><div class="col-sm-12"><h1>Sample App!</h1></div></div></div>';
+      expect(wrapper.html()).toBe(componentInDOM);
+    })
 
+  })
 
-class Tag(models.Model):
-@@ -19,6 +20,14 @@ class Tag(models.Model):
-    def __str__(self):
-        return self.name
-
-+    def get_similars(self):
-+        """
-+            Return similars links (search for name)
-+        """
-+        tags = Tag.objects.all().exclude(pk=self.pk)
-+        similars = [tag for tag in tags if is_similar(self.name, tag.name)]
-+        return similars
-+
-```
-
-#### Crear tests:
-
-#### Notas:
-Estos conceptos son importantes para este paso:
-- [pytest.mark](https://docs.pytest.org/en/latest/mark.html)
-- [pytest.mark.django_db](http://pytest-django.readthedocs.io/en/latest/helpers.html#pytest-mark-django-db-transaction-false-request-database-access)
-- [django_dynamic_fixture](http://django-dynamic-fixture.readthedocs.io/en/latest/overview.html#basic-example-of-usage)
-
-#### Crear carpeta de tests:
-Vamos a crear la carpeta **workshop/links/tests/** y el archivo **workshop/links/tests/__init__.py**.
-
-#### Crear tests para utils
-En **workshop/links/tests/test_utils.py**:
-```python
-"""
-    Tests for utils module
-"""
-from unittest.mock import patch
-import pytest
-
-from links.utils import is_similar
-
-
-def test_is_similar_should_return_true_when_strings_are_similars():
-    assert is_similar('python', 'pytohn')
-
-
-def test_is_similar_should_return_false_when_strings_not_are_similars():
-    assert not is_similar('python', 'javascript')
-
-
-@pytest.mark.unit_tests
-@patch('difflib.SequenceMatcher')
-def test_is_similar_should_call_SequenceMatcher(sequence_matcher_mock):
-    sequence_matcher_mock().ratio.return_value = 4
-    is_similar('python', 'pytohn')
-    sequence_matcher_mock.assert_called()
-    sequence_matcher_mock.assert_called_with(a='python', b='pytohn')
-```
-
-#### Crear tests para el modelo Tag
-En **workshop/links/tests/test_tag.py**:
-```python
-"""
-    Tests for Tag model
-"""
-from unittest.mock import patch
-from django_dynamic_fixture import G
-
-import pytest
-
-from links.models import Tag
-
-
-@pytest.mark.django_db
-def test_get_similars_should_omit_self():
-    tag_python = G(Tag, name='python')
-    assert tag_python.get_similars() == []
-
-
-@pytest.mark.django_db
-def test_get_similars_should_return_similars():
-    tag_python = G(Tag, name='python')
-    tag_pytohn = G(Tag, name='pytohn')
-    tag_pyton = G(Tag, name='pyton')
-    tag_ypthon = G(Tag, name='ypthon')
-    assert tag_python.get_similars() == [tag_pytohn, tag_pyton, tag_ypthon]
-
-
-@pytest.mark.django_db
-def test_get_similars_should_not_return_strings_with_differences():
-    tag_python = G(Tag, name='python')
-    G(Tag, name='react')
-    G(Tag, name='javascript')
-    assert tag_python.get_similars() == []
-
-
-@pytest.mark.django_db
-@pytest.mark.unit_tests
-@patch('links.models.is_similar')
-def test_get_similars_should_call_is_similar(similar_mock):
-    tag = G(Tag, name='python')
-    G(Tag, name='python2')
-    tag.get_similars()
-    similar_mock.assert_called()
-
-
-@pytest.mark.django_db
-@pytest.mark.unit_tests
-@patch('links.models.is_similar')
-def test_get_similars_should_call_is_similar_will_all_other_tags(similar_mock):
-    tag_python = G(Tag, name='python')
-    tag_python2 = G(Tag, name='python2')
-    tag_python3 = G(Tag, name='python3')
-    tag_python.get_similars()
-    similar_mock.assert_called()
-    assert similar_mock.call_count == 2
-    similar_mock.assert_any_call(tag_python.name, tag_python2.name)
-    similar_mock.assert_any_call(tag_python.name, tag_python3.name)
-```
-
-## Crear configuración de pytests y de django-dynamic-fixture
-Vamos a crear el archivo **workshop/setup.cfg** con este contenido:
-```
-[tool:pytest]
-addopts = --ds=workshop.settings
-```
-
-## Actualizar reglas de pylintrc
-Vamos a agregar la carpeta de tests a la regla de ignore de pylint:
-```diff
--ignore=tests.py, urls.py, wsgi.py, migrations
-+ignore=tests.py, urls.py, wsgi.py, migrations, tests
+})
 ```
 
 ## Actualizar gitignore
-Y finalmente tenemos que actualizar el archivo `.gitignore` y agregarle `.coverage`, `.cache` y `htmlcov/`.
+Y finalmente tenemos que actualizar el archivo `.gitignore` y agregarle `coverage/`.
 
 ## Resultado
-En este punto, podemos ejecutar **pytest** y leer los reportes.
+En este punto, ya podemos ejecutar **jest** y leer el reporte de cobertura.
 
-#### Ejecutar pytest
+#### Ejectutar jest
 ```bash
 # con docker
-docker exec -it workshop bash -c 'cd workshop; py.test --cov-report term-missing --cov-report html --cov'
+docker exec -it workshopjs npm test
 
 # sin docker
-cd workshop
-py.test --cov-report term-missing --cov-report html --cov
+cd workshop/front
+npm test
 ```
 
-#### Leer reporte de pytest
-El comando **pytest** retorna:
+#### Leer el reporte de jest
+El comando **jest** nos retornar:
 ```c++
-============================= test session starts ==============================
-platform linux -- Python 3.6.3, pytest-3.2.3, py-1.4.34, pluggy-0.4.0
-Django settings: workshop.settings (from command line option)
-rootdir: /src/workshop, inifile: setup.cfg
-plugins: django-3.1.2, cov-2.5.1
-collected 8 items
+npm info it worked if it ends with ok
+npm info using npm@5.4.2
+npm info using node@v8.7.0
+npm info lifecycle links@0.0.1~pretest: links@0.0.1
+npm info lifecycle links@0.0.1~test: links@0.0.1
 
-links/tests/test_tag.py .....
-links/tests/test_utils.py ...
+> links@0.0.1 test /src/workshop/front
+> jest --forceExit --ci --coverage
 
------------ coverage: platform linux, python 3.6.3-final-0 -----------
-Name                   Stmts   Miss  Cover   Missing
-----------------------------------------------------
-links/__init__.py          0      0   100%
-links/admin.py            10      0   100%
-links/apps.py              3      3     0%   5-12
-links/constant.py          1      0   100%
-links/models.py           36      2    94%   21, 48
-links/tests.py             1      1     0%   1
-links/urls.py              3      3     0%   1-4
-links/utils.py             6      0   100%
-links/views.py             0      0   100%
-workshop/__init__.py       0      0   100%
-workshop/settings.py      24      0   100%
-workshop/urls.py           3      3     0%   16-19
-workshop/wsgi.py           4      4     0%   10-16
-----------------------------------------------------
-TOTAL                     91     16    82%
-Coverage HTML written to dir htmlcov
+ PASS  src/components/Headline/Headline.spec.jsx
+  Headline Component
+    props
+      ✓ should declare propsTypes (4ms)
+    render
+      ✓ should render the component properly (7ms)
 
+ PASS  src/components/App/App.spec.jsx
+  App Component
+    #render
+      ✓ should render the component properly (12ms)
 
-=========================== 8 passed in 2.88 seconds ===========================
+ PASS  src/containers/App.spec.jsx
+  App Component
+    #render
+      ✓ should render the component properly (10ms)
+
+Test Suites: 3 passed, 3 total
+Tests:       4 passed, 4 total
+Snapshots:   0 total
+Time:        2.148s
+Ran all test suites.
+---------------------|----------|----------|----------|----------|----------------|
+File                 |  % Stmts | % Branch |  % Funcs |  % Lines |Uncovered Lines |
+---------------------|----------|----------|----------|----------|----------------|
+All files            |      100 |      100 |      100 |      100 |                |
+ components/App      |      100 |      100 |      100 |      100 |                |
+  index.jsx          |      100 |      100 |      100 |      100 |                |
+ components/Headline |      100 |      100 |      100 |      100 |                |
+  index.js           |      100 |      100 |      100 |      100 |                |
+ containers          |      100 |      100 |      100 |      100 |                |
+  App.jsx            |      100 |      100 |      100 |      100 |                |
+---------------------|----------|----------|----------|----------|----------------|
+
+=============================== Coverage summary ===============================
+Statements   : 100% ( 3/3 )
+Branches     : 100% ( 0/0 )
+Functions    : 100% ( 3/3 )
+Lines        : 100% ( 3/3 )
+================================================================================
+npm info lifecycle links@0.0.1~posttest: links@0.0.1
+npm info ok
 ```
 
-#### Leer reporte html de pytest
-Vamos a abrir `workshop/htmlcov/index.html` en el navegador para ver el reporte html.
+#### Leer el reporte html de jest
+Abri `workshop/front/coverage/index.html` en tu navegador.
 
-[Paso 12: React testing](https://gitlab.com/FedeG/django-react-workshop/tree/step12_react_testing)
+[Paso 13: Agregar contexto de Django a React](https://gitlab.com/FedeG/django-react-workshop/tree/step13_django_context_in_react)
