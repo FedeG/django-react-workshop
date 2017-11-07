@@ -1,11 +1,15 @@
 {% extends "base.html" %}
 {% load render_bundle from webpack_loader %}
 
+{% block head %}
+  <title>Links list</title>
+{% endblock %}
+
 {% block main %}
   <div id="app"></div>
 
   {% render_bundle 'vendors' %}
-  {% render_bundle 'App' %}
+  {% render_bundle 'LinkDetail' %}
 <script>
   window.render_components({
     links: {{ links|safe }}
