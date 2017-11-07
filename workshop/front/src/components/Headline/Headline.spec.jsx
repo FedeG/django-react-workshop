@@ -1,5 +1,5 @@
 import React from 'react';
-import Headline from './index.js';
+import Headline from './index.jsx';
 import { shallow } from 'enzyme';
 
 describe('Headline Component', () => {
