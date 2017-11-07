@@ -6,7 +6,7 @@ module.exports = {
 
   entry: {
     // Add as many entry points as you have container-react-components here
-    App: ['./src/views/App'],
+    LinkDetail: ['./src/views/LinkDetail'],
     vendors: ['react', 'babel-polyfill'],
   },
 
