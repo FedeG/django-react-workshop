@@ -10,3 +10,4 @@ workshop/front/report.html
 .cache
 htmlcov/
 coverage/
+jest_*

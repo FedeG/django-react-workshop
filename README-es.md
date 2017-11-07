@@ -215,7 +215,7 @@ describe('App Component', () => {
 ```
 
 ## Actualizar gitignore
-Y finalmente tenemos que actualizar el archivo `.gitignore` y agregarle `coverage/`.
+Y finalmente tenemos que actualizar el archivo `.gitignore` y agregarle `coverage/` y `jest_*`.
 
 ## Resultado
 En este punto, ya podemos ejecutar **jest** y leer el reporte de cobertura.
