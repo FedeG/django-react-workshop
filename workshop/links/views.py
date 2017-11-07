@@ -2,5 +2,10 @@
     Django views for link application
 """
 
-# from django.shortcuts import render
-# Create your views here.
+def refresh_list(request):
+    return render(
+        request,
+        'view1.html',
+        context={
+            'screens': SCREENS_TO_REFRESH
+        })

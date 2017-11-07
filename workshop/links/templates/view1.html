@@ -6,4 +6,9 @@
 
   {% render_bundle 'vendors' %}
   {% render_bundle 'App' %}
+<script>
+  window.render_components({
+    links: {{ links|safe }}
+  });
+</script>
 {% endblock %}
