@@ -1,11 +1,20 @@
 """
     Django views for link application
 """
+from django.shortcuts import render
+from django.core import serializers
+from .models import Link
 
-def refresh_list(request):
+
+def links_detail(request):
+    """
+        Links list
+    """
+    links = Link.objects.all()
+    links_json = serializers.serialize('json', links)
     return render(
         request,
         'view1.html',
         context={
-            'screens': SCREENS_TO_REFRESH
+            'links': links_json
         })
