@@ -14,7 +14,7 @@ def links_detail(request):
     links_json = serializers.serialize('json', links)
     return render(
         request,
-        'view1.html',
+        'link_detail.html',
         context={
             'links': links_json
         })
