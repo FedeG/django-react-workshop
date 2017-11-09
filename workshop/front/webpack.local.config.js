@@ -18,7 +18,7 @@ config.ip = ip
 
 // Use webpack dev server
 config.entry = {
-  LinkDetail: addDevVendors('./src/views/LinkDetail'),
+  LinksDetail: addDevVendors('./src/views/LinksDetail'),
   vendors: ['react', 'babel-polyfill'],
 }
 
