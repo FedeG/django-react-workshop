@@ -1,292 +1,353 @@
-# Step 12: React testing
+# Step 13: Django context in React
 
-[Back to step 11](https://gitlab.com/FedeG/django-react-workshop/tree/step11_python_testing)
+[Back to step 12](https://gitlab.com/FedeG/django-react-workshop/tree/step12_react_testing)
 
-## Tests framework:
-- [Jest](https://facebook.github.io/jest/): Complete and easy to set-up JavaScript testing solution.
-- [Enzyme](http://airbnb.io/enzyme/): Enzyme is a JavaScript Testing utility for React that makes it easier to assert, manipulate, and traverse your React Components' output.
+## Details
+En este paso vamos a hacer un cambio importante en los archivos que actualmente tenemos.
+Lo primero es poner nombres mas intuitivos para las componentes, containers y vistas de React.
+Lo segundo es agregar en **http://localhost:8000/links/** en titulo y la lista de los links que tenemos.
 
-## Install jest and enzyme
+## Cambio de nombres:
+Vamos a cambiar App por LinksDetail en varias partes:
 
-#### Update package.json dependencies
-We use devDependencies because these dependencies are only development dependencies.
-We need to add the following in our `workshop/front/package.json`:
-```diff
-"devDependencies": {
-  "babel": "^6.23.0",
-  "babel-core": "^6.26.0",
-  "babel-eslint": "^8.0.1",
-+ "babel-jest": "^21.2.0",
-  "babel-loader": "^6.4.1",
-  "babel-plugin-transform-decorators-legacy": "^1.3.4",
-  "babel-preset-es2015": "^6.24.1",
-  "babel-preset-react": "^6.24.1",
-  "babel-preset-stage-0": "^6.24.1",
-+ "enzyme": "^3.1.0",
-+ "enzyme-adapter-react-16": "^1.0.1",
-  "react-test-renderer": "^16.0.0",
-  "eslint": "^4.8.0",
-  "eslint-html-reporter": "^0.5.2",
-  ...
-  "eslint-plugin-import": "^2.7.0",
-  "eslint-plugin-jest": "^21.2.0",
-  "eslint-plugin-react": "^7.4.0",
-+ "jest": "^21.2.1",
-  "webpack": "^1.12.13",
-  "webpack-bundle-tracker": "0.0.93",
-  "webpack-dev-server": "^1.14.1"
-  ...
-  "babel-polyfill": "^6.26.0",
-  "es6-promise": "^4.1.1",
-  "isomorphic-fetch": "^2.2.1",
-+ "jest-cli": "^21.2.1",
-  "js-cookie": "^2.1.4",
-  "lodash": "^4.17.4",
-  "prop-types": "^15.6.0",
-  ...
-```
+#### Mover archivos
 
-#### Update package.json scripts
-We need to add the following in our `workshop/front/package.json`:
-```diff
-"scripts": {
-     "start": "node server.js",
--    "react-devtools": "react-devtools"
-+    "react-devtools": "react-devtools",
-+    "eslint": "./node_modules/.bin/eslint --ext .jsx --ext .js src",
-+    "eslint-report": "./node_modules/.bin/eslint -f node_modules/eslint-html-reporter/reporter.js -o report.html --ext .jsx --ext .js src || true"
-   },
-```
-
-#### Update package.json with jest configuration
-We need to add the following in our `workshop/front/package.json`:
-```diff
-+  "jest": {
-+    "globals": {
-+      "__PLATFORM__": "test"
-+    },
-+    "setupFiles": [
-+      "raf/polyfill"
-+    ],
-+    "setupTestFrameworkScriptFile": "<rootDir>/jest-setup.js",
-+    "modulePaths": [
-+      "node_modules",
-+      "src"
-+    ],
-+    "clearMocks": true,
-+    "verbose": true,
-+    "coverageReporters": [
-+      "html",
-+      "text",
-+      "text-summary"
-+    ],
-+    "transform": {
-+      "^.+\\.jsx?$": "babel-jest"
-+    },
-+    "moduleFileExtensions": [
-+      "js",
-+      "jsx",
-+      "json",
-+      "es6"
-+    ],
-+    "unmockedModulePathPatterns": [
-+      "<rootDir>/node_modules/timeout-transition-group",
-+      "<rootDir>/node_modules/expect",
-+      "<rootDir>/node_modules/classnames",
-+      "<rootDir>/node_modules/sinon",
-+      "<rootDir>/node_modules/redux",
-+      "<rootDir>/node_modules/redux-thunk",
-+      "<rootDir>/node_modules/react",
-+      "<rootDir>/node_modules/react-tools",
-+      "<rootDir>/node_modules/react-devtools",
-+      "react",
-+      "enzyme",
-+      "jest-enzyme"
-+    ],
-+    "modulePathIgnorePatterns": [
-+      "/node_modules/",
-+      "jest-setup.js"
-+    ],
-+    "collectCoverageFrom": [
-+      "src/components/**/*.{js,jsx}",
-+      "src/containers/**/*.{js,jsx}"
-+    ]
-+   }
-```
-
-#### Install dependencies
 ```bash
-# with docker
-docker exec -it workshopjs yarn install
+# Componentes
+mkdir workshop/front/src/components/LinksDetail
+mv workshop/front/src/components/App/App.spec.jsx workshop/front/src/components/LinksDetail/LinksDetail.spec.jsx
+mv workshop/front/src/components/App/index.jsx workshop/front/src/components/LinksDetail/index.jsx
+rm -r workshop/front/src/components/App
 
-# without docker
-cd workshop/front
-yarn install
+# Contenedores
+mkdir workshop/front/src/containers/LinksDetail
+mv workshop/front/src/containers/App.spec.jsx workshop/front/src/containers/LinksDetail/LinksDetail.spec.jsx
+mv workshop/front/src/containers/App.jsx workshop/front/src/containers/LinksDetail/index.jsx
+
+# Vistas
+mv workshop/front/src/views/App.jsx workshop/front/src/views/LinksDetail.jsx
+
+# Templates de django
+mv workshop/links/templates/view1.html workshop/links/templates/link_detail.html
 ```
 
-## Create jest setup script
-**jest-setup.js** (in **workshop/front/jest-setup.js**) is a setup script for **jest**.
+#### Cambiar el nombre en el codigo js
+En la vista de **LinksDetail** (**workshop/front/src/views/LinksDetail.jsx**):
+```diff
+import React from 'react'
+import { render } from 'react-dom'
+-import App from '../containers/App'
++import LinksDetail from '../containers/LinksDetail'
 
+-render(<App/>, document.getElementById('app'))
++render(<LinksDetail/>, document.getElementById('app'))
+
+if (module.hot) module.hot.accept();
+```
+
+En el contenedor de **LinksDetail** (**workshop/front/src/containers/LinksDetail/index.jsx**):
+```diff
+import React from 'react'
+
+-import AppComponent from '../components/App'
++import LinksDetailComponent from '../../components/LinksDetail'
+
+
+-export default class App extends React.Component {
++export default class LinksDetail extends React.Component {
+  render() {
+    return (
+-     <AppComponent />
++     <LinksDetailComponent />
+    )
+  }
+}
+```
+
+En la componente de **LinksDetail** (**workshop/front/src/components/LinksDetail/index.jsx**):
+```diff
+import React from 'react'
+
+import Headline from '../Headline'
+
+-export default class App extends React.Component {
++export default class LinksDetail extends React.Component {
+  render() {
+    return (
+      <div className="container">
+        <div className="row">
+          <div className="col-sm-12">
+            <Headline>Sample App!</Headline>
+          </div>
+        </div>
+      </div>
+```
+
+#### Actualizar configuración de webpack
+En **workshop/front/webpack.base.config.js**:
+```diff
+entry: {
+    // Add as many entry points as you have container-react-components here
+-   App: ['./src/views/App'],
++   LinksDetail: ['./src/views/LinksDetail'],
+    vendors: ['react', 'babel-polyfill'],
+  },
+```
+
+En **workshop/front/webpack.local.config.js**:
+```diff
+// Use webpack dev server
+config.entry = {
+- App: addDevVendors('./src/views/App'),
++ LinksDetail: addDevVendors('./src/views/LinksDetail'),
+  vendors: ['react', 'babel-polyfill'],
+}
+```
+
+#### Actualizar la template de link_detail
+En **workshop/links/templates/link_detail.html**:
+```diff
+  {% render_bundle 'vendors' %}
+- {% render_bundle 'App' %}
++ {% render_bundle 'LinksDetail' %}
+```
+
+## Crear la pagina de links con la lista de links
+
+#### Agregar el titulo a la pagina
+En **workshop/links/templates/base.html**:
+```diff
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    ...
++    {% block head %}{% endblock %}
+  </head>
+```
+
+En **workshop/links/templates/link_detail.html**:
+```diff
+{% extends "base.html" %}
+{% load render_bundle from webpack_loader %}
+
++{% block head %}
++  <title>Links Detail</title>
++{% endblock %}
++
+{% block main %}
+  <div id="app"></div>
+```
+
+## Tomar contexto de Django en React
+Vamos a crear una función (**render_components**) que nos va permitir pasarle
+parametros a las componentes.
+La función **render_components** es llamada en la template de Django con los
+parametros que queremos pasarle a React.
+Vamos a crearla en **workshop/front/src/views/LinksDetail.jsx**:
+```diff
+import LinksDetail from '../containers/LinksDetail'
+
+-render(<LinksDetail/>, document.getElementById('app'))
++window.render_components = properties => {
++  window.params = {...properties};
++  render(<LinksDetail links={properties.links}/>, document.getElementById('app'));
++};
+
+-if (module.hot) module.hot.accept();
++if (module.hot) {
++  if (window.params) window.render_components(window.params);
++  module.hot.accept();
++}
+```
+Nota: a la componente **LinksDetail** se le esta pasando el parametro links que
+viene en las properties que se le mandaron a la función **render_components**
+
+#### Agregar el parametro links al container y a la componente **LinksDetail**
+
+En **workshop/front/src/containers/LinksDetail/index.jsx**:
+```diff
+import React from 'react'
++import PropTypes from 'prop-types';
+
+import LinksDetailComponent from '../../components/LinksDetail'
+
+export default class LinksDetail extends React.Component {
++ static propTypes = {
++   links: PropTypes.array
++ }
++
+  render() {
++   const { links } = this.props;
+    return (
+-     <LinksDetailComponent />
++     <LinksDetailComponent links={links} />
+    )
+  }
+}
+```
+
+En **workshop/front/src/components/LinksDetail/index.jsx**:
+```diff
+import React from 'react'
++import PropTypes from 'prop-types';
+
+import Headline from '../Headline'
+
+export default class LinksDetail extends React.Component {
++  static propTypes = {
++    links: PropTypes.arrayOf(
++      PropTypes.shape({
++        pk: PropTypes.number
++      })
++    )
++  }
++
+  render() {
+    return (
+      <div className="container">
+        <div className="row">
+          <div className="col-sm-12">
+-            <Headline>Sample App!</Headline>
++            <Headline>Links</Headline>
+          </div>
+        </div>
+      </div>
+```
+
+## Enviar contexto desde Django
+
+#### Vista de Django
+Vamos a agregar una vista de Django para enviar la lista de links.
+En **workshop/links/views.py**:
+```python
+"""
+    Django views for link application
+"""
+from django.shortcuts import render
+from django.core import serializers
+from .models import Link
+
+
+def links_detail(request):
+    """
+        Links list
+    """
+    links = Link.objects.all()
+    links_json = serializers.serialize('json', links)
+    return render(
+        request,
+        'link_detail.html',
+        context={
+            'links': links_json
+        })
+```
+
+#### Agregar la url para la vista que creamos
+En **workshop/links/urls.py**:
+```diff
+from django.conf.urls import url
+from django.views import generic
++from . import views
+
+urlpatterns = [
+    url(r'^view2/',
+        generic.TemplateView.as_view(template_name='view2.html')),
+-   url(r'^$',
+-       generic.TemplateView.as_view(template_name='view1.html')),
++   url(r'^$', views.links_detail),
+]
+```
+
+#### Enviar desde la template el contexto a React
+En **workshop/links/templates/link_detail.html**:
+```diff
+  {% render_bundle 'vendors' %}
+  {% render_bundle 'LinksDetail' %}
++ <script>
++    window.render_components({
++      links: {{ links|safe }}
++    });
++  </script>
+{% endblock %}
+```
+
+## Mostrar los links en la pantalla de Links Detail
+Vamos a crear una componente para mostrar el detalle de un link.
+En **workshop/front/src/components/LinkDetail/index.jsx**:
 ```javascript
-import Enzyme from 'enzyme'
-import Adapter from 'enzyme-adapter-react-16'
+import React from 'react'
+import PropTypes from 'prop-types';
 
-Enzyme.configure({ adapter: new Adapter() })
+export default class LinkDetail extends React.Component {
+  static propTypes = {
+    link: PropTypes.shape({
+      fields: PropTypes.shape({
+        url: PropTypes.string,
+        name: PropTypes.string,
+      })
+    })
+  }
 
-global.gettext = jest.fn(text => text)
-global.$ = jest.fn()
+  render() {
+    const { link } = this.props;
+    return (
+      <p>
+        {link.fields.name}: <a href={link.fields.url}>{link.fields.url}</a>
+      </p>
+    )
+  }
+}
 ```
 
-## Create tests
+#### Agregar LinkDetail a LinksDetail
+En **workshop/front/src/components/LinksDetail/index.jsx**:
 
-#### Create tests for Headline component
-In **workshop/front/src/components/Headline/Headline.spec.jsx**:
-```javascript
-import React from 'react';
-import Headline from './index.js';
-import { shallow } from 'enzyme';
-
-describe('Headline Component', () => {
-
-  describe('props', () => {
-
-    it('should declare propsTypes', () => {
-      expect(Object.keys(Headline.propTypes)).toHaveLength(1);
-      expect(Headline.propTypes).toHaveProperty('children');
-    })
-
-  })
-
-  describe('render', () => {
-
-    it('should render the component properly', () => {
-      const wrapper = shallow(<Headline>Sample App!</Headline>);
-      const componentInDOM = '<h1>Sample App!</h1>';
-      expect(wrapper.html()).toBe(componentInDOM);
-    })
-
-  })
-
-})
+##### Importar LinkDetail
+ ```diff
+ import Headline from '../Headline'
++import LinkDetail from '../LinkDetail'
 ```
 
-#### Create tests for App component
-In **workshop/front/src/components/App/App.spec.jsx**:
-```javascript
-import React from 'react';
-import App from './index.jsx';
-import { shallow } from 'enzyme';
-
-describe('App Component', () => {
-
-  describe('#render', () => {
-
-    it('should render the component properly', () => {
-      const wrapper = shallow(<App/>);
-      const componentInDOM = '<div class="container"><div class="row"><div class="col-sm-12"><h1>Sample App!</h1></div></div></div>';
-      expect(wrapper.html()).toBe(componentInDOM);
-    })
-
-  })
-
-})
+##### Mostrar LinkDetail de cada link
+```diff
+   render() {
++    const { links } = this.props;
++    const linksItems = links.map(link => <LinkDetail key={link.pk} link={link} />);
+     return (
+       <div className="container">
+         <div className="row">
+           <div className="col-sm-12">
+             <Headline>Links</Headline>
++            { linksItems }
+           </div>
+         </div>
+       </div>
 ```
 
-#### Create tests for App container
-In **workshop/front/src/containers/App.spec.jsx**:
-```javascript
-import React from 'react';
-import App from './App.jsx';
-import { shallow } from 'enzyme';
+## Actualizar test
+Como esto es no tan impotante en este paso esta en otro archivo, si queres ver como se actualizaron los tests podes verlo en [Actualización de tests](https://gitlab.com/FedeG/django-react-workshop/blob/step13_django_context_in_react/TESTUPDATE-es.md)
 
-describe('App Component', () => {
+## Resultado
+En este punto, ya podemos ejecutar el servidor y ver la lista de links en `http://localhost:8000/links/`
 
-  describe('#render', () => {
-
-    it('should render the component properly', () => {
-      const wrapper = shallow(<App/>);
-      const componentInDOM = '<div class="container"><div class="row"><div class="col-sm-12"><h1>Sample App!</h1></div></div></div>';
-      expect(wrapper.html()).toBe(componentInDOM);
-    })
-
-  })
-
-})
-```
-
-## Update gitignore
-And finally we should update `.gitignore` file and add `coverage/` and `jest_*`.
-
-## Result
-At this point, you can run **jest** and read coverage report.
-
-#### Run jest
+#### En una terminal corremos el servidor de React
 ```bash
-# with docker
-docker exec -it workshopjs npm test
+# con docker
+docker exec -it workshopjs npm start
 
-# without docker
+# sin docker
 cd workshop/front
-npm test
+npm start
 ```
 
-#### Read jest report
-**jest** command returns:
-```c++
-npm info it worked if it ends with ok
-npm info using npm@5.4.2
-npm info using node@v8.7.0
-npm info lifecycle links@0.0.1~pretest: links@0.0.1
-npm info lifecycle links@0.0.1~test: links@0.0.1
+#### En otra terminal corremos el servidor de Django
+```bash
+# con docker
+docker exec -it workshop ./workshop/manage.py runserver 0.0.0.0:8000
 
-> links@0.0.1 test /src/workshop/front
-> jest --forceExit --ci --coverage
-
- PASS  src/components/Headline/Headline.spec.jsx
-  Headline Component
-    props
-      ✓ should declare propsTypes (4ms)
-    render
-      ✓ should render the component properly (7ms)
-
- PASS  src/components/App/App.spec.jsx
-  App Component
-    #render
-      ✓ should render the component properly (12ms)
-
- PASS  src/containers/App.spec.jsx
-  App Component
-    #render
-      ✓ should render the component properly (10ms)
-
-Test Suites: 3 passed, 3 total
-Tests:       4 passed, 4 total
-Snapshots:   0 total
-Time:        2.148s
-Ran all test suites.
----------------------|----------|----------|----------|----------|----------------|
-File                 |  % Stmts | % Branch |  % Funcs |  % Lines |Uncovered Lines |
----------------------|----------|----------|----------|----------|----------------|
-All files            |      100 |      100 |      100 |      100 |                |
- components/App      |      100 |      100 |      100 |      100 |                |
-  index.jsx          |      100 |      100 |      100 |      100 |                |
- components/Headline |      100 |      100 |      100 |      100 |                |
-  index.js           |      100 |      100 |      100 |      100 |                |
- containers          |      100 |      100 |      100 |      100 |                |
-  App.jsx            |      100 |      100 |      100 |      100 |                |
----------------------|----------|----------|----------|----------|----------------|
-
-=============================== Coverage summary ===============================
-Statements   : 100% ( 3/3 )
-Branches     : 100% ( 0/0 )
-Functions    : 100% ( 3/3 )
-Lines        : 100% ( 3/3 )
-================================================================================
-npm info lifecycle links@0.0.1~posttest: links@0.0.1
-npm info ok
+# sin docker
+./workshop/manage.py runserver
 ```
 
-#### Read jest html report
-Open `workshop/front/coverage/index.html` in your browser.
+Deberías ver la página de links detail con los links que tengas cargados en el navegador en `http://localhost:8000/links/`.
 
-[Step 13: Add Django context to React](https://gitlab.com/FedeG/django-react-workshop/tree/step13_django_context_in_react)
+[Paso 14: Api rest](https://gitlab.com/FedeG/django-react-workshop/tree/step14_api_rest)
