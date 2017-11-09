@@ -1,8 +1,8 @@
 import React from 'react';
-import LinkDetail from './index.jsx';
+import LinksDetail from './index.jsx';
 import { shallow } from 'enzyme';
 
-describe('LinkDetail Component', () => {
+describe('LinksDetail Component', () => {
   let links, link;
 
   beforeAll(() => {
@@ -23,8 +23,8 @@ describe('LinkDetail Component', () => {
   describe('props', () => {
 
     it('should declare propsTypes', () => {
-      expect(Object.keys(LinkDetail.propTypes)).toHaveLength(1);
-      expect(LinkDetail.propTypes).toHaveProperty('links');
+      expect(Object.keys(LinksDetail.propTypes)).toHaveLength(1);
+      expect(LinksDetail.propTypes).toHaveProperty('links');
     })
 
   })
@@ -32,7 +32,7 @@ describe('LinkDetail Component', () => {
   describe('#render', () => {
 
     it('should render the component properly', () => {
-      const wrapper = shallow(<LinkDetail links={links}/>);
+      const wrapper = shallow(<LinksDetail links={links}/>);
       const itemInDOM = `<p>${link.fields.name}: <a href="${link.fields.url}">${link.fields.url}</a></p>`;
       const componentInDOM = `<div class="container"><div class="row"><div class="col-sm-12"><h1>Links</h1>${itemInDOM}</div></div></div>`;
       expect(wrapper.html()).toBe(componentInDOM);

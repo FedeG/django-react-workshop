@@ -1,9 +1,9 @@
 import React from 'react'
 import PropTypes from 'prop-types';
 
-import LinkDetailComponent from '../../components/LinkDetail'
+import LinksDetailComponent from '../../components/LinksDetail'
 
-export default class LinkDetail extends React.Component {
+export default class LinksDetail extends React.Component {
   static propTypes = {
     links: PropTypes.array
   }
@@ -11,7 +11,7 @@ export default class LinkDetail extends React.Component {
   render() {
     const { links } = this.props;
     return (
-      <LinkDetailComponent links={links} />
+      <LinksDetailComponent links={links} />
     )
   }
 }
