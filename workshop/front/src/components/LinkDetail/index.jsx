@@ -1,30 +1,22 @@
 import React from 'react'
 import PropTypes from 'prop-types';
 
-import Headline from '../Headline'
-import LinkItem from '../LinkItem'
-
 export default class LinkDetail extends React.Component {
   static propTypes = {
-    links: PropTypes.arrayOf(
-      PropTypes.shape({
-        pk: PropTypes.number
+    link: PropTypes.shape({
+      fields: PropTypes.shape({
+        url: PropTypes.string,
+        name: PropTypes.string,
       })
-    )
+    })
   }
 
   render() {
-    const { links } = this.props;
-    const linksItems = links.map(link => <LinkItem key={link.pk} link={link} />);
+    const { link } = this.props;
     return (
-      <div className="container">
-        <div className="row">
-          <div className="col-sm-12">
-            <Headline>Links</Headline>
-            { linksItems }
-          </div>
-        </div>
-      </div>
+      <p>
+        {link.fields.name}: <a href={link.fields.url}>{link.fields.url}</a>
+      </p>
     )
   }
 }
