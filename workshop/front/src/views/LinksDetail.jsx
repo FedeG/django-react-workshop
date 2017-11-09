@@ -1,10 +1,10 @@
 import React from 'react'
 import { render } from 'react-dom'
-import LinkDetail from '../containers/LinkDetail'
+import LinksDetail from '../containers/LinksDetail'
 
 window.render_components = properties => {
   window.params = {...properties};
-  render(<LinkDetail links={properties.links}/>, document.getElementById('app'));
+  render(<LinksDetail links={properties.links}/>, document.getElementById('app'));
 };
 
 if (module.hot) {
