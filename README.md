@@ -3,36 +3,36 @@
 [Back to step 12](https://gitlab.com/FedeG/django-react-workshop/tree/step12_react_testing)
 
 ## Details
-En este paso vamos a hacer un cambio importante en los archivos que actualmente tenemos.
-Lo primero es poner nombres mas intuitivos para las componentes, containers y vistas de React.
-Lo segundo es agregar en **http://localhost:8000/links/** en titulo y la lista de los links que tenemos.
+In this step we will make an important change in the files that we currently have.
+First thing is change names to more intuitive names for the components, containers and views.
+The second thing is add title and links list in **http://localhost:8000/links/**.
 
-## Cambio de nombres:
-Vamos a cambiar App por LinksDetail en varias partes:
+## Change names:
+We are going to change App to LinksDetail in some files:
 
-#### Mover archivos
+#### Move files
 
 ```bash
-# Componentes
+# Components
 mkdir workshop/front/src/components/LinksDetail
 mv workshop/front/src/components/App/App.spec.jsx workshop/front/src/components/LinksDetail/LinksDetail.spec.jsx
 mv workshop/front/src/components/App/index.jsx workshop/front/src/components/LinksDetail/index.jsx
 rm -r workshop/front/src/components/App
 
-# Contenedores
+# Containers
 mkdir workshop/front/src/containers/LinksDetail
 mv workshop/front/src/containers/App.spec.jsx workshop/front/src/containers/LinksDetail/LinksDetail.spec.jsx
 mv workshop/front/src/containers/App.jsx workshop/front/src/containers/LinksDetail/index.jsx
 
-# Vistas
+# Ciews
 mv workshop/front/src/views/App.jsx workshop/front/src/views/LinksDetail.jsx
 
-# Templates de django
+# Django Templates
 mv workshop/links/templates/view1.html workshop/links/templates/link_detail.html
 ```
 
-#### Cambiar el nombre en el codigo js
-En la vista de **LinksDetail** (**workshop/front/src/views/LinksDetail.jsx**):
+#### Change names in the code
+In the **LinksDetail** view (**workshop/front/src/views/LinksDetail.jsx**):
 ```diff
 import React from 'react'
 import { render } from 'react-dom'
@@ -45,7 +45,7 @@ import { render } from 'react-dom'
 if (module.hot) module.hot.accept();
 ```
 
-En el contenedor de **LinksDetail** (**workshop/front/src/containers/LinksDetail/index.jsx**):
+In the **LinksDetail** container (**workshop/front/src/containers/LinksDetail/index.jsx**):
 ```diff
 import React from 'react'
 
@@ -64,7 +64,7 @@ import React from 'react'
 }
 ```
 
-En la componente de **LinksDetail** (**workshop/front/src/components/LinksDetail/index.jsx**):
+In the **LinksDetail** component (**workshop/front/src/components/LinksDetail/index.jsx**):
 ```diff
 import React from 'react'
 
@@ -83,8 +83,8 @@ import Headline from '../Headline'
       </div>
 ```
 
-#### Actualizar configuración de webpack
-En **workshop/front/webpack.base.config.js**:
+#### Update webpack configuration
+In **workshop/front/webpack.base.config.js**:
 ```diff
 entry: {
     // Add as many entry points as you have container-react-components here
@@ -94,7 +94,7 @@ entry: {
   },
 ```
 
-En **workshop/front/webpack.local.config.js**:
+In **workshop/front/webpack.local.config.js**:
 ```diff
 // Use webpack dev server
 config.entry = {
@@ -104,18 +104,18 @@ config.entry = {
 }
 ```
 
-#### Actualizar la template de link_detail
-En **workshop/links/templates/link_detail.html**:
+#### Update link_detail template
+In **workshop/links/templates/link_detail.html**:
 ```diff
   {% render_bundle 'vendors' %}
 - {% render_bundle 'App' %}
 + {% render_bundle 'LinksDetail' %}
 ```
 
-## Crear la pagina de links con la lista de links
+## Create links detail page with the links list
 
-#### Agregar el titulo a la pagina
-En **workshop/links/templates/base.html**:
+#### Add title
+In **workshop/links/templates/base.html**:
 ```diff
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
@@ -124,7 +124,7 @@ En **workshop/links/templates/base.html**:
   </head>
 ```
 
-En **workshop/links/templates/link_detail.html**:
+In **workshop/links/templates/link_detail.html**:
 ```diff
 {% extends "base.html" %}
 {% load render_bundle from webpack_loader %}
@@ -137,12 +137,11 @@ En **workshop/links/templates/link_detail.html**:
   <div id="app"></div>
 ```
 
-## Tomar contexto de Django en React
-Vamos a crear una función (**render_components**) que nos va permitir pasarle
-parametros a las componentes.
-La función **render_components** es llamada en la template de Django con los
-parametros que queremos pasarle a React.
-Vamos a crearla en **workshop/front/src/views/LinksDetail.jsx**:
+## Take Django context in React
+We are going to create a function **render_components**.
+The function **render_components** is called in the Django template with the
+parameters that we want to pass to React.
+Let's create it in **workshop/front/src/views/LinksDetail.jsx**:
 ```diff
 import LinksDetail from '../containers/LinksDetail'
 
@@ -158,12 +157,11 @@ import LinksDetail from '../containers/LinksDetail'
 +  module.hot.accept();
 +}
 ```
-Nota: a la componente **LinksDetail** se le esta pasando el parametro links que
-viene en las properties que se le mandaron a la función **render_components**
+Note: the **LinksDetail** component is recive the links from the properties that were sent to the function **render_components**.
 
-#### Agregar el parametro links al container y a la componente **LinksDetail**
+#### Add links parameter to LinksDetail container and LinksDetail component
 
-En **workshop/front/src/containers/LinksDetail/index.jsx**:
+In **workshop/front/src/containers/LinksDetail/index.jsx**:
 ```diff
 import React from 'react'
 +import PropTypes from 'prop-types';
@@ -185,7 +183,7 @@ export default class LinksDetail extends React.Component {
 }
 ```
 
-En **workshop/front/src/components/LinksDetail/index.jsx**:
+In **workshop/front/src/components/LinksDetail/index.jsx**:
 ```diff
 import React from 'react'
 +import PropTypes from 'prop-types';
@@ -213,11 +211,11 @@ export default class LinksDetail extends React.Component {
       </div>
 ```
 
-## Enviar contexto desde Django
+## Send context from Django
 
-#### Vista de Django
-Vamos a agregar una vista de Django para enviar la lista de links.
-En **workshop/links/views.py**:
+#### Django view
+We will add a Django view for send the links list.
+In **workshop/links/views.py**:
 ```python
 """
     Django views for link application
@@ -241,8 +239,8 @@ def links_detail(request):
         })
 ```
 
-#### Agregar la url para la vista que creamos
-En **workshop/links/urls.py**:
+#### Add the view that we created to urls
+In **workshop/links/urls.py**:
 ```diff
 from django.conf.urls import url
 from django.views import generic
@@ -257,8 +255,8 @@ urlpatterns = [
 ]
 ```
 
-#### Enviar desde la template el contexto a React
-En **workshop/links/templates/link_detail.html**:
+#### Send Django context from template to React
+In **workshop/links/templates/link_detail.html**:
 ```diff
   {% render_bundle 'vendors' %}
   {% render_bundle 'LinksDetail' %}
@@ -270,9 +268,9 @@ En **workshop/links/templates/link_detail.html**:
 {% endblock %}
 ```
 
-## Mostrar los links en la pantalla de Links Detail
-Vamos a crear una componente para mostrar el detalle de un link.
-En **workshop/front/src/components/LinkDetail/index.jsx**:
+## Show links in the LinksDetail screen
+We are going to create a component to show a link (with detail).
+In **workshop/front/src/components/LinkDetail/index.jsx**:
 ```javascript
 import React from 'react'
 import PropTypes from 'prop-types';
@@ -298,16 +296,16 @@ export default class LinkDetail extends React.Component {
 }
 ```
 
-#### Agregar LinkDetail a LinksDetail
-En **workshop/front/src/components/LinksDetail/index.jsx**:
+#### Add LinkDetail to LinksDetail
+In **workshop/front/src/components/LinksDetail/index.jsx**:
 
-##### Importar LinkDetail
+##### Import LinkDetail
  ```diff
  import Headline from '../Headline'
 +import LinkDetail from '../LinkDetail'
 ```
 
-##### Mostrar LinkDetail de cada link
+##### Show LinkDetail for each link
 ```diff
    render() {
 +    const { links } = this.props;
@@ -323,31 +321,31 @@ En **workshop/front/src/components/LinksDetail/index.jsx**:
        </div>
 ```
 
-## Actualizar test
-Como esto es no tan impotante en este paso esta en otro archivo, si queres ver como se actualizaron los tests podes verlo en [Actualización de tests](https://gitlab.com/FedeG/django-react-workshop/blob/step13_django_context_in_react/TESTUPDATE-es.md)
+## Update test
+As this isn't so important in this step is in another file, if you want to see how the tests were updated you can see this in [Update tests](https://gitlab.com/FedeG/django-react-workshop/blob/step13_django_context_in_react/TESTUPDATE-es.md)
 
-## Resultado
-En este punto, ya podemos ejecutar el servidor y ver la lista de links en `http://localhost:8000/links/`
+## Result
+At this point, we could run the server and see the links list at `http://localhost:8000/links/`
 
-#### En una terminal corremos el servidor de React
+#### In a terminal we run React server
 ```bash
-# con docker
+# with docker
 docker exec -it workshopjs npm start
 
-# sin docker
+# without docker
 cd workshop/front
 npm start
 ```
 
-#### En otra terminal corremos el servidor de Django
+#### In another terminal we run Django server
 ```bash
-# con docker
+# with docker
 docker exec -it workshop ./workshop/manage.py runserver 0.0.0.0:8000
 
-# sin docker
+# without docker
 ./workshop/manage.py runserver
 ```
 
-Deberías ver la página de links detail con los links que tengas cargados en el navegador en `http://localhost:8000/links/`.
+You should see the links detail page with the links (that you have loaded) in the browser in `http://localhost:8000/links/`.
 
-[Paso 14: Api rest](https://gitlab.com/FedeG/django-react-workshop/tree/step14_api_rest)
+[Step 14: Api rest](https://gitlab.com/FedeG/django-react-workshop/tree/step14_api_rest)
