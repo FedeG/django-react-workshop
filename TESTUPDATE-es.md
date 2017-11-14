@@ -1,162 +1,26 @@
-## Actualizar testing para las nuevas funcionalidades
+# Actualizar testing para las nuevas funcionalidades
 
-#### Vista de Django
-En **workshop/links/tests/test_views.py**:
-```python
-from django_dynamic_fixture import G
-from django.core import serializers
-
-import pytest
-
-from links.models import Link
-
-
-@pytest.mark.client
-@pytest.mark.django_db
-def test_links_detail_view_without_links(client):
-    response = client.get('/links/')
-    assert 200 == response.status_code
-    assert str([]) == response.context[-1]['links']
-
-
-@pytest.mark.client
-@pytest.mark.django_db
-def test_links_detail_view_with_links(client):
-    link_workshop = G(
-        Link,
-        name='Gitlab with workshop',
-        url='https://gitlab.com/FedeG/django-react-workshop/')
-    links_json = serializers.serialize('json', [link_workshop])
-    response = client.get('/links/')
-    assert 200 == response.status_code
-    assert links_json == response.context[-1]['links']
-
-```
-
-#### Actualizar los tests de React
-En **workshop/front/src/components/LinksDetail/LinksDetail.spec.jsx**:
-```diff
-import React from 'react';
--import App from './index.jsx';
-+import LinksDetail from './index.jsx';
-import { shallow } from 'enzyme';
-
--describe('App Component', () => {
-+describe('LinksDetail Component', () => {
-+  let links, link;
-+
-+  beforeAll(() => {
-+    link = {
-+      model: 'links.link',
-+      pk: 1,
-+      fields: {
-+        name: 'Gitlab with workshop',
-+        url: 'https://gitlab.com/FedeG/django-react-workshop/',
-+        pending: false,
-+        description: '',
-+        user: 1
-+      }
-+    }
-+    links = [link]
-+  })
-+
-+  describe('props', () => {
-+
-+    it('should declare propsTypes', () => {
-+      expect(Object.keys(LinksDetail.propTypes)).toHaveLength(1);
-+      expect(LinksDetail.propTypes).toHaveProperty('links');
-+    })
-+
-+  })
-
-  describe('#render', () => {
-
-    it('should render the component properly', () => {
--      const wrapper = shallow(<App/>);
--      const componentInDOM = '<div class="container"><div class="row"><div class="col-sm-12"><h1>Sample App!</h1></div></div></div>';
-+      const wrapper = shallow(<LinksDetail links={links}/>);
-+      const itemInDOM = `<p>${link.fields.name}: <a href="${link.fields.url}">${link.fields.url}</a></p>`;
-+      const componentInDOM = `<div class="container"><div class="row"><div class="col-sm-12"><h1>Links</h1>${itemInDOM}</div></div></div>`;
-      expect(wrapper.html()).toBe(componentInDOM);
-    })
-```
-
-En **workshop/front/src/containers/LinksDetail/LinksDetail.spec.jsx**:
-```diff
-import React from 'react';
--import App from './App.jsx';
-+import LinksDetail from './index.jsx';
-import { shallow } from 'enzyme';
-
--describe('App Component', () => {
-+describe('LinksDetail Component', () => {
-+  let links, link;
-+
-+  beforeAll(() => {
-+    link = {
-+      model: 'links.link',
-+      pk: 1,
-+      fields: {
-+        name: 'Gitlab with workshop',
-+        url: 'https://gitlab.com/FedeG/django-react-workshop/',
-+        pending: false,
-+        description: '',
-+        user: 1
-+      }
-+    }
-+    links = [link]
-+  })
-+
-+  describe('props', () => {
-+
-+    it('should declare propsTypes', () => {
-+      expect(Object.keys(LinksDetail.propTypes)).toHaveLength(1);
-+      expect(LinksDetail.propTypes).toHaveProperty('links');
-+    })
-+
-+  })
-
-  describe('#render', () => {
-
-    it('should render the component properly', () => {
--      const wrapper = shallow(<App/>);
--      const componentInDOM = '<div class="container"><div class="row"><div class="col-sm-12"><h1>Sample App!</h1></div></div></div>';
-+      const wrapper = shallow(<LinksDetail links={links}/>);
-+      const itemInDOM = `<p>${link.fields.name}: <a href="${link.fields.url}">${link.fields.url}</a></p>`;
-+      const componentInDOM = `<div class="container"><div class="row"><div class="col-sm-12"><h1>Links</h1>${itemInDOM}</div></div></div>`;
-      expect(wrapper.html()).toBe(componentInDOM);
-    })
-```
-
-##### Agregar tests para LinkDetail
-En **workshop/front/src/components/LinkDetail/LinkDelail.spec.jsx**:
+## Tests de boton
+En **workshop/front/src/components/Button/Button.spec.jsx**:
 ```javascript
 import React from 'react';
-import LinkDetail from './index.jsx';
+import Button from './index.jsx';
 import { shallow } from 'enzyme';
 
-describe('LinkDetail Component', () => {
-  let link;
+describe('Button Component', () => {
+  let label, onClick;
 
   beforeAll(() => {
-    link = {
-      model: 'links.link',
-      pk: 1,
-      fields: {
-        name: 'Gitlab with workshop',
-        url: 'https://gitlab.com/FedeG/django-react-workshop/',
-        pending: false,
-        description: '',
-        user: 1
-      }
-    }
+    label = 'label';
+    onClick = () => {};
   })
 
   describe('props', () => {
 
     it('should declare propsTypes', () => {
-      expect(Object.keys(LinkDetail.propTypes)).toHaveLength(1);
-      expect(LinkDetail.propTypes).toHaveProperty('link');
+      expect(Object.keys(Button.propTypes)).toHaveLength(2);
+      expect(Button.propTypes).toHaveProperty('label');
+      expect(Button.propTypes).toHaveProperty('onClick');
     })
 
   })
@@ -164,12 +28,129 @@ describe('LinkDetail Component', () => {
   describe('#render', () => {
 
     it('should render the component properly', () => {
-      const wrapper = shallow(<LinkDetail link={link}/>);
-      const componentInDOM = `<p>${link.fields.name}: <a href="${link.fields.url}">${link.fields.url}</a></p>`;
+      const wrapper = shallow(<Button label={label} onClick={onClick}/>);
+      const componentInDOM = `<button class="btn btn-success" type="button">${label}</button>`;
       expect(wrapper.html()).toBe(componentInDOM);
     })
 
   })
 
 })
+```
+
+## Tests de Api
+En **workshop/front/src/utils/api.spec.js**:
+```javascript
+import { getUrl } from './api.js';
+
+describe('Api utils', () => {
+  let url;
+
+  beforeAll(() => {
+    url = '/links/api/';
+  })
+
+  beforeEach(() => {
+    global.fetch = jest.fn().mockImplementation(() =>
+      Promise.resolve({
+        json: () => Promise.resolve([])
+      })
+    );
+  });
+
+  afterAll(() => {
+    global.fetch.reset();
+    global.fetch.restore();
+  })
+
+  describe('get', () => {
+
+    it('should API_URL is /links/api/', async () => {
+      await getUrl(url);
+      expect(global.fetch).toBeCalled();
+      expect(global.fetch).lastCalledWith(url);
+    })
+
+  })
+
+})
+```
+
+## Tests de Urls
+En **workshop/front/src/utils/urls.spec.js**:
+```javascript
+import { API_URL, LINKS_API_URL } from './urls.js';
+
+describe('Url utils', () => {
+
+  describe('API_URL', () => {
+
+    it('should API_URL is /links/api/', () => {
+      expect(API_URL).toEqual('/links/api/');
+    })
+
+  })
+
+  describe('LINKS_API_URL', () => {
+
+    it('should LINKS_API_URL is /links/api/links/', () => {
+      expect(LINKS_API_URL).toEqual('/links/api/links/');
+    })
+
+  })
+
+})
+```
+
+## Actualizar los tests de React anteriores
+En **workshop/front/src/components/LinksDetail/LinksDetail.spec.jsx**:
+```diff
+   describe('props', () => {
+
+     it('should declare propsTypes', () => {
+-      expect(Object.keys(LinksDetail.propTypes)).toHaveLength(1);
++      expect(Object.keys(LinksDetail.propTypes)).toHaveLength(2);
+       expect(LinksDetail.propTypes).toHaveProperty('links');
++      expect(LinksDetail.propTypes).toHaveProperty('onRefresh');
+     })
+
+   })
+
+   ...
+
+   describe('#render', () => {
+
+     it('should render the component properly', () => {
+-      const wrapper = shallow(<LinksDetail links={links}/>);
++      const wrapper = shallow(<LinksDetail links={links} onRefresh={() => {}}/>);
+       const itemInDOM = `<p>${link.fields.name}: <a href="${link.fields.url}">${link.fields.url}</a></p>`;
+-      const componentInDOM = `<div class="container"><div class="row"><div class="col-sm-12"><h1>Links</h1>${itemInDOM}</div></div></div>`;
++      const button = '<button class="btn btn-success" type="button">Refresh</button>';
++      const componentInDOM = `<div class="container"><div class="row"><div class="col-sm-12"><h1>Links</h1>${button}<div style="margin-top:20px">${itemInDOM}</div></div></div></div>`;
+       expect(wrapper.html()).toBe(componentInDOM);
+     })
+```
+
+En **workshop/front/src/containers/LinksDetail/LinksDetail.spec.jsx**:
+```diff
+     it('should render the component properly', () => {
+       const wrapper = shallow(<LinksDetail links={links}/>);
+       const itemInDOM = `<p>${link.fields.name}: <a href="${link.fields.url}">${link.fields.url}</a></p>`;
+-      const componentInDOM = `<div class="container"><div class="row"><div class="col-sm-12"><h1>Links</h1>${itemInDOM}</div></div></div>`;
++      const button = '<button class="btn btn-success" type="button">Refresh</button>';
++      const componentInDOM = `<div class="container"><div class="row"><div class="col-sm-12"><h1>Links</h1>${button}<div style="margin-top:20px">${itemInDOM}</div></div></div></div>`;
+       expect(wrapper.html()).toBe(componentInDOM);
+     })
+```
+
+## Actualizamos la configuración de eslint
+En **workshop/front/.eslintrc.yaml**:
+```diff
+globals:
+ gettext: true
+ $: true
+ module: true
+ process: true
+ __dirname: true
++global: true
 ```
