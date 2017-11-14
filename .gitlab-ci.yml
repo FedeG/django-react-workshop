@@ -1,5 +1,6 @@
 image: python:3.5
 stages:
+  - testing
   - styling
   - build
   - documentation
@@ -48,6 +49,14 @@ docker_image:
     - docker push $CI_REGISTRY_IMAGE:$VERSION
   only:
     - master
+
+python-testing:
+  stage: testing
+  script:
+    - ./test.sh -i backend
+  artifacts:
+    paths:
+      - src/htmlcov
 
 python-lint:
   stage: styling
