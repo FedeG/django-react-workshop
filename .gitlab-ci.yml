@@ -50,9 +50,13 @@ docker_image:
   only:
     - master
 
+
 python-testing:
+  image: node:8
   stage: testing
   script:
+    - apt update
+    - apt install -y python3-dev python3-pip
     - ./test.sh -i backend
   artifacts:
     paths:
@@ -86,4 +90,3 @@ react-lint:
   stage: styling
   script:
     - ./test.sh -i lint
-
