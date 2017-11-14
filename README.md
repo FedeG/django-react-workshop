@@ -1,331 +1,274 @@
-# Step 13: Django context in React
+# Step 14: Api rest
 
-[Back to step 12](https://gitlab.com/FedeG/django-react-workshop/tree/step12_react_testing)
+[Back to step 13](https://gitlab.com/FedeG/django-react-workshop/tree/step13_django_context_in_react)
 
-## Details
-In this step we will make an important change in the files that we currently have.
-First thing is change names to more intuitive names for the components, containers and views.
-The second thing is add title and links list in **http://localhost:8000/links/**.
+In this step, we will add a rest api in Django with [djangorestframework](http://www.django-rest-framework.org/) and take data from React with `fetch`
 
-## Change names:
-We are going to change App to LinksDetail in some files:
+## Add rest api to Django
 
-#### Move files
-
+#### Install djangorestframework
+If you want, you could use official documentation: [installation](http://www.django-rest-framework.org/#installation)
 ```bash
-# Components
-mkdir workshop/front/src/components/LinksDetail
-mv workshop/front/src/components/App/App.spec.jsx workshop/front/src/components/LinksDetail/LinksDetail.spec.jsx
-mv workshop/front/src/components/App/index.jsx workshop/front/src/components/LinksDetail/index.jsx
-rm -r workshop/front/src/components/App
+# with docker
+docker exec -it workshop pip install djangorestframework markdown django-filter
 
-# Containers
-mkdir workshop/front/src/containers/LinksDetail
-mv workshop/front/src/containers/App.spec.jsx workshop/front/src/containers/LinksDetail/LinksDetail.spec.jsx
-mv workshop/front/src/containers/App.jsx workshop/front/src/containers/LinksDetail/index.jsx
-
-# Ciews
-mv workshop/front/src/views/App.jsx workshop/front/src/views/LinksDetail.jsx
-
-# Django Templates
-mv workshop/links/templates/view1.html workshop/links/templates/link_detail.html
+# without docker
+pip install djangorestframework markdown django-filter
 ```
 
-#### Change names in the code
-In the **LinksDetail** view (**workshop/front/src/views/LinksDetail.jsx**):
-```diff
-import React from 'react'
-import { render } from 'react-dom'
--import App from '../containers/App'
-+import LinksDetail from '../containers/LinksDetail'
+#### Update requirements
+We use requirements because these are production dependencies.
+```bash
+# with docker
+docker exec -it workshop pip freeze | grep rest >> requirements-dev.txt
+docker exec -it workshop pip freeze | grep filter >> requirements-dev.txt
 
--render(<App/>, document.getElementById('app'))
-+render(<LinksDetail/>, document.getElementById('app'))
-
-if (module.hot) module.hot.accept();
+# without docker
+pip freeze | grep rest >> requirements-dev.txt
+pip freeze | grep filter >> requirements-dev.txt
 ```
 
-In the **LinksDetail** container (**workshop/front/src/containers/LinksDetail/index.jsx**):
+#### Add django-rest-framework in Django settings
+In `workshop/workshop/settings.py`, add **rest-framework** in **INSTALLED_APPS**
 ```diff
-import React from 'react'
-
--import AppComponent from '../components/App'
-+import LinksDetailComponent from '../../components/LinksDetail'
-
-
--export default class App extends React.Component {
-+export default class LinksDetail extends React.Component {
-  render() {
-    return (
--     <AppComponent />
-+     <LinksDetailComponent />
-    )
-  }
-}
-```
-
-In the **LinksDetail** component (**workshop/front/src/components/LinksDetail/index.jsx**):
-```diff
-import React from 'react'
-
-import Headline from '../Headline'
-
--export default class App extends React.Component {
-+export default class LinksDetail extends React.Component {
-  render() {
-    return (
-      <div className="container">
-        <div className="row">
-          <div className="col-sm-12">
-            <Headline>Sample App!</Headline>
-          </div>
-        </div>
-      </div>
-```
-
-#### Update webpack configuration
-In **workshop/front/webpack.base.config.js**:
-```diff
-entry: {
-    // Add as many entry points as you have container-react-components here
--   App: ['./src/views/App'],
-+   LinksDetail: ['./src/views/LinksDetail'],
-    vendors: ['react', 'babel-polyfill'],
-  },
-```
-
-In **workshop/front/webpack.local.config.js**:
-```diff
-// Use webpack dev server
-config.entry = {
-- App: addDevVendors('./src/views/App'),
-+ LinksDetail: addDevVendors('./src/views/LinksDetail'),
-  vendors: ['react', 'babel-polyfill'],
-}
-```
-
-#### Update link_detail template
-In **workshop/links/templates/link_detail.html**:
-```diff
-  {% render_bundle 'vendors' %}
-- {% render_bundle 'App' %}
-+ {% render_bundle 'LinksDetail' %}
-```
-
-## Create links detail page with the links list
-
-#### Add title
-In **workshop/links/templates/base.html**:
-```diff
-    <meta charset="utf-8">
-    <meta http-equiv="x-ua-compatible" content="ie=edge">
+INSTALLED_APPS = [
     ...
-+    {% block head %}{% endblock %}
-  </head>
+    'django.contrib.staticfiles',
+    'links',
+    'webpack_loader',
++   'rest_framework',
+]
 ```
 
-In **workshop/links/templates/link_detail.html**:
+And append rest-framework configuration:
 ```diff
-{% extends "base.html" %}
-{% load render_bundle from webpack_loader %}
-
-+{% block head %}
-+  <title>Links Detail</title>
-+{% endblock %}
 +
-{% block main %}
-  <div id="app"></div>
-```
-
-## Take Django context in React
-We are going to create a function **render_components**.
-The function **render_components** is called in the Django template with the
-parameters that we want to pass to React.
-Let's create it in **workshop/front/src/views/LinksDetail.jsx**:
-```diff
-import LinksDetail from '../containers/LinksDetail'
-
--render(<LinksDetail/>, document.getElementById('app'))
-+window.render_components = properties => {
-+  window.params = {...properties};
-+  render(<LinksDetail links={properties.links}/>, document.getElementById('app'));
-+};
-
--if (module.hot) module.hot.accept();
-+if (module.hot) {
-+  if (window.params) window.render_components(window.params);
-+  module.hot.accept();
++REST_FRAMEWORK = {
++    'DEFAULT_PERMISSION_CLASSES': [
++        'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
++    ]
 +}
 ```
-Note: the **LinksDetail** component is recive the links from the properties that were sent to the function **render_components**.
 
-#### Add links parameter to LinksDetail container and LinksDetail component
+#### Add serializers and viewsets
+The serializers say 'how' show a model in the api and the viewset say 'where' search the data for show.
+The viewset and serializers documentation:
+- Viewsets: http://www.django-rest-framework.org/api-guide/viewsets/
+- Serializers: http://www.django-rest-framework.org/api-guide/serializers/
 
-In **workshop/front/src/containers/LinksDetail/index.jsx**:
-```diff
-import React from 'react'
-+import PropTypes from 'prop-types';
-
-import LinksDetailComponent from '../../components/LinksDetail'
-
-export default class LinksDetail extends React.Component {
-+ static propTypes = {
-+   links: PropTypes.array
-+ }
-+
-  render() {
-+   const { links } = this.props;
-    return (
--     <LinksDetailComponent />
-+     <LinksDetailComponent links={links} />
-    )
-  }
-}
-```
-
-In **workshop/front/src/components/LinksDetail/index.jsx**:
-```diff
-import React from 'react'
-+import PropTypes from 'prop-types';
-
-import Headline from '../Headline'
-
-export default class LinksDetail extends React.Component {
-+  static propTypes = {
-+    links: PropTypes.arrayOf(
-+      PropTypes.shape({
-+        pk: PropTypes.number
-+      })
-+    )
-+  }
-+
-  render() {
-    return (
-      <div className="container">
-        <div className="row">
-          <div className="col-sm-12">
--            <Headline>Sample App!</Headline>
-+            <Headline>Links</Headline>
-          </div>
-        </div>
-      </div>
-```
-
-## Send context from Django
-
-#### Django view
-We will add a Django view for send the links list.
-In **workshop/links/views.py**:
+In the `workshop/links/api.py` file:
 ```python
-"""
-    Django views for link application
-"""
-from django.shortcuts import render
-from django.core import serializers
-from .models import Link
+from django.contrib.auth.models import User
+from rest_framework import serializers, viewsets
+
+from .models import Link, Tag, LinkTag
 
 
-def links_detail(request):
-    """
-        Links list
-    """
-    links = Link.objects.all()
-    links_json = serializers.serialize('json', links)
-    return render(
-        request,
-        'link_detail.html',
-        context={
-            'links': links_json
-        })
+# Serializers define the API representation.
+class LinkTagSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = LinkTag
+        fields = ('url', 'link', 'tag')
+
+
+class LinkSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = Link
+        fields = ('id', 'url', 'name', 'url', 'pending',
+                  'description', 'tags', 'user')
+
+
+class TagSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = Tag
+        fields = ('id', 'url', 'name', 'description', 'user')
+
+
+class UserSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = User
+        fields = ('url', 'username', 'email', 'is_staff')
+
+
+# ViewSets define the view behavior.
+class LinkTagViewSet(viewsets.ModelViewSet):
+    queryset = LinkTag.objects.all()
+    serializer_class = LinkTagSerializer
+
+
+class LinkViewSet(viewsets.ModelViewSet):
+    queryset = Link.objects.all()
+    serializer_class = LinkSerializer
+
+
+class TagViewSet(viewsets.ModelViewSet):
+    queryset = Tag.objects.all()
+    serializer_class = TagSerializer
+
+
+class UserViewSet(viewsets.ModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
 ```
 
-#### Add the view that we created to urls
-In **workshop/links/urls.py**:
+#### Add api to urls
+In `workshop/links/urls.py`:
 ```diff
-from django.conf.urls import url
+-from django.conf.urls import url
++from django.conf.urls import url, include
 from django.views import generic
-+from . import views
++from rest_framework import routers
++
+from . import views
++from .api import LinkTagViewSet, LinkViewSet, TagViewSet, UserViewSet
++
++
++# Routers provide a way of automatically determining the URL conf.
++router = routers.DefaultRouter()
++router.register(r'users', UserViewSet)
++router.register(r'links', LinkViewSet)
++router.register(r'tags', TagViewSet)
++router.register(r'linktags', LinkTagViewSet)
++
 
 urlpatterns = [
     url(r'^view2/',
         generic.TemplateView.as_view(template_name='view2.html')),
--   url(r'^$',
--       generic.TemplateView.as_view(template_name='view1.html')),
-+   url(r'^$', views.links_detail),
+    url(r'^$', views.links_detail),
++    url(r'^api/', include(router.urls)),
 ]
 ```
 
-#### Send Django context from template to React
-In **workshop/links/templates/link_detail.html**:
-```diff
-  {% render_bundle 'vendors' %}
-  {% render_bundle 'LinksDetail' %}
-+ <script>
-+    window.render_components({
-+      links: {{ links|safe }}
-+    });
-+  </script>
-{% endblock %}
-```
+## Create button for update data
 
-## Show links in the LinksDetail screen
-We are going to create a component to show a link (with detail).
-In **workshop/front/src/components/LinkDetail/index.jsx**:
+#### Create Button component
+In `workshop/front/src/components/Button/index.jsx`:
 ```javascript
 import React from 'react'
 import PropTypes from 'prop-types';
 
-export default class LinkDetail extends React.Component {
-  static propTypes = {
-    link: PropTypes.shape({
-      fields: PropTypes.shape({
-        url: PropTypes.string,
-        name: PropTypes.string,
-      })
-    })
-  }
+export default class Button extends React.Component {
+ static propTypes = {
+   onClick: PropTypes.func.isRequired,
+   label: PropTypes.string.isRequired
+ }
 
-  render() {
-    const { link } = this.props;
-    return (
-      <p>
-        {link.fields.name}: <a href={link.fields.url}>{link.fields.url}</a>
-      </p>
-    )
-  }
+ _onClick = event => {
+   event.preventDefault();
+   const { onClick } = this.props;
+   onClick();
+ }
+
+ render() {
+   const { label } = this.props;
+   return (
+     <button className='btn btn-success' type='button' onClick={this._onClick}>
+       { label }
+     </button>
+   )
+ }
 }
 ```
 
-#### Add LinkDetail to LinksDetail
-In **workshop/front/src/components/LinksDetail/index.jsx**:
-
-##### Import LinkDetail
- ```diff
- import Headline from '../Headline'
-+import LinkDetail from '../LinkDetail'
+#### Create util for fetch data from api
+In `workshop/front/src/utils/api.js`:
+```javascript
+export function getUrl(url){
+  return fetch(url).then(resp => resp.json())
+}
 ```
 
-##### Show LinkDetail for each link
+#### Create util with api urls
+In `workshop/front/src/utils/urls.js`:
+```javascript
+export const API_URL = '/links/api/'
+export const LINKS_API_URL = `${API_URL}links/`
+```
+
+#### Add Button component in linkDetails page
+In `workshop/front/src/components/LinksDetail/index.jsx`:
 ```diff
+ import Headline from '../Headline'
+ import LinkDetail from '../LinkDetail'
++import Button from '../Button'
+
+ export default class LinksDetail extends React.Component {
+   static propTypes = {
++    onRefresh: PropTypes.func.isRequired,
+     links: PropTypes.arrayOf(
+         ...
+   }
+
    render() {
-+    const { links } = this.props;
-+    const linksItems = links.map(link => <LinkDetail key={link.pk} link={link} />);
+-    const { links } = this.props;
++    const { links, onRefresh } = this.props;
+     const linksItems = links.map(link => <LinkDetail key={link.pk} link={link} />);
      return (
        <div className="container">
          <div className="row">
            <div className="col-sm-12">
              <Headline>Links</Headline>
-+            { linksItems }
+-            { linksItems }
++            <Button onClick={onRefresh} label='Refresh'/>
++            <div style={{marginTop: 20}}>
++              { linksItems }
++            </div>
            </div>
          </div>
        </div>
 ```
 
+#### Add callback for click event (for update links data)
+In `workshop/front/src/containers/LinksDetail/index.jsx`:
+```diff
+import PropTypes from 'prop-types';
+
+import LinksDetailComponent from '../../components/LinksDetail'
++ import { LINKS_API_URL } from '../../utils/urls'
++ import { getUrl } from '../../utils/api'
++
+
+export default class LinksDetail extends React.Component {
+
++  constructor(props) {
++    super(props);
++    const { links } = this.props;
++    this.state = {
++      links: [...links]
++    }
++  }
++
++
++  _onRefresh = () => {
++    getUrl(LINKS_API_URL)
++      .then(newLinks => {
++        const links = newLinks.map(link => {
++          return {
++            pk: link.id,
++            fields: link
++          }
++        });
++        this.setState({links});
++      })
++  }
+
+  render() {
+    const { links } = this.state;
+    return (
+-     <LinksDetailComponent links={links} />
++     <LinksDetailComponent links={links} onRefresh={this._onRefresh}/>
+    )
+  }
+}
+```
+
 ## Update test
-As this isn't so important in this step is in another file, if you want to see how the tests were updated you can see this in [Update tests](https://gitlab.com/FedeG/django-react-workshop/blob/step13_django_context_in_react/TESTUPDATE-es.md)
+As this isn't so important in this step is in another file, if you want to see how the tests were updated you can see this in [Update tests](https://g
+itlab.com/FedeG/django-react-workshop/blob/step14_api_rest/TESTUPDATE.md)
+
 
 ## Result
-At this point, we could run the server and see the links list at `http://localhost:8000/links/`
+At this point, we could run the server, see the links list at `http://localhost:8000/links/` and see refresh button
 
 #### In a terminal we run React server
 ```bash
@@ -346,6 +289,7 @@ docker exec -it workshop ./workshop/manage.py runserver 0.0.0.0:8000
 ./workshop/manage.py runserver
 ```
 
-You should see the links detail page with the links (that you have loaded) in the browser in `http://localhost:8000/links/`.
+You should see the links detail page with the links (that you have loaded) in the browser in `http://localhost:8000/links/` and the refresh button.
+You could try change link data in Django admin (in `http://localhost:8000/admin/links/link/`) and use **Refresh** button for update this data in frontend.
 
-[Step 14: Api rest](https://gitlab.com/FedeG/django-react-workshop/tree/step14_api_rest)
+[Step 15: Django channels and websockets](https://gitlab.com/FedeG/django-react-workshop/tree/step15_websockets_and_channels)

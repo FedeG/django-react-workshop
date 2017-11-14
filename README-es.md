@@ -6,7 +6,7 @@ En este paso vamos a agregar una api rest del lado de Django con [djangorestfram
 
 ## Agregar api rest en Django
 
-#### Install django rest framework
+#### Instalar django rest framework
 Si queres podes usar la documentación oficial para instalar: [instalación](http://www.django-rest-framework.org/#installation)
 ```bash
 # con docker
