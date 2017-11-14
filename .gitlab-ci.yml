@@ -1,5 +1,6 @@
 image: python:3.5
 stages:
+  - styling
   - build
   - documentation
   - deploy
@@ -47,3 +48,9 @@ docker_image:
     - docker push $CI_REGISTRY_IMAGE:$VERSION
   only:
     - master
+
+python-lint:
+  stage: styling
+  script:
+    - ./test.sh -i pythonlint
+
