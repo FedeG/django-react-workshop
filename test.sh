@@ -23,8 +23,8 @@ function install_js {
 }
 
 function install_python {
-   pip install -r requirements.txt || pip3 install -r requirements.txt
-   pip install -r requirements-dev.txt || pip3 install -r requirements-dev.txt
+   pip3 install -r requirements.txt
+   pip3 install -r requirements-dev.txt
 }
 
 function run_install {
@@ -69,7 +69,9 @@ function pythonlint {
 
 function pythontest {
   cd workshop/front
-  timeout 10 npm start || true
+  npm install -g yarn webpack
+  yarn install
+  timeout 20 npm start || true
   cd -
   cd workshop/
   py.test --cov-report term-missing --cov-report html --cov
