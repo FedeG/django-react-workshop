@@ -1,6 +1,0 @@
-site_name: Workshop Python + React
-theme: readthedocs
-pages:
-  - Home: index.md
-  - About: about.md
-

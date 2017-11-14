@@ -3,7 +3,6 @@ stages:
   - testing
   - styling
   - build
-  - documentation
   - deploy
 
 variables:
@@ -11,28 +10,16 @@ variables:
   CONTAINER_RELEASE_IMAGE: $CI_REGISTRY_IMAGE:latest
   IMAGE_NAME: django-react-workshop
 
-mkdocs_build:
-  stage: documentation
-  script:
-    - pip install -r requirements-doc.txt
-    - mkdocs build
-  artifacts:
-    paths:
-      - site
-  only:
-    - master
-
 pages:
   stage: deploy
-  dependencies:
-    - mkdocs_build
   script:
-    - mv site public
+  - mkdir public
+  - cp -r docs/ public
   artifacts:
     paths:
-      - public
+    - public
   only:
-    - master
+  - master
 
 docker_image:
   stage: build
