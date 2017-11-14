@@ -23,10 +23,8 @@ function install_js {
 }
 
 function install_python {
-   cd src
    pip install -r requirements.txt
    pip install -r requirements-dev.txt
-   cd -
 }
 
 function run_install {
