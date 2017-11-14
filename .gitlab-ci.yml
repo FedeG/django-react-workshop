@@ -54,3 +54,18 @@ python-lint:
   script:
     - ./test.sh -i pythonlint
 
+react-lint-report:
+  image: node:8
+  stage: styling
+  script:
+    - ./test.sh -i lint-report
+  artifacts:
+    paths:
+      - src/front/report.html
+
+react-lint:
+  image: node:8
+  stage: styling
+  script:
+    - ./test.sh -i lint
+
