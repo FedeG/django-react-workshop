@@ -13,8 +13,9 @@ variables:
 pages:
   stage: deploy
   script:
-  - mkdir public
-  - cp -r docs/ public
+  - mkdir .public
+  - cp -r docs/. .public
+  - mv .public public
   artifacts:
     paths:
     - public
