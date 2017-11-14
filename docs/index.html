@@ -7,6 +7,8 @@
   <meta name="description" content="python workshop.">
   <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
   <link rel="stylesheet" href="//unpkg.com/docsify/lib/themes/vue.css">
+  <link rel="stylesheet" href="//unpkg.com/docsify-copy-code/styles.css">
+  <script src="//unpkg.com/docsify-copy-code/index.js"></script>
 </head>
 <body>
   <nav>
@@ -15,10 +17,28 @@
   </nav>
   <div id="app"></div>
 </body>
-<script
-  src="//unpkg.com/docsify/lib/docsify.min.js"
-  data-max-level="4"
-  data-sidebar-toggle
-  data-coverpage
-  data-router></script>
+<script>
+  window.$docsify = {
+    loadSidebar: false,
+    coverpage: true,
+    plugins: [
+      window.DocsifyCopyCodePlugin.init()
+    ]
+  }
+</script>
+  <script src="//unpkg.com/docsify/lib/docsify.min.js"
+    data-coverpage
+    data-router
+    data-max-level="3"
+    data-repo="https://gitlab.com/FedeG/django-react-workshop"
+  ></script>
+  <script src="//unpkg.com/docsify/lib/plugins/search.min.js"></script>
+  <script src="//unpkg.com/prismjs/components/prism-bash.min.js"></script>
+  <script src="//unpkg.com/prismjs/components/prism-javascript.min.js"></script>
+  <script src="//unpkg.com/prismjs/components/prism-python.min.js"></script>
+  <script src="//unpkg.com/prismjs/components/prism-c.min.js"></script>
+  <script src="//unpkg.com/prismjs/components/prism-cpp.min.js"></script>
+  <script src="//unpkg.com/prismjs/components/prism-diff.min.js"></script>
+  <script src="//unpkg.com/prismjs/components/prism-django.min.js"></script>
+  <script src="//unpkg.com/prismjs/components/prism-docker.min.js"></script>
 </html>

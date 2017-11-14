@@ -11,4 +11,4 @@
 - Uses websockets for realtime updates
 
 [GitLab](https://gitlab.com/FedeG/django-react-workshop)
-[Get Started](/en/)
+[Get Started](#quick-start)
