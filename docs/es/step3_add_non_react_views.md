@@ -7,7 +7,7 @@
 Queremos mostrar que ReactJS se puede usar fácilmente con un proyecto existente, por lo que
 agregaremos algunas "vistas heredadas" para simular que esta es una proyecto existente de Django.
 
-#### Agregué las siguientes líneas a **workshop/urls.py**:
+### Agregué las siguientes líneas a **workshop/urls.py**:
 
 ```python
 from django.conf.urls import include, url
@@ -19,7 +19,7 @@ urlpatterns = [
 ]
 ```
 
-#### Agregué las siguientes líneas a **links/urls.py**:
+### Agregué las siguientes líneas a **links/urls.py**:
 
 ```python
 from django.conf.urls import url
@@ -94,7 +94,7 @@ y **links/templates/view2.html**:
 ## Resultado
 En este punto, puedes ejecutar un proyecto con el administrador de Django.
 
-#### Ejecutar proyecto
+### Ejecutar proyecto
 ```
 # con docker
 docker exec -it workshop ./workshop/manage.py runserver 0.0.0.0:8000

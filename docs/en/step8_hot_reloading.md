@@ -49,7 +49,7 @@ if (module.hot) module.hot.accept();
 ## Result
 Ready?
 
-#### Run webpack dev server
+### Run webpack dev server
 In one terminal window, start the webpack-dev-server with:
 ```javascript
 # npm start is equal to node server.js
@@ -62,7 +62,7 @@ cd workshop/front
 npm start
 ```
 
-#### Run Django dev server
+### Run Django dev server
 In another terminal window, start the Django dev server:
 ```
 # with docker

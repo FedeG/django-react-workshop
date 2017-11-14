@@ -18,7 +18,7 @@ Si bien **ESLint** incluirá algunas reglas integradas para que sea útil desde 
 
 ## Instalar eslint
 
-#### Actualizar dependencias en package.json
+### Actualizar dependencias en package.json
 Vamos a usar devDependencies porque estas dependencias son de desarrollo.
 Necesitamos agregar lo siguiente en nuestro `workshop/front/package.json`:
 ```diff
@@ -44,7 +44,7 @@ Necesitamos agregar lo siguiente en nuestro `workshop/front/package.json`:
   ...
 ```
 
-#### Actualizar scripts de package.json
+### Actualizar scripts de package.json
 Necesitamos agregar lo siguiente en nuestro `workshop/front/package.json`:
 ```diff
 "scripts": {
@@ -56,7 +56,7 @@ Necesitamos agregar lo siguiente en nuestro `workshop/front/package.json`:
    },
 ```
 
-#### Instalar dependencias
+### Instalar dependencias
 ```bash
 # con docker
 docker exec -it workshopjs yarn install
@@ -87,7 +87,7 @@ Y finalmente vamos a actualizar el archivo `.gitignore` y agregar `workshop/fron
 ## Resultado
 En este punto, podes ejecutar **eslint**.
 
-#### Ejecutar eslint con reporte en consola
+### Ejecutar eslint con reporte en consola
 ```bash
 # con docker
 docker exec -it workshopjs npm run eslint
@@ -97,7 +97,7 @@ cd workshop/front
 npm run eslint
 ```
 
-##### Leer reporte en consola de eslint
+#### Leer reporte en consola de eslint
 El comando **eslint** retorna:
 ```javascript
 /src/workshop/front/src/components/App/index.jsx
@@ -120,7 +120,7 @@ El comando **eslint** retorna:
   7 errors, 0 warnings potentially fixable with the `--fix` option.
 ```
 
-#### Corrección automática de errores
+### Corrección automática de errores
 **Eslint** tiene una función que arregle automaticamente algunos errores
 ```bash
 # con docker
@@ -131,7 +131,7 @@ cd workshop/front
 ./node_modules/.bin/eslint --ext .jsx --ext .js src --fix
 ```
 
-##### Leer reporte en consola de eslint despues de **--fix**
+#### Leer reporte en consola de eslint despues de **--fix**
 El comando **eslint** retorna:
 ```javascript
 /src/workshop/front/src/components/Headline/index.js
@@ -140,7 +140,7 @@ El comando **eslint** retorna:
 ✖ 1 problems (1 errors, 0 warnings)
 ```
 
-#### Ejecutar eslint con reporte html
+### Ejecutar eslint con reporte html
 ```bash
 # con docker
 docker exec -it workshopjs npm run eslint-report
@@ -150,7 +150,7 @@ cd workshop/front
 npm run eslint-report
 ```
 
-##### Leer reporte html de eslint
+#### Leer reporte html de eslint
 Abri **workshop/front/report.html** en tu navegador.
 
 Y finalmente, podrías arreglar los eslints que el linter nos devuelve.

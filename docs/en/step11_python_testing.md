@@ -11,7 +11,7 @@ Install **pytest**, **pytest-django**, **pytest-cov** (for coverage report) and 
 pip install pytest pytest-django pytest-cov django_dynamic_fixture
 ```
 
-#### Update requirements-dev
+### Update requirements-dev
 We use requirements-dev because this dependencies are only development dependencies.
 ```bash
 # with docker
@@ -113,18 +113,18 @@ class Tag(models.Model):
 +
 ```
 
-#### Create tests:
+### Create tests:
 
-#### Notes:
+### Notes:
 These concepts are important for this step:
 - [pytest.mark](https://docs.pytest.org/en/latest/mark.html)
 - [pytest.mark.django_db](http://pytest-django.readthedocs.io/en/latest/helpers.html#pytest-mark-django-db-transaction-false-request-database-access)
 - [django_dynamic_fixture](http://django-dynamic-fixture.readthedocs.io/en/latest/overview.html#basic-example-of-usage)
 
-#### Create tests folder:
+### Create tests folder:
 We create folder **workshop/links/tests/** and **workshop/links/tests/__init__.py** file.
 
-#### Create tests for utils
+### Create tests for utils
 In **workshop/links/tests/test_utils.py**:
 ```python
 """
@@ -153,7 +153,7 @@ def test_is_similar_should_call_SequenceMatcher(sequence_matcher_mock):
     sequence_matcher_mock.assert_called_with(a='python', b='pytohn')
 ```
 
-#### Create tests for Tag model
+### Create tests for Tag model
 In **workshop/links/tests/test_tag.py**:
 ```python
 """
@@ -234,7 +234,7 @@ And finally we should update `.gitignore` file and add `.coverage`, `.cache` and
 ## Result
 At this point, you can run **pytest** and read coverage report.
 
-#### Run pytest
+### Run pytest
 ```bash
 # with docker
 docker exec -it workshop bash -c 'cd workshop; py.test --cov-report term-missing --cov-report html --cov'
@@ -244,7 +244,7 @@ cd workshop
 py.test --cov-report term-missing --cov-report html --cov
 ```
 
-#### Read pytest report
+### Read pytest report
 **pytest** command returns:
 ```c++
 ============================= test session starts ==============================
@@ -281,7 +281,7 @@ Coverage HTML written to dir htmlcov
 =========================== 8 passed in 2.88 seconds ===========================
 ```
 
-#### Read pytest html report
+### Read pytest html report
 Open `workshop/htmlcov/index.html` in your browser.
 
 [Step 12: React testing](/en/step12_react_testing)

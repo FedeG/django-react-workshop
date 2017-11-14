@@ -10,7 +10,7 @@ Lo segundo es agregar en **http://localhost:8000/links/** en titulo y la lista d
 ## Cambio de nombres:
 Vamos a cambiar App por LinksDetail en varias partes:
 
-#### Mover archivos
+### Mover archivos
 
 ```bash
 # Componentes
@@ -31,7 +31,7 @@ mv workshop/front/src/views/App.jsx workshop/front/src/views/LinksDetail.jsx
 mv workshop/links/templates/view1.html workshop/links/templates/link_detail.html
 ```
 
-#### Cambiar el nombre en el codigo js
+### Cambiar el nombre en el codigo js
 En la vista de **LinksDetail** (**workshop/front/src/views/LinksDetail.jsx**):
 ```diff
 import React from 'react'
@@ -83,7 +83,7 @@ import Headline from '../Headline'
       </div>
 ```
 
-#### Actualizar configuración de webpack
+### Actualizar configuración de webpack
 En **workshop/front/webpack.base.config.js**:
 ```diff
 entry: {
@@ -104,7 +104,7 @@ config.entry = {
 }
 ```
 
-#### Actualizar la template de link_detail
+### Actualizar la template de link_detail
 En **workshop/links/templates/link_detail.html**:
 ```diff
   {% render_bundle 'vendors' %}
@@ -114,7 +114,7 @@ En **workshop/links/templates/link_detail.html**:
 
 ## Crear la pagina de links con la lista de links
 
-#### Agregar el titulo a la pagina
+### Agregar el titulo a la pagina
 En **workshop/links/templates/base.html**:
 ```diff
     <meta charset="utf-8">
@@ -161,7 +161,7 @@ import LinksDetail from '../containers/LinksDetail'
 Nota: a la componente **LinksDetail** se le esta pasando el parametro links que
 viene en las properties que se le mandaron a la función **render_components**
 
-#### Agregar el parametro links al container y a la componente **LinksDetail**
+### Agregar el parametro links al container y a la componente **LinksDetail**
 
 En **workshop/front/src/containers/LinksDetail/index.jsx**:
 ```diff
@@ -215,7 +215,7 @@ export default class LinksDetail extends React.Component {
 
 ## Enviar contexto desde Django
 
-#### Vista de Django
+### Vista de Django
 Vamos a agregar una vista de Django para enviar la lista de links.
 En **workshop/links/views.py**:
 ```python
@@ -241,7 +241,7 @@ def links_detail(request):
         })
 ```
 
-#### Agregar la url para la vista que creamos
+### Agregar la url para la vista que creamos
 En **workshop/links/urls.py**:
 ```diff
 from django.conf.urls import url
@@ -257,7 +257,7 @@ urlpatterns = [
 ]
 ```
 
-#### Enviar desde la template el contexto a React
+### Enviar desde la template el contexto a React
 En **workshop/links/templates/link_detail.html**:
 ```diff
   {% render_bundle 'vendors' %}
@@ -298,16 +298,16 @@ export default class LinkDetail extends React.Component {
 }
 ```
 
-#### Agregar LinkDetail a LinksDetail
+### Agregar LinkDetail a LinksDetail
 En **workshop/front/src/components/LinksDetail/index.jsx**:
 
-##### Importar LinkDetail
+#### Importar LinkDetail
  ```diff
  import Headline from '../Headline'
 +import LinkDetail from '../LinkDetail'
 ```
 
-##### Mostrar LinkDetail de cada link
+#### Mostrar LinkDetail de cada link
 ```diff
    render() {
 +    const { links } = this.props;
@@ -329,7 +329,7 @@ Como esto es no tan impotante en este paso esta en otro archivo, si queres ver c
 ## Resultado
 En este punto, ya podemos ejecutar el servidor y ver la lista de links en `http://localhost:8000/links/`
 
-#### En una terminal corremos el servidor de React
+### En una terminal corremos el servidor de React
 ```bash
 # con docker
 docker exec -it workshopjs npm start
@@ -339,7 +339,7 @@ cd workshop/front
 npm start
 ```
 
-#### En otra terminal corremos el servidor de Django
+### En otra terminal corremos el servidor de Django
 ```bash
 # con docker
 docker exec -it workshop ./workshop/manage.py runserver 0.0.0.0:8000

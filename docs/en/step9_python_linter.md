@@ -27,7 +27,7 @@ docker exec -it workshop pip install pylint pylint-django
 pip install pylint pylint-django
 ```
 
-#### Create requirements-dev
+### Create requirements-dev
 We use requirements-dev because this dependencies are only development dependencies.
 ```bash
 # with docker
@@ -40,7 +40,7 @@ pip freeze | grep pylint > requirements-dev.txt
 ## Create .pylintrc
 **.pylintrc** file have all rules for **pylint**.
 
-#### Generate default rcfile
+### Generate default rcfile
 ```bash
 # with docker
 docker exec -it workshop pylint --generate-rcfile > .pylintrc
@@ -49,7 +49,7 @@ docker exec -it workshop pylint --generate-rcfile > .pylintrc
 pylint --generate-rcfile > .pylintrc
 ```
 
-#### Customize our rcfile
+### Customize our rcfile
 ```diff
  # Add files or directories to the blacklist. They should be base names, not
  # paths.
@@ -65,7 +65,7 @@ pylint --generate-rcfile > .pylintrc
 ## Result
 At this point, you can run **pylint**.
 
-#### Run pylint
+### Run pylint
 ```bash
 # with docker
 docker exec -it workshop pylint --output-format=colorized --load-plugins pylint_django workshop/workshop workshop/links
@@ -74,7 +74,7 @@ docker exec -it workshop pylint --output-format=colorized --load-plugins pylint_
 pylint --output-format=colorized --load-plugins pylint_django workshop/workshop workshop/links
 ```
 
-#### Read pylint report
+### Read pylint report
 **pylint** command returns:
 ```c++
 ************* Module links.models

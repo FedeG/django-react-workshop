@@ -47,7 +47,7 @@ if (module.hot) module.hot.accept();
 ## Resultado
 Listo?
 
-#### Ejecutar servidor desarrollo de webpack
+### Ejecutar servidor desarrollo de webpack
 En una terminal, iniciaremos el servidor de desarrollo de webpack con:
 ```javascript
 # npm start es igual a node server.js
@@ -60,7 +60,7 @@ cd workshop/front
 npm start
 ```
 
-#### Ejecute el servidor Django Dev
+### Ejecute el servidor Django Dev
 En otra ventana de terminal, inicie el servidor de desarrollo de Django:
 ```
 # con docker

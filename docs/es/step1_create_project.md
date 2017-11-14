@@ -46,7 +46,7 @@ Y finalmente deberíamos crear un archivo `.gitignore` y agregar `*.pyc` y
 ## Resultado
 En este punto, podes ejecutar el proyecto.
 
-#### Ejecutar projecto
+### Ejecutar projecto
 ```
 # con docker
 docker exec -it workshop ./workshop/manage.py runserver 0.0.0.0:8000

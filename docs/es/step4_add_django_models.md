@@ -8,7 +8,7 @@ Queremos mostrar que ReactJS se puede usar fácilmente con un proyecto existente
 agregaremos algunos modelos para simular que este es un projecto existente
 de Django.
 
-#### Agregué las siguientes líneas a **workshop/links/models.py**:
+### Agregué las siguientes líneas a **workshop/links/models.py**:
 
 ```python
 from django.db import models
@@ -56,14 +56,14 @@ class LinkTag(models.Model):
         verbose_name_plural = _('link x tag')
 ```
 
-##### Notas
+### Notas
 - Si nunca viste `gettext` para las traducciones, te recomiendo que aprendas primero sobre [traducción](https://docs.djangoproject.com/en/1.11/topics/i18n/translation/).
 - Si nunca viste `ManyToManyField` con` through`, podrías tomarte un tiempo
 y aprender sobre [campos adicionales en relaciones muchos a muchos] (https://docs.djangoproject.com/en/1.11/topics/db/models/#extra-fields-on-many-to-many-relationships) primero.
 
 ## Agregar modelos al admin de Django
 
-#### Agregué las siguientes líneas a **workshop/links/admin.py**:
+### Agregué las siguientes líneas a **workshop/links/admin.py**:
 
 ```python
 from django.contrib import admin
@@ -84,7 +84,7 @@ class TagAdmin(admin.ModelAdmin):
     pass
 ```
 
-#### Crear migraciones para crear nuevos modelos en la db
+### Crear migraciones para crear nuevos modelos en la db
 Generemos migraciones:
 ```bash
 # con docker
@@ -94,7 +94,7 @@ docker exec -it workshop ./workshop/manage.py makemigrations
 ./workshop/manage.py makemigrations
 ```
 
-#### Actualizar db con nuevos modelos
+### Actualizar db con nuevos modelos
 Actualicemos la db:
 ```bash
 # con docker
@@ -104,7 +104,7 @@ docker exec -it workshop ./workshop/manage.py migrate
 ./workshop/manage.py migrate
 ```
 
-#### Importar datos de ejemplo
+### Importar datos de ejemplo
 
 A continuación, vamos a agregar algunos ejemplos a los modelos.
 
@@ -125,7 +125,7 @@ docker exec -it workshop ./workshop/manage.py loaddata data/links.json
 Si nunca vista traducciones de Django, podría tomarse un tiempo
 y aprender primero sobre [traducciones](https://docs.djangoproject.com/en/1.11/topics/i18n/translation/).
 
-#### Agregar configuraciones para la traducción en la configuración de Django
+### Agregar configuraciones para la traducción en la configuración de Django
 
 ```diff
 ...
@@ -172,7 +172,7 @@ MIDDLEWARE = [
 +]
 ```
 
-#### Crear traducción para nuevos idiomas (es)
+### Crear traducción para nuevos idiomas (es)
 
 ```bash
 # con docker
@@ -188,7 +188,7 @@ mkdir workshop/locale
 ```
 Completar las traducciones del archivo: **workshop/locale/es/LC_MESSAGES/django.po**
 
-#### Compilar la traducción para el nuevo idioma (es)
+### Compilar la traducción para el nuevo idioma (es)
 
 ```
 # con docker
@@ -204,7 +204,7 @@ Y finalmente debemos actualizar el archivo `.gitignore`, agregar `*.mo`.
 ## Resultado
 En este punto, pudes ejecutar el proyecto con el admin y traducciones.
 
-#### Ejecutar proyecto
+### Ejecutar proyecto
 ```
 # con docker
 docker exec -it workshop ./workshop/manage.py runserver 0.0.0.0:8000

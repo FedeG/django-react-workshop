@@ -8,7 +8,7 @@ We want to show that ReactJS can easily be used with an existing project, so
 we will add a few "legacy-views" to simulate that this is an old existing
 Django project.
 
-#### I added the following lines to **workshop/urls.py**:
+### I added the following lines to **workshop/urls.py**:
 
 ```python
 from django.conf.urls import include, url
@@ -20,7 +20,7 @@ urlpatterns = [
 ]
 ```
 
-#### I added the following lines to **links/urls.py**:
+### I added the following lines to **links/urls.py**:
 
 ```python
 from django.conf.urls import url
@@ -95,7 +95,7 @@ and **links/templates/view2.html**:
 ## Result
 At this point, you can run project.
 
-#### Run project
+### Run project
 ```
 # with docker
 docker exec -it workshop ./workshop/manage.py runserver 0.0.0.0:8000

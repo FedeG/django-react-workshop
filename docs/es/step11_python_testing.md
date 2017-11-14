@@ -11,7 +11,7 @@ Instalamos **pytest**, **pytest-django**, **pytest-cov** (para reporte de cobert
 pip install pytest pytest-django pytest-cov django_dynamic_fixture
 ```
 
-#### Actualizar requirements-dev
+### Actualizar requirements-dev
 Usamos requirements-dev porque estas dependencias son dependencias de desarrollo.
 ```bash
 # con docker
@@ -112,18 +112,18 @@ class Tag(models.Model):
 +
 ```
 
-#### Crear tests:
+### Crear tests:
 
-#### Notas:
+### Notas:
 Estos conceptos son importantes para este paso:
 - [pytest.mark](https://docs.pytest.org/en/latest/mark.html)
 - [pytest.mark.django_db](http://pytest-django.readthedocs.io/en/latest/helpers.html#pytest-mark-django-db-transaction-false-request-database-access)
 - [django_dynamic_fixture](http://django-dynamic-fixture.readthedocs.io/en/latest/overview.html#basic-example-of-usage)
 
-#### Crear carpeta de tests:
+### Crear carpeta de tests:
 Vamos a crear la carpeta **workshop/links/tests/** y el archivo **workshop/links/tests/__init__.py**.
 
-#### Crear tests para utils
+### Crear tests para utils
 En **workshop/links/tests/test_utils.py**:
 ```python
 """
@@ -152,7 +152,7 @@ def test_is_similar_should_call_SequenceMatcher(sequence_matcher_mock):
     sequence_matcher_mock.assert_called_with(a='python', b='pytohn')
 ```
 
-#### Crear tests para el modelo Tag
+### Crear tests para el modelo Tag
 En **workshop/links/tests/test_tag.py**:
 ```python
 """
@@ -233,7 +233,7 @@ Y finalmente tenemos que actualizar el archivo `.gitignore` y agregarle `.covera
 ## Resultado
 En este punto, podemos ejecutar **pytest** y leer los reportes.
 
-#### Ejecutar pytest
+### Ejecutar pytest
 ```bash
 # con docker
 docker exec -it workshop bash -c 'cd workshop; py.test --cov-report term-missing --cov-report html --cov'
@@ -243,7 +243,7 @@ cd workshop
 py.test --cov-report term-missing --cov-report html --cov
 ```
 
-#### Leer reporte de pytest
+### Leer reporte de pytest
 El comando **pytest** retorna:
 ```c++
 ============================= test session starts ==============================
@@ -280,7 +280,7 @@ Coverage HTML written to dir htmlcov
 =========================== 8 passed in 2.88 seconds ===========================
 ```
 
-#### Leer reporte html de pytest
+### Leer reporte html de pytest
 Vamos a abrir `workshop/htmlcov/index.html` en el navegador para ver el reporte html.
 
 [Paso 12: React testing](/es/step12_react_testing)

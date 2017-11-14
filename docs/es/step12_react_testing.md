@@ -8,7 +8,7 @@
 
 ## Instalar jest y enzyme
 
-#### Actualizar dependencias en el package.json
+### Actualizar dependencias en el package.json
 Usamos devDependencies porque estas dependencias porque son dependencias de desarrollo.
 Necesitamos agregar lo siguiente en nuestro `workshop/front/package.json`:
 ```diff
@@ -46,7 +46,7 @@ Necesitamos agregar lo siguiente en nuestro `workshop/front/package.json`:
   ...
 ```
 
-#### Actualizar scripts del package.json
+### Actualizar scripts del package.json
 Necesitamos agregar lo siguiente en nuestro `workshop/front/package.json`:
 ```diff
 "scripts": {
@@ -58,7 +58,7 @@ Necesitamos agregar lo siguiente en nuestro `workshop/front/package.json`:
    },
 ```
 
-#### Actualizar package.json con la configuración de jest
+### Actualizar package.json con la configuración de jest
 Necesitamos agregar lo siguiente en nuestro `workshop/front/package.json`:
 ```diff
 +  "jest": {
@@ -114,7 +114,7 @@ Necesitamos agregar lo siguiente en nuestro `workshop/front/package.json`:
 +   }
 ```
 
-#### Instalar las dependencias
+### Instalar las dependencias
 ```bash
 # con docker
 docker exec -it workshopjs yarn install
@@ -139,7 +139,7 @@ global.$ = jest.fn()
 
 ## Crear tests
 
-#### Crear tests para la componente Headline
+### Crear tests para la componente Headline
 En **workshop/front/src/components/Headline/Headline.spec.jsx**:
 ```javascript
 import React from 'react';
@@ -170,7 +170,7 @@ describe('Headline Component', () => {
 })
 ```
 
-#### Crear tests para la componente App
+### Crear tests para la componente App
 En **workshop/front/src/components/App/App.spec.jsx**:
 ```javascript
 import React from 'react';
@@ -192,7 +192,7 @@ describe('App Component', () => {
 })
 ```
 
-#### Crear tests para el container App
+### Crear tests para el container App
 En **workshop/front/src/containers/App.spec.jsx**:
 ```javascript
 import React from 'react';
@@ -220,7 +220,7 @@ Y finalmente tenemos que actualizar el archivo `.gitignore` y agregarle `coverag
 ## Resultado
 En este punto, ya podemos ejecutar **jest** y leer el reporte de cobertura.
 
-#### Ejectutar jest
+### Ejectutar jest
 ```bash
 # con docker
 docker exec -it workshopjs npm test
@@ -230,7 +230,7 @@ cd workshop/front
 npm test
 ```
 
-#### Leer el reporte de jest
+### Leer el reporte de jest
 El comando **jest** nos retornar:
 ```c++
 npm info it worked if it ends with ok
@@ -286,7 +286,7 @@ npm info lifecycle links@0.0.1~posttest: links@0.0.1
 npm info ok
 ```
 
-#### Leer el reporte html de jest
+### Leer el reporte html de jest
 Abri `workshop/front/coverage/index.html` en tu navegador.
 
 [Paso 13: Agregar contexto de Django a React](/es/step13_django_context_in_react)

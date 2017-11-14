@@ -22,7 +22,7 @@ Change `workshop/links/templates/view1.html` so that it looks like this:
 
 ## Update Django settings
 
-#### Add WEBPACK_LOADER settings
+### Add WEBPACK_LOADER settings
 In `workshop/workshop/settings.py`:
 ```python
 WEBPACK_LOADER = {
@@ -33,7 +33,7 @@ WEBPACK_LOADER = {
 }
 ```
 
-##### Notes:
+#### Notes:
 - `BUNDLE_DIR_NAME` tells Django in which folder within the `static` folder it
 can find our bundle.
 - `STATS_FILE` tells Django where it can find the JSON-file that maps entry-point
@@ -41,7 +41,7 @@ names to bundle files. It is because of this stats file that we can use
 `{% render_bundle 'App' %}` in our template. You will also find this `App`
 name in your `webpack.base.config.js` file under the `entry` attribute.
 
-#### Add STATIC_ROOT and update STATICFILES_DIRS
+### Add STATIC_ROOT and update STATICFILES_DIRS
 ```diff
 STATIC_URL = '/static/'
 +STATIC_ROOT = os.path.join(BASE_DIR, 'static')
@@ -85,7 +85,7 @@ And finally we should update `.gitignore` file and add `workshop/static/`.
 ## Result
 At this point, you can run project.
 
-#### Run project
+### Run project
 ```
 # with docker
 docker exec -it workshop ./workshop/manage.py runserver 0.0.0.0:8000

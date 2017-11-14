@@ -43,7 +43,7 @@ docker exec -it workshop ./workshop/manage.py createsuperuser
 ## Resultado
 En este punto, puedes ejecutar un proyecto con el administrador de Django.
 
-#### Ejecutar proyecto
+### Ejecutar proyecto
 ```
 # con docker
 docker exec -it workshop ./workshop/manage.py runserver 0.0.0.0:8000

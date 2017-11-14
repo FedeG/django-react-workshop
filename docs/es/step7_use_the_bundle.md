@@ -22,7 +22,7 @@ Cambiamos `workshop/links/templates/view1.html` para que se vea así:
 
 ## Actualizar la configuración de Django
 
-#### Agregar la configuración de WEBPACK_LOADER
+### Agregar la configuración de WEBPACK_LOADER
 En `workshop/workshop/settings.py`:
 ```python
 WEBPACK_LOADER = {
@@ -33,14 +33,14 @@ WEBPACK_LOADER = {
 }
 ```
 
-##### Notas:
+#### Notas:
 - `BUNDLE_DIR_NAME` le dice a Django en qué carpeta dentro de la carpeta `static`
 puede encontrar nuestro paquete.
 - `STATS_FILE` le dice a Django dónde puede encontrar el archivo JSON que mapea los
 nombres de la componentes con los paquetes. Es por este archivo que podemos usar
 `{% render_bundle 'App'%}` en nuestra template.
 
-#### Añadir STATIC_ROOT y actualizar STATICFILES_DIRS
+### Añadir STATIC_ROOT y actualizar STATICFILES_DIRS
 ```diff
 STATIC_URL = '/static/'
 +STATIC_ROOT = os.path.join(BASE_DIR, 'static')
@@ -82,7 +82,7 @@ docker exec -it workshop ./workshop/manage.py collectstatic
 ## Resultado
 En este punto, puedes correr el proyecto.
 
-#### Correr el proyecto
+### Correr el proyecto
 ```
 # con docker
 docker exec -it workshop ./workshop/manage.py runserver 0.0.0.0:8000

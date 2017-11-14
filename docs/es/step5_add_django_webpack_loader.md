@@ -10,7 +10,7 @@ Vamos paso a paso.
 
 ## Antes que nada, necesitamos instalar webpack-loader:
 
-#### Instalar django-webpack-loader
+### Instalar django-webpack-loader
 ```bash
 # con docker
 docker exec -it workshop pip install django-webpack-loader
@@ -19,13 +19,13 @@ docker exec -it workshop pip install django-webpack-loader
 pip install django-webpack-loader
 ```
 
-#### Actualizamos requirements
+### Actualizamos requirements
 
 También vamos a agregararlo al `requirements.txt`.
 Sugerencia: cada vez que instales algo con `pip`, ejecuta `pip freeze`
 inmediatamente después y agrega los paquetes con su número de versión a `requirements.txt`.
 
-##### Comando:
+#### Comando:
 ```bash
 # con docker
 docker exec -it workshop pip freeze > requirements.txt
@@ -34,7 +34,7 @@ docker exec -it workshop pip freeze > requirements.txt
 pip freeze > requirements.txt
 ```
 
-#### Agregar webpack_loader a INSTALLED_APPS en Django settings
+### Agregar webpack_loader a INSTALLED_APPS en Django settings
 A continuación, tenemos que agregar esta aplicación a la configuración  de
 `INSTALLED_APPS` en nuestro **workshop/workshop/settings.py**:
 
@@ -45,7 +45,7 @@ INSTALLED_APPS = [
 ]
 ```
 
-#### Agregar carpetas con archivos estáticos
+### Agregar carpetas con archivos estáticos
 Webpack se trata de crear "paquetes" (también conocidos como archivos
 minificados de JavaScript). Estos paquetes se guardarán en nuestra carpeta `static`,
 como todos los archivos css y js que siempre usamos en Django.
@@ -59,7 +59,7 @@ STATICFILES_DIRS = [
 ]
 ```
 
-#### Instalar ReactJs y sus dependencias
+### Instalar ReactJs y sus dependencias
 Luego tenemos que crear un archivo `package.json` (en **workshop/front/package.json**),
 que es similar a el archivo `requirements.txt` de Python:
 
@@ -108,7 +108,7 @@ mucho más allá del alcance de este paso. Mucho de esto tiene que ver con
 [Babel](http://babeljs.io), que es una herramienta que "transpila" la nueva
 sintaxis de JavaScript en algo que admiten los navegadores actuales.
 
-#### Instalar nodejs, npm y yarn
+### Instalar nodejs, npm y yarn
 ```bash
 # con docker
 docker run -d -it --name workshopjs -v $PWD:/src -p 3000:3000 --workdir /src/workshop/front node:8 bash
@@ -121,7 +121,7 @@ npm install yarn --global
 ```
 Si nunca has visto el comando `yarn`, te aconsejo que leas sobre [yarn vs npm](https://medium.com/@nikjohn/facebooks-yarn-vs-npm-is-yarn-really-better-1890b3ea6515) primero.
 
-#### Instalat dependencias
+### Instalat dependencias
 Cuando haya creado el archivo **package.json**, podes instalar los paquetes:
 
 ```bash
@@ -136,7 +136,7 @@ Este comando creará un `yarn.lock` con todas las versiones de dependencias (sim
 y crea una carpeta `node_modules` con las dependencias, por lo que también deberíamos agregar esa carpeta a
 `.gitignore`.
 
-#### Agregar configuración de webpack
+### Agregar configuración de webpack
 Después de ejecutar `yarn install`, deberías poder utilizar `webpack` (en teoría).
 En la práctica, primero necesitas crear una configuración. Voy a adelantar un
 poco y ya lo divido en dos archivos porque esto será bastante
@@ -239,7 +239,7 @@ Este modulo crea un archivo JSON cada vez que generamos traspilados de ReactJs.
 Django puede entonces leer ese archivo JSON y sabrá qué paquete pertenece a qué
 nombre en la aplicación (este tendrá más sentido más adelante).
 
-#### Agregar la configuración base para webpack local
+### Agregar la configuración base para webpack local
 Vamos a crear un archivo con configuración base para el webpack local,
 `workshop/front/webpack.local-settings.js`  y se ve así:
 ```javascript
@@ -248,7 +248,7 @@ module.exports = {
 }
 ```
 
-#### Agregar configuración de babel
+### Agregar configuración de babel
 Usaremos la sintaxis de JavaScript de ES2015 para todos nuestro códifo JavaScript.
 Un complemento llamado `babel` transpilara nuevamente el código avanzado a
 algo que los navegadores pueden entender. Para que esto funcione, tenemos que crear

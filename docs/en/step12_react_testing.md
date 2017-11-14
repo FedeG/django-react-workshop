@@ -8,7 +8,7 @@
 
 ## Install jest and enzyme
 
-#### Update package.json dependencies
+### Update package.json dependencies
 We use devDependencies because these dependencies are only development dependencies.
 We need to add the following in our `workshop/front/package.json`:
 ```diff
@@ -46,7 +46,7 @@ We need to add the following in our `workshop/front/package.json`:
   ...
 ```
 
-#### Update package.json scripts
+### Update package.json scripts
 We need to add the following in our `workshop/front/package.json`:
 ```diff
 "scripts": {
@@ -58,7 +58,7 @@ We need to add the following in our `workshop/front/package.json`:
    },
 ```
 
-#### Update package.json with jest configuration
+### Update package.json with jest configuration
 We need to add the following in our `workshop/front/package.json`:
 ```diff
 +  "jest": {
@@ -114,7 +114,7 @@ We need to add the following in our `workshop/front/package.json`:
 +   }
 ```
 
-#### Install dependencies
+### Install dependencies
 ```bash
 # with docker
 docker exec -it workshopjs yarn install
@@ -139,7 +139,7 @@ global.$ = jest.fn()
 
 ## Create tests
 
-#### Create tests for Headline component
+### Create tests for Headline component
 In **workshop/front/src/components/Headline/Headline.spec.jsx**:
 ```javascript
 import React from 'react';
@@ -170,7 +170,7 @@ describe('Headline Component', () => {
 })
 ```
 
-#### Create tests for App component
+### Create tests for App component
 In **workshop/front/src/components/App/App.spec.jsx**:
 ```javascript
 import React from 'react';
@@ -192,7 +192,7 @@ describe('App Component', () => {
 })
 ```
 
-#### Create tests for App container
+### Create tests for App container
 In **workshop/front/src/containers/App.spec.jsx**:
 ```javascript
 import React from 'react';
@@ -220,7 +220,7 @@ And finally we should update `.gitignore` file and add `coverage/` and `jest_*`.
 ## Result
 At this point, you can run **jest** and read coverage report.
 
-#### Run jest
+### Run jest
 ```bash
 # with docker
 docker exec -it workshopjs npm test
@@ -230,7 +230,7 @@ cd workshop/front
 npm test
 ```
 
-#### Read jest report
+### Read jest report
 **jest** command returns:
 ```c++
 npm info it worked if it ends with ok
@@ -286,7 +286,7 @@ npm info lifecycle links@0.0.1~posttest: links@0.0.1
 npm info ok
 ```
 
-#### Read jest html report
+### Read jest html report
 Open `workshop/front/coverage/index.html` in your browser.
 
 [Step 13: Add Django context to React](/en/step13_django_context_in_react)

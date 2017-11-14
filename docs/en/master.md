@@ -32,7 +32,7 @@ Each branch has the documentation in Spanish (`README-es.md`) and in English (` 
 My recommendation for the course is you install requirements before start.
 I want use docker (as you can see in each step) but also exists option without docker.
 
-#### Install with docker
+### Install with docker
 ```bash
 # Clone
 git clone https://gitlab.com/FedeG/django-react-workshop.git
@@ -49,9 +49,9 @@ docker run -d -it --name workshopjs -v $PWD:/src -p 3000:3000 --workdir /src/wor
 docker exec -it workshopjs npm install yarn --global
 docker exec -it workshopjs yarn install
 ```
-##### Note: in the event there will already be an all-inclusive image.
+#### Note: in the event there will already be an all-inclusive image.
 
-#### Install without docker
+### Install without docker
 ```bash
 # Clone
 git clone https://gitlab.com/FedeG/django-react-workshop.git
