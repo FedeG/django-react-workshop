@@ -10,7 +10,7 @@ export default class LinksDetail extends React.Component {
       PropTypes.shape({
         pk: PropTypes.number
       })
-    )
+    ).isRequired
   }
 
   render() {
