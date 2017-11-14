@@ -68,6 +68,9 @@ function pythonlint {
 }
 
 function pythontest {
+  cd workshop/front
+  timeout 10 npm start || true
+  cd -
   cd workshop/
   py.test --cov-report term-missing --cov-report html --cov
   cd -
