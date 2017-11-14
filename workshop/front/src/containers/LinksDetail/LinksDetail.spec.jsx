@@ -34,7 +34,8 @@ describe('LinksDetail Component', () => {
     it('should render the component properly', () => {
       const wrapper = shallow(<LinksDetail links={links}/>);
       const itemInDOM = `<p>${link.fields.name}: <a href="${link.fields.url}">${link.fields.url}</a></p>`;
-      const componentInDOM = `<div class="container"><div class="row"><div class="col-sm-12"><h1>Links</h1>${itemInDOM}</div></div></div>`;
+      const button = '<button class="btn btn-success" type="button">Refresh</button>';
+      const componentInDOM = `<div class="container"><div class="row"><div class="col-sm-12"><h1>Links</h1>${button}<div style="margin-top:20px">${itemInDOM}</div></div></div></div>`;
       expect(wrapper.html()).toBe(componentInDOM);
     })
 
