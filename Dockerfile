@@ -11,12 +11,14 @@ RUN apt-get install -y nodejs gettext \
   && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # Install python requirements
-COPY ./src/requirements.txt /usr/src/app/
+COPY ./requirements.txt /usr/src/app/
+COPY ./requirements-dev.txt /usr/src/app/
 RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir -r requirements-dev.txt
 
 # Install node modules
-COPY ./src/front/package.json /usr/src/app/front/
-COPY ./src/front/yarn.lock /usr/src/app/front/
+COPY ./workshop/front/package.json /usr/src/app/front/
+COPY ./workshop/front/yarn.lock /usr/src/app/front/
 WORKDIR /usr/src/app/front
 RUN npm install -g yarn webpack
 RUN yarn install
@@ -26,14 +28,14 @@ WORKDIR /usr/src/app
 COPY ./test.sh /usr/src/app/test.sh
 
 # Copy python code and collectstatics
-COPY ./src /usr/src/app
+COPY ./workshop /usr/src/app
+RUN mkdir -p /usr/src/app/links/static /usr/src/app/front/workshop/static
 RUN python manage.py collectstatic --noinput
 
 # Compile reactjs code
 RUN cd /usr/src/app/front && webpack --config webpack.prod.config.js
 
 # Compile .po files
-RUN sed -i 's@#~ @@g' /usr/src/app/locale/*/LC_MESSAGES/djangojs.po
 RUN python manage.py compilemessages
 
 EXPOSE 8000
