@@ -23,8 +23,8 @@ function install_js {
 }
 
 function install_python {
-   pip install -r requirements.txt
-   pip install -r requirements-dev.txt
+   pip install -r requirements.txt || pip3 install -r requirements.txt
+   pip install -r requirements-dev.txt || pip3 install -r requirements-dev.txt
 }
 
 function run_install {
