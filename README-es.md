@@ -25,9 +25,8 @@ Las ramas (pasos):
 - Paso 13: [Enviar contexto de Django en React](https://gitlab.com/FedeG/django-react-workshop/tree/step13_django_context_in_react)
 - Paso 14: [Api rest y fetch de datos](https://gitlab.com/FedeG/django-react-workshop/tree/step14_api_rest)
 - Paso 15: [Django channels y websockets](https://gitlab.com/FedeG/django-react-workshop/tree/step15_websockets_and_channels)
-- Paso 16: [Entorno de producción](https://gitlab.com/FedeG/django-react-workshop/tree/step16_going_to_production)
-- Paso 17: [Agregar Redux](https://gitlab.com/FedeG/django-react-workshop/tree/step17_add_redux)
-- Paso 18: [Css y scss en React](https://gitlab.com/FedeG/django-react-workshop/tree/step18_inline_styles)
+- Paso 16: [Agregar Redux](https://gitlab.com/FedeG/django-react-workshop/tree/step16_add_redux)
+- Paso 17: [Entorno de producción](https://gitlab.com/FedeG/django-react-workshop/tree/step17_going_to_production)
 
 Cada rama tiene la documentación en español (`README-es.md`) y en ingles (`README.md`).
 

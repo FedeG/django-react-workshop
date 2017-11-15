@@ -22,9 +22,8 @@ The branches (steps):
 - Step 13: [Django context in React](https://gitlab.com/FedeG/django-react-workshop/tree/step13_django_context_in_react)
 - Step 14: [api rest](https://gitlab.com/FedeG/django-react-workshop/tree/step14_api_rest)
 - Step 15: [websockets and channels](https://gitlab.com/FedeG/django-react-workshop/tree/step15_websockets_and_channels)
-- Step 16: [going to production](https://gitlab.com/FedeG/django-react-workshop/tree/step16_going_to_production)
-- Step 17: [add redux](https://gitlab.com/FedeG/django-react-workshop/tree/step17_add_redux)
-- Step 18: [inline styles and scss](https://gitlab.com/FedeG/django-react-workshop/tree/step18_inline_styles)
+- Step 16: [add redux](https://gitlab.com/FedeG/django-react-workshop/tree/step16_add_redux)
+- Step 17: [going to production](https://gitlab.com/FedeG/django-react-workshop/tree/step17_going_to_production)
 
 Each branch has the documentation in Spanish (`README-es.md`) and in English (` README.md`).
 

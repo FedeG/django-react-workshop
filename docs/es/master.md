@@ -10,24 +10,23 @@ proyecto productivo con estas tecnologías.
 Cada paso esta en una rama aparte con los archivos correspondiente del proyecto
 en ese paso determinado.
 Las ramas (pasos):
-- Paso 1: [Crear proyecto de Django](/es/step1_create_project)
-- Paso 2: [Crear aplicación de Django](/es/step2_create_django_app)
-- Paso 3: [Agregar una vista sin React](/es/step3_add_non_react_views)
-- Paso 4: [Agregar modelo de Django](/es/step4_add_django_models)
-- Paso 5: [Agregar django_webpack_loader](/es/step5_add_django_webpack_loader)
-- Paso 6: [Crear la primer componente de React](/es/step6_create_first_react_component)
-- Paso 7: [Usar el paquete con React](/es/step7_use_the_bundle)
-- Paso 8: [Recarga automática](/es/step8_hot_reloading)
-- Paso 9: [Python linter](/es/step9_python_linter)
-- Paso 10: [React linter](/es/step10_react_linter)
-- Paso 11: [Python testing](/es/step11_python_testing)
-- Paso 12: [React testing](/es/step12_react_testing)
-- Paso 13: [Enviar contexto de Django en React](/es/step13_django_context_in_react)
-- Paso 14: [Api rest y fetch de datos](/es/step14_api_rest)
-- Paso 15: [Django channels y websockets](/es/step15_websockets_and_channels)
-- Paso 16: [Entorno de producción](/es/step16_going_to_production)
-- Paso 17: [Agregar Redux](/es/step17_add_redux)
-- Paso 18: [Css y scss en React](/es/step18_inline_styles)
+- Paso 1: [Crear proyecto de Django](https://gitlab.com/FedeG/django-react-workshop/tree/step1_create_project)
+- Paso 2: [Crear aplicación de Django](https://gitlab.com/FedeG/django-react-workshop/tree/step2_create_django_app)
+- Paso 3: [Agregar una vista sin React](https://gitlab.com/FedeG/django-react-workshop/tree/step3_add_non_react_views)
+- Paso 4: [Agregar modelo de Django](https://gitlab.com/FedeG/django-react-workshop/tree/step4_add_django_models)
+- Paso 5: [Agregar django_webpack_loader](https://gitlab.com/FedeG/django-react-workshop/tree/step5_add_django_webpack_loader)
+- Paso 6: [Crear la primer componente de React](https://gitlab.com/FedeG/django-react-workshop/tree/step6_create_first_react_component)
+- Paso 7: [Usar el paquete con React](https://gitlab.com/FedeG/django-react-workshop/tree/step7_use_the_bundle)
+- Paso 8: [Recarga automática](https://gitlab.com/FedeG/django-react-workshop/tree/step8_hot_reloading)
+- Paso 9: [Python linter](https://gitlab.com/FedeG/django-react-workshop/tree/step9_python_linter)
+- Paso 10: [React linter](https://gitlab.com/FedeG/django-react-workshop/tree/step10_react_linter)
+- Paso 11: [Python testing](https://gitlab.com/FedeG/django-react-workshop/tree/step11_python_testing)
+- Paso 12: [React testing](https://gitlab.com/FedeG/django-react-workshop/tree/step12_react_testing)
+- Paso 13: [Enviar contexto de Django en React](https://gitlab.com/FedeG/django-react-workshop/tree/step13_django_context_in_react)
+- Paso 14: [Api rest y fetch de datos](https://gitlab.com/FedeG/django-react-workshop/tree/step14_api_rest)
+- Paso 15: [Django channels y websockets](https://gitlab.com/FedeG/django-react-workshop/tree/step15_websockets_and_channels)
+- Paso 16: [Agregar Redux](https://gitlab.com/FedeG/django-react-workshop/tree/step16_add_redux)
+- Paso 17: [Entorno de producción](https://gitlab.com/FedeG/django-react-workshop/tree/step17_going_to_production)
 
 Cada rama tiene la documentación en español (`README-es.md`) y en ingles (`README.md`).
 
@@ -38,7 +37,7 @@ Mi recomendación para hacer el curso rápido es que te instales de antemano los
 En mi caso me gusta usar docker como se puede ver en cada paso pero también esta la
 opción sin docker para la gente que no lo usa.
 
-### Instalación previa con Docker
+#### Instalación previa con Docker
 ```bash
 # Clonar el repositorio
 git clone https://gitlab.com/FedeG/django-react-workshop.git
@@ -55,9 +54,9 @@ docker run -d -it --name workshopjs -v $PWD:/src -p 3000:3000 --workdir /src/wor
 docker exec -it workshopjs npm install yarn --global
 docker exec -it workshopjs yarn install
 ```
-#### Nota: el dia del evento ya va a existir una imagen con todo incluido en el caso de que alguien no tenga red
+##### Nota: el dia del evento ya va a existir una imagen con todo incluido en el caso de que alguien no tenga red
 
-### Instalación previa sin Docker
+#### Instalación previa sin Docker
 ```bash
 # Clonar el repositorio
 git clone https://gitlab.com/FedeG/django-react-workshop.git
