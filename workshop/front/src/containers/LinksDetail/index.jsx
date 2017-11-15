@@ -1,58 +1,54 @@
 import React from 'react'
 import PropTypes from 'prop-types';
 import Websocket from 'react-websocket';
+import { connect } from 'react-redux'
+import { setLinks, createLink, updateLink, deleteLink } from '../../actions/linksActions'
 
 import LinksDetailComponent from '../../components/LinksDetail'
 import { LINKS_API_URL, LINKS_WS_URL } from '../../utils/urls'
 import { getUrl } from '../../utils/api'
 
 
-export default class LinksDetail extends React.Component {
+class LinksDetail extends React.Component {
   static propTypes = {
-    links: PropTypes.array.isRequired
+    links: PropTypes.array.isRequired,
+    setLinks: PropTypes.func.isRequired,
+    createLink: PropTypes.func.isRequired,
+    updateLink: PropTypes.func.isRequired,
+    deleteLink: PropTypes.func.isRequired,
+    initialLinks: PropTypes.array.isRequired,
   }
 
   constructor(props) {
     super(props);
-    const { links } = this.props;
-    this.state = {
-      links: [...links]
-    }
+    const { initialLinks } = this.props;
+    this.props.setLinks(initialLinks);
   }
-
-  getLink = (id, fields) => {return {id, fields}};
 
   _onRefresh = () => {
     getUrl(LINKS_API_URL)
       .then(newLinks => {
-        const links = newLinks.map(link => this.getLink(link.id, link));
-        this.setState({links});
+        const links = newLinks.map(link => {
+          return {pk: link.id, fields: link}
+        });
+        this.props.setLinks(links);
       })
   }
 
   _onUpdate = event => {
-    const { links } = this.state;
-    const {payload: {action, data, pk}} = JSON.parse(event);
-    let newLinks = [...links];
-    switch (action) {
+    const { payload } = JSON.parse(event);
+    switch (payload.action) {
       case 'update':
-        newLinks = newLinks.map(link => {
-          if (link.pk === pk) return this.getLink(pk, data);
-          return link;
-        })
-        break;
+        return this.props.updateLink(payload);
       case 'create':
-        newLinks.push(this.getLink(pk, data))
-        break;
+        return this.props.createLink(payload);
      case 'delete':
-        newLinks = newLinks.filter(link => link.pk !== pk);
-        break;
+        return this.props.deleteLink(payload);
     }
-    this.setState({links: newLinks});
   }
 
   render() {
-    const { links } = this.state;
+    const { links } = this.props;
     return (
       <div>
         <LinksDetailComponent links={links} onRefresh={this._onRefresh}/>
@@ -61,3 +57,16 @@ export default class LinksDetail extends React.Component {
     )
   }
 }
+
+function mapStateToProps(state) {
+  const { links } = state.links;
+  return { links };
+}
+
+const mapDispatchToProps = {
+  setLinks,
+  createLink,
+  updateLink,
+  deleteLink,
+}
+export default connect(mapStateToProps, mapDispatchToProps)(LinksDetail)
