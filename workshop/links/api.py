@@ -1,3 +1,9 @@
+"""
+    Api module with serializers and viewsets for models
+"""
+# pylint: disable=too-many-ancestors
+# pylint: disable=missing-docstring
+
 from django.contrib.auth.models import User
 from rest_framework import serializers, viewsets
 
