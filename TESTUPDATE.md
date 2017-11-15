@@ -1,156 +1,142 @@
-# Update testing for new features
+# Update tests for new features
 
-## Button Tests
-In **workshop/front/src/components/Button/Button.spec.jsx**:
-```javascript
-import React from 'react';
-import Button from './index.jsx';
-import { shallow } from 'enzyme';
+## Install mock-socket
+```bash
+# with docker
+docker exec -it workshopjs yarn add mock-socket --save-dev
 
-describe('Button Component', () => {
-  let label, onClick;
-
-  beforeAll(() => {
-    label = 'label';
-    onClick = () => {};
-  })
-
-  describe('props', () => {
-
-    it('should declare propsTypes', () => {
-      expect(Object.keys(Button.propTypes)).toHaveLength(2);
-      expect(Button.propTypes).toHaveProperty('label');
-      expect(Button.propTypes).toHaveProperty('onClick');
-    })
-
-  })
-
-  describe('#render', () => {
-
-    it('should render the component properly', () => {
-      const wrapper = shallow(<Button label={label} onClick={onClick}/>);
-      const componentInDOM = `<button class="btn btn-success" type="button">${label}</button>`;
-      expect(wrapper.html()).toBe(componentInDOM);
-    })
-
-  })
-
-})
+# without docker
+cd workshop/front
+yarn add mock-socket --save-dev
 ```
 
-## Api Tests
-In **workshop/front/src/utils/api.spec.js**:
-```javascript
-import { getUrl } from './api.js';
+## Add websockets configuration in Jesst
+In **workshop/front/jest-setup.js**:
+```diff
++import { WebSocket } from 'mock-socket'
+import Enzyme from 'enzyme'
+import Adapter from 'enzyme-adapter-react-16'
 
-describe('Api utils', () => {
-  let url;
+Enzyme.configure({ adapter: new Adapter() })
 
-  beforeAll(() => {
-    url = '/links/api/';
-  })
-
-  beforeEach(() => {
-    global.fetch = jest.fn().mockImplementation(() =>
-      Promise.resolve({
-        json: () => Promise.resolve([])
-      })
-    );
-  });
-
-  afterAll(() => {
-    global.fetch.reset();
-    global.fetch.restore();
-  })
-
-  describe('get', () => {
-
-    it('should API_URL is /links/api/', async () => {
-      await getUrl(url);
-      expect(global.fetch).toBeCalled();
-      expect(global.fetch).lastCalledWith(url);
-    })
-
-  })
-
-})
++global.WebSocket = WebSocket
+global.gettext = jest.fn(text => text)
 ```
 
-## Utls Tests
+## Update urls tests
 In **workshop/front/src/utils/urls.spec.js**:
 ```javascript
-import { API_URL, LINKS_API_URL } from './urls.js';
+-import { API_URL, LINKS_API_URL } from './urls.js';
++import { API_URL, LINKS_API_URL, WS_URL, LINKS_WS_URL } from './urls.js';
 
-describe('Url utils', () => {
+ ...
 
-  describe('API_URL', () => {
+ describe('Url utils', () => {
 
-    it('should API_URL is /links/api/', () => {
-      expect(API_URL).toEqual('/links/api/');
-    })
+   ...
 
-  })
-
-  describe('LINKS_API_URL', () => {
-
-    it('should LINKS_API_URL is /links/api/links/', () => {
-      expect(LINKS_API_URL).toEqual('/links/api/links/');
-    })
-
-  })
-
-})
++  describe('WS_URL', () => {
++
++    it('should is WS_URL is ws://localhost:5000/', () => {
++      expect(WS_URL).toEqual('ws://localhost:5000/');
++    })
++
++  })
++
++  describe('LINKS_WS_URL', () => {
++
++    it('should is LINKS_WS_URL is ws://localhost:5000/update/links/', () => {
++      expect(LINKS_WS_URL).toEqual('ws://localhost:5000/updates/links/');
++    })
++
++  })
++
+ })
 ```
 
-## Update old React tests
-In **workshop/front/src/components/LinksDetail/LinksDetail.spec.jsx**:
-```diff
-   describe('props', () => {
+## Update container tests
+In **workshop/front/src/containers/LinksDetail/LinksDetail.spec.jsx**:
+```javascript
+ describe('LinksDetail Component', () => {
+-  let links, link;
++  let links, link, LinksDetailContainerWrapper, LinksDetailContainer;
 
-     it('should declare propsTypes', () => {
--      expect(Object.keys(LinksDetail.propTypes)).toHaveLength(1);
-+      expect(Object.keys(LinksDetail.propTypes)).toHaveLength(2);
-       expect(LinksDetail.propTypes).toHaveProperty('links');
-+      expect(LinksDetail.propTypes).toHaveProperty('onRefresh');
+   beforeAll(() => {
+     link = {
+@@ -35,10 +35,76 @@ describe('LinksDetail Component', () => {
+       const wrapper = shallow(<LinksDetail links={links}/>);
+       const itemInDOM = `<p>${link.fields.name}: <a href="${link.fields.url}">${link.fields.url}</a></p>`;
+       const button = '<button class="btn btn-success" type="button">Refresh</button>';
+-      const componentInDOM = `<div class="container"><div class="row"><div class="col-sm-12"><h1>Links</h1>${button}<div style="margin-top:20px">${itemInDOM}</div></div></div></div>`;
++      const componentInDOM = `<div><div class="container"><div class="row"><div class="col-sm-12"><h1>Links</h1>${button}<div style="margin-top:20px">${itemInDOM}</div></div></div></div><div></div></div>`;
+       expect(wrapper.html()).toBe(componentInDOM);
      })
 
    })
 
-   ...
-
-   describe('#render', () => {
-
-     it('should render the component properly', () => {
--      const wrapper = shallow(<LinksDetail links={links}/>);
-+      const wrapper = shallow(<LinksDetail links={links} onRefresh={() => {}}/>);
-       const itemInDOM = `<p>${link.fields.name}: <a href="${link.fields.url}">${link.fields.url}</a></p>`;
--      const componentInDOM = `<div class="container"><div class="row"><div class="col-sm-12"><h1>Links</h1>${itemInDOM}</div></div></div>`;
-+      const button = '<button class="btn btn-success" type="button">Refresh</button>';
-+      const componentInDOM = `<div class="container"><div class="row"><div class="col-sm-12"><h1>Links</h1>${button}<div style="margin-top:20px">${itemInDOM}</div></div></div></div>`;
-       expect(wrapper.html()).toBe(componentInDOM);
-     })
-```
-
-In **workshop/front/src/containers/LinksDetail/LinksDetail.spec.jsx**:
-```diff
-     it('should render the component properly', () => {
-       const wrapper = shallow(<LinksDetail links={links}/>);
-       const itemInDOM = `<p>${link.fields.name}: <a href="${link.fields.url}">${link.fields.url}</a></p>`;
--      const componentInDOM = `<div class="container"><div class="row"><div class="col-sm-12"><h1>Links</h1>${itemInDOM}</div></div></div>`;
-+      const button = '<button class="btn btn-success" type="button">Refresh</button>';
-+      const componentInDOM = `<div class="container"><div class="row"><div class="col-sm-12"><h1>Links</h1>${button}<div style="margin-top:20px">${itemInDOM}</div></div></div></div>`;
-       expect(wrapper.html()).toBe(componentInDOM);
-     })
-```
-
-## Update eslint config
-In **workshop/front/.eslintrc.yaml**:
-```diff
-globals:
- gettext: true
- $: true
- module: true
- process: true
- __dirname: true
-+global: true
++  describe('state', () => {
++    let linkEvent, linkUpdate, linkCreate, linkDelete;
++
++    beforeAll(() => {
++      linkEvent = {
++        stream: 'links',
++        payload: {
++          action: 'update',
++          pk: 1,
++          data: {
++            name: 'Extra fields on many to many',
++            url: 'https://docs.djangoproject.com/en/1.11/topics/db/models/#extra-fields-on-many-to-many-relationships',
++            pending: false,
++            description: '',
++            user: 1
++          },
++          model: 'links.link'
++        }
++      };
++      linkUpdate = JSON.parse(JSON.stringify(linkEvent));
++      linkCreate = JSON.parse(JSON.stringify(linkEvent));
++      linkCreate.payload.action = 'create';
++      linkDelete = JSON.parse(JSON.stringify(linkEvent));
++      linkDelete.payload.action = 'delete';
++    })
++
++    beforeEach(() => {
++      LinksDetailContainerWrapper = shallow(<LinksDetail links={links}/>);
++      LinksDetailContainer = LinksDetailContainerWrapper.instance();
++    })
++
++    it('should state have links', () => {
++      expect(LinksDetailContainer.state).toHaveProperty('links');
++      expect(LinksDetailContainer.state.links).toEqual(links);
++    })
++
++    it('when send link create event onUpdate should update link', () => {
++      const updatedLink = LinksDetailContainer.getLink(
++        linkUpdate.payload.pk, linkUpdate.payload.data
++      )
++      const expectedLinks = [updatedLink];
++      LinksDetailContainer._onUpdate(JSON.stringify(linkUpdate));
++      expect(LinksDetailContainer.state).toHaveProperty('links');
++      expect(LinksDetailContainer.state.links).toEqual(expectedLinks);
++    })
++
++    it('when send link create event onUpdate should append link', () => {
++      const createdLink = LinksDetailContainer.getLink(
++        linkUpdate.payload.pk, linkUpdate.payload.data
++      )
++      const expectedLinks = [...links, createdLink];
++      LinksDetailContainer._onUpdate(JSON.stringify(linkCreate));
++      expect(LinksDetailContainer.state).toHaveProperty('links');
++      expect(LinksDetailContainer.state.links).toEqual(expectedLinks);
++    })
++
++    it('when send link delete event onUpdate should remove link', () => {
++      const expectedLinks = [];
++      LinksDetailContainer._onUpdate(JSON.stringify(linkDelete));
++      expect(LinksDetailContainer.state).toHaveProperty('links');
++      expect(LinksDetailContainer.state.links).toEqual(expectedLinks);
++    })
++
++  })
++
 ```

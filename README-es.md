@@ -52,7 +52,11 @@ Al final del archivo de settings, agregamos la configuración:
 #### Agregar clases para binding de los modelos
 En el archivo `workshop/links/bindings.py`:
 ```python
-from django.core import serializers
+"""
+   Bindings module
+"""
+# pylint: disable=missing-docstring
+
 from channels.binding.websockets import WebsocketBinding
 
 from .models import Link, Tag, LinkTag
@@ -101,8 +105,13 @@ class TagBinding(WebsocketBinding):
 #### Agregar rutas para los bindings
 En el archivo `workshop/workshop/routing.py`:
 ```python
+"""
+   Routing Module with all Demultiplexers and channel_routing for djnago-channels
+"""
+# pylint: disable=missing-docstring
+
 from channels.generic.websockets import WebsocketDemultiplexer
-from channels.routing import route, route_class
+from channels.routing import route_class
 
 from links.bindings import LinkBinding, TagBinding, LinkTagBinding
 
@@ -145,6 +154,7 @@ class TagDemultiplexer(WebsocketDemultiplexer):
         return ['tag-updates']
 
 
+# pylint: disable=invalid-name
 channel_routing = [
     route_class(APIDemultiplexer, path='^/updates/$'),
     route_class(LinkTagDemultiplexer, path='^/updates/linktags/$'),
