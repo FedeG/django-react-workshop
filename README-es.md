@@ -20,12 +20,12 @@ pip install djangorestframework markdown django-filter
 Usamos requirements porque estas dependencias son dependencias de producción.
 ```bash
 # con docker
-docker exec -it workshop pip freeze | grep rest >> requirements-dev.txt
-docker exec -it workshop pip freeze | grep filter >> requirements-dev.txt
+docker exec -it workshop pip freeze | grep rest >> requirements.txt
+docker exec -it workshop pip freeze | grep filter >> requirements.txt
 
 # sin docker
-pip freeze | grep rest >> requirements-dev.txt
-pip freeze | grep filter >> requirements-dev.txt
+pip freeze | grep rest >> requirements.txt
+pip freeze | grep filter >> requirements.txt
 ```
 
 #### Agregar django-rest-framework a la configuración de Django
@@ -58,6 +58,11 @@ La documentación de Viewsets y serializers:
 
 En el archivo `workshop/links/api.py`:
 ```python
+"""
+    Api module with serializers and viewsets for models
+"""
+# pylint: disable=too-many-ancestors
+# pylint: disable=missing-docstring
 from django.contrib.auth.models import User
 from rest_framework import serializers, viewsets
 
