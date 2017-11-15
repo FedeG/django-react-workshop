@@ -1,4 +1,8 @@
-from django.core import serializers
+"""
+   Bindings module
+"""
+# pylint: disable=missing-docstring
+
 from channels.binding.websockets import WebsocketBinding
 
 from .models import Link, Tag, LinkTag
