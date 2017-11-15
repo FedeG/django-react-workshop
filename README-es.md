@@ -24,7 +24,7 @@ docker exec -it workshop pip freeze | grep channels >> requirements.txt
 # sin docker
 pip freeze | grep channels >> requirements.txt
 ```
-ss
+
 #### Agregar channels a la configuración de Django
 En `workshop/workshop/settings.py` lo agregamos a **INSTALLED_APPS**
 ```diff
@@ -273,4 +273,4 @@ docker exec -it workshop ./workshop/manage.py runserver 0.0.0.0:8000
 Deberías ver la página de links detail con los links que tengas cargados en el navegador en `http://localhost:8000/links/`.
 Podes probar de cambiar algo en el admin (en `http://localhost:8000/admin/links/link/`) y automaticamente se va a cambiar en el frontend. Podes probar creando, borrando o modificando links en el admin.
 
-[Paso 16: Add Redux](https://gitlab.com/FedeG/django-react-workshop/tree/step16_add_redux)
+[Paso 16: Agregar Redux](https://gitlab.com/FedeG/django-react-workshop/tree/step16_add_redux)

@@ -1,279 +1,254 @@
-# Step 14: Api rest
+# Step 15: Django channels and websockets
 
-[Back to step 13](https://gitlab.com/FedeG/django-react-workshop/tree/step13_django_context_in_react)
+[Back to step 14](https://gitlab.com/FedeG/django-react-workshop/tree/step14_api_rest)
 
-In this step, we will add a rest api in Django with [djangorestframework](http://www.django-rest-framework.org/) and take data from React with `fetch`
+In this step, we will add data binding with [django channels](http://channels.readthedocs.io/en/latest/getting-started.html) and take data from React with [react-websocket](https://www.npmjs.com/package/react-websocket)
 
-## Add rest api to Django
+## Add data binding in Django (with channels)
 
-#### Install djangorestframework
-If you want, you could use official documentation: [installation](http://www.django-rest-framework.org/#installation)
+#### Install django channels
 ```bash
 # with docker
-docker exec -it workshop pip install djangorestframework markdown django-filter
+docker exec -it workshop pip install channels
 
 # without docker
-pip install djangorestframework markdown django-filter
+pip install channels
 ```
 
 #### Update requirements
 We use requirements because these are production dependencies.
 ```bash
 # with docker
-docker exec -it workshop pip freeze | grep rest >> requirements.txt
-docker exec -it workshop pip freeze | grep filter >> requirements.txt
+docker exec -it workshop pip freeze | grep channels >> requirements.txt
 
 # without docker
-pip freeze | grep rest >> requirements.txt
-pip freeze | grep filter >> requirements.txt
+pip freeze | grep channels >> requirements.txt
 ```
 
-#### Add django-rest-framework in Django settings
-In `workshop/workshop/settings.py`, add **rest-framework** in **INSTALLED_APPS**
+#### Aadd channels in Django settings
+In `workshop/workshop/settings.py`, add **channels** in **INSTALLED_APPS**
 ```diff
 INSTALLED_APPS = [
     ...
     'django.contrib.staticfiles',
     'links',
     'webpack_loader',
-+   'rest_framework',
+    'rest_framework',
++   'channels',
 ]
 ```
 
-And append rest-framework configuration:
+And append channels configuration:
 ```diff
 +
-+REST_FRAMEWORK = {
-+    'DEFAULT_PERMISSION_CLASSES': [
-+        'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
-+    ]
++CHANNEL_LAYERS = {
++    "default": {
++        "BACKEND": "asgiref.inmemory.ChannelLayer",
++        "ROUTING": "workshop.routing.channel_routing",
++    },
 +}
 ```
 
-#### Add serializers and viewsets
-The serializers say 'how' show a model in the api and the viewset say 'where' search the data for show.
-The viewset and serializers documentation:
-- Viewsets: http://www.django-rest-framework.org/api-guide/viewsets/
-- Serializers: http://www.django-rest-framework.org/api-guide/serializers/
-
-In the `workshop/links/api.py` file:
+#### Add binding class for each models
+In `workshop/links/bindings.py`:
 ```python
 """
-    Api module with serializers and viewsets for models
+   Bindings module
 """
-# pylint: disable=too-many-ancestors
 # pylint: disable=missing-docstring
-from django.contrib.auth.models import User
-from rest_framework import serializers, viewsets
+
+from channels.binding.websockets import WebsocketBinding
 
 from .models import Link, Tag, LinkTag
 
 
-# Serializers define the API representation.
-class LinkTagSerializer(serializers.HyperlinkedModelSerializer):
-    class Meta:
-        model = LinkTag
-        fields = ('url', 'link', 'tag')
+class LinkBinding(WebsocketBinding):
+    model = Link
+    stream = 'links'
+    fields = ['id', 'name', 'url', 'pending',
+              'description', 'tags', 'user']
+
+    @classmethod
+    def group_names(cls, instance):
+        return ['link-updates']
+
+    def has_permission(self, user, action, pk):
+        return True
 
 
-class LinkSerializer(serializers.HyperlinkedModelSerializer):
-    class Meta:
-        model = Link
-        fields = ('id', 'url', 'name', 'url', 'pending',
-                  'description', 'tags', 'user')
+class LinkTagBinding(WebsocketBinding):
+    model = LinkTag
+    stream = 'linktags'
+    fields = ['id', 'link', 'tag']
+
+    @classmethod
+    def group_names(cls, instance):
+        return ['linktags-updates']
+
+    def has_permission(self, user, action, pk):
+        return True
 
 
-class TagSerializer(serializers.HyperlinkedModelSerializer):
-    class Meta:
-        model = Tag
-        fields = ('id', 'url', 'name', 'description', 'user')
+class TagBinding(WebsocketBinding):
+    model = Tag
+    stream = 'tags'
+    fields = ['id', 'name', 'description', 'user']
 
+    @classmethod
+    def group_names(cls, instance):
+        return ['tags-updates']
 
-class UserSerializer(serializers.HyperlinkedModelSerializer):
-    class Meta:
-        model = User
-        fields = ('url', 'username', 'email', 'is_staff')
-
-
-# ViewSets define the view behavior.
-class LinkTagViewSet(viewsets.ModelViewSet):
-    queryset = LinkTag.objects.all()
-    serializer_class = LinkTagSerializer
-
-
-class LinkViewSet(viewsets.ModelViewSet):
-    queryset = Link.objects.all()
-    serializer_class = LinkSerializer
-
-
-class TagViewSet(viewsets.ModelViewSet):
-    queryset = Tag.objects.all()
-    serializer_class = TagSerializer
-
-
-class UserViewSet(viewsets.ModelViewSet):
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
+    def has_permission(self, user, action, pk):
+        return True
 ```
 
-#### Add api to urls
-In `workshop/links/urls.py`:
-```diff
--from django.conf.urls import url
-+from django.conf.urls import url, include
-from django.views import generic
-+from rest_framework import routers
-+
-from . import views
-+from .api import LinkTagViewSet, LinkViewSet, TagViewSet, UserViewSet
-+
-+
-+# Routers provide a way of automatically determining the URL conf.
-+router = routers.DefaultRouter()
-+router.register(r'users', UserViewSet)
-+router.register(r'links', LinkViewSet)
-+router.register(r'tags', TagViewSet)
-+router.register(r'linktags', LinkTagViewSet)
-+
+#### Add routes for each bindings
+In `workshop/workshop/routing.py`:
+```python
+"""
+   Routing Module with all Demultiplexers and channel_routing for djnago-channels
+"""
+# pylint: disable=missing-docstring
 
-urlpatterns = [
-    url(r'^view2/',
-        generic.TemplateView.as_view(template_name='view2.html')),
-    url(r'^$', views.links_detail),
-+    url(r'^api/', include(router.urls)),
+from channels.generic.websockets import WebsocketDemultiplexer
+from channels.routing import route_class
+
+from links.bindings import LinkBinding, TagBinding, LinkTagBinding
+
+
+class APIDemultiplexer(WebsocketDemultiplexer):
+    consumers = {
+        'links': LinkBinding.consumer,
+        'tags': TagBinding.consumer,
+        'linktags': LinkTagBinding.consumer,
+    }
+
+    def connection_groups(self, **kwargs):
+        return ['link-updates', 'tag-updates', 'linktag-updates']
+
+
+class LinkTagDemultiplexer(WebsocketDemultiplexer):
+    consumers = {
+        'linktags': LinkTagBinding.consumer
+    }
+
+    def connection_groups(self, **kwargs):
+        return ['linktag-updates']
+
+
+class LinkDemultiplexer(WebsocketDemultiplexer):
+    consumers = {
+        'links': LinkBinding.consumer
+    }
+
+    def connection_groups(self, **kwargs):
+        return ['link-updates']
+
+
+class TagDemultiplexer(WebsocketDemultiplexer):
+    consumers = {
+        'tags': TagBinding.consumer
+    }
+
+    def connection_groups(self, **kwargs):
+        return ['tag-updates']
+
+
+# pylint: disable=invalid-name
+channel_routing = [
+    route_class(APIDemultiplexer, path='^/updates/$'),
+    route_class(LinkTagDemultiplexer, path='^/updates/linktags/$'),
+    route_class(LinkDemultiplexer, path='^/updates/links/$'),
+    route_class(TagDemultiplexer, path='^/updates/tags/$'),
 ]
 ```
 
-## Create button for update data
+## Add websockets to React
 
-#### Create Button component
-In `workshop/front/src/components/Button/index.jsx`:
+#### Add urls
+In `workshop/front/src/utils/urls.js`:
+```diff
+export const API_URL = '/links/api/'
+export const LINKS_API_URL = `${API_URL}links/`
++
++export const WS_URL = 'ws://localhost:5000/'
++export const LINKS_WS_URL = `${WS_URL}updates/links/`
+```
+
+#### Add react-websocket in the LinkDetails page
+Replace `workshop/front/src/containers/LinksDetail/index.jsx` file with:
 ```javascript
 import React from 'react'
 import PropTypes from 'prop-types';
-
-export default class Button extends React.Component {
- static propTypes = {
-   onClick: PropTypes.func.isRequired,
-   label: PropTypes.string.isRequired
- }
-
- _onClick = event => {
-   event.preventDefault();
-   const { onClick } = this.props;
-   onClick();
- }
-
- render() {
-   const { label } = this.props;
-   return (
-     <button className='btn btn-success' type='button' onClick={this._onClick}>
-       { label }
-     </button>
-   )
- }
-}
-```
-
-#### Create util for fetch data from api
-In `workshop/front/src/utils/api.js`:
-```javascript
-export function getUrl(url){
-  return fetch(url).then(resp => resp.json())
-}
-```
-
-#### Create util with api urls
-In `workshop/front/src/utils/urls.js`:
-```javascript
-export const API_URL = '/links/api/'
-export const LINKS_API_URL = `${API_URL}links/`
-```
-
-#### Add Button component in linkDetails page
-In `workshop/front/src/components/LinksDetail/index.jsx`:
-```diff
- import Headline from '../Headline'
- import LinkDetail from '../LinkDetail'
-+import Button from '../Button'
-
- export default class LinksDetail extends React.Component {
-   static propTypes = {
-+    onRefresh: PropTypes.func.isRequired,
-     links: PropTypes.arrayOf(
-         ...
-   }
-
-   render() {
--    const { links } = this.props;
-+    const { links, onRefresh } = this.props;
-     const linksItems = links.map(link => <LinkDetail key={link.pk} link={link} />);
-     return (
-       <div className="container">
-         <div className="row">
-           <div className="col-sm-12">
-             <Headline>Links</Headline>
--            { linksItems }
-+            <Button onClick={onRefresh} label='Refresh'/>
-+            <div style={{marginTop: 20}}>
-+              { linksItems }
-+            </div>
-           </div>
-         </div>
-       </div>
-```
-
-#### Add callback for click event (for update links data)
-In `workshop/front/src/containers/LinksDetail/index.jsx`:
-```diff
-import PropTypes from 'prop-types';
+import Websocket from 'react-websocket';
 
 import LinksDetailComponent from '../../components/LinksDetail'
-+ import { LINKS_API_URL } from '../../utils/urls'
-+ import { getUrl } from '../../utils/api'
-+
+import { LINKS_API_URL, LINKS_WS_URL } from '../../utils/urls'
+import { getUrl } from '../../utils/api'
+
 
 export default class LinksDetail extends React.Component {
+  static propTypes = {
+    links: PropTypes.array.isRequired
+  }
 
-+  constructor(props) {
-+    super(props);
-+    const { links } = this.props;
-+    this.state = {
-+      links: [...links]
-+    }
-+  }
-+
-+
-+  _onRefresh = () => {
-+    getUrl(LINKS_API_URL)
-+      .then(newLinks => {
-+        const links = newLinks.map(link => {
-+          return {
-+            pk: link.id,
-+            fields: link
-+          }
-+        });
-+        this.setState({links});
-+      })
-+  }
+  constructor(props) {
+    super(props);
+    const { links } = this.props;
+    this.state = {
+      links: [...links]
+    }
+  }
+
+  getLink = (id, fields) => {return {id, fields}};
+
+  _onRefresh = () => {
+    getUrl(LINKS_API_URL)
+      .then(newLinks => {
+        const links = newLinks.map(link => this.getLink(link.id, link));
+        this.setState({links});
+      })
+  }
+
+  _onUpdate = event => {
+    const { links } = this.state;
+    const {payload: {action, data, pk}} = JSON.parse(event);
+    let newLinks = [...links];
+    switch (action) {
+      case 'update':
+        newLinks = newLinks.map(link => {
+          if (link.pk === pk) return this.getLink(pk, data);
+          return link;
+        })
+        break;
+      case 'create':
+        newLinks.push(this.getLink(pk, data))
+        break;
+     case 'delete':
+        newLinks = newLinks.filter(link => link.pk !== pk);
+        break;
+    }
+    this.setState({links: newLinks});
+  }
 
   render() {
     const { links } = this.state;
     return (
--     <LinksDetailComponent links={links} />
-+     <LinksDetailComponent links={links} onRefresh={this._onRefresh}/>
+      <div>
+        <LinksDetailComponent links={links} onRefresh={this._onRefresh}/>
+        <Websocket url={LINKS_WS_URL} onMessage={this._onUpdate}/>
+      </div>
     )
   }
 }
 ```
 
+## Actualizar test
 ## Update test
-As this isn't so important in this step is in another file, if you want to see how the tests were updated you can see this in [Update tests](https://g
-itlab.com/FedeG/django-react-workshop/blob/step14_api_rest/TESTUPDATE.md)
-
+As this isn't so important in this step is in another file, if you want to see how the tests were updated you can see this in [Update tests](https://gitlab.com/FedeG/django-react-workshop/blob/step15_websockets_and_channels/TESTUPDATE.md)
 
 ## Result
-At this point, we could run the server, see the links list at `http://localhost:8000/links/` and see refresh button
+At this point, we could run the server, see the links list at `http://localhost:8000/links/`.
 
 #### In a terminal we run React server
 ```bash
@@ -294,7 +269,8 @@ docker exec -it workshop ./workshop/manage.py runserver 0.0.0.0:8000
 ./workshop/manage.py runserver
 ```
 
-You should see the links detail page with the links (that you have loaded) in the browser in `http://localhost:8000/links/` and the refresh button.
-You could try change link data in Django admin (in `http://localhost:8000/admin/links/link/`) and use **Refresh** button for update this data in frontend.
+You should see the links detail page with the links (that you have loaded) in the browser in `http://localhost:8000/links/`.
+You could try change link data in Django admin (in `http://localhost:8000/admin/links/link/`) and websocket going to update this data in frontend in real time.
+You could try create, delete or update links in the admin page.
 
-[Step 15: Django channels and websockets](https://gitlab.com/FedeG/django-react-workshop/tree/step15_websockets_and_channels)
+[Paso 16: Add Redux](https://gitlab.com/FedeG/django-react-workshop/tree/step16_add_redux)
