@@ -1,5 +1,3 @@
-# This repository is in progress
-
 # Django + React + Redux workshop
 This repository will be used in the PyconAr2017 to take the step by step for "Django + React + Redux" workshop.
 
@@ -31,6 +29,12 @@ Each branch has the documentation in Spanish (`README-es.md`) and in English (` 
 My recommendation for the course is you install requirements before start.
 I want use docker (as you can see in each step) but also exists option without docker.
 
+### Docker image (all-inclusive)
+This image have code, pip requirements (dev, docs and production requirements), node dependencies (pruduction and dev dependencies), ... 
+```bash
+docker pull registry.gitlab.com/fedeg/django-react-workshop:latest
+```
+
 ### Install with docker
 ```bash
 # Clone
@@ -48,7 +52,6 @@ docker run -d -it --name workshopjs -v $PWD:/src -p 3000:3000 --workdir /src/wor
 docker exec -it workshopjs npm install yarn --global
 docker exec -it workshopjs yarn install
 ```
-#### Note: in the event there will already be an all-inclusive image.
 
 ### Install without docker
 ```bash

@@ -1,5 +1,3 @@
-# Este repositorio todavía esta en desarrollo.
-
 # Taller de Django + React + Redux
 Este repositorio va a ser usado en la PyconAr2017 para dar el paso a paso del taller
 "Django + React + Redux".
@@ -37,7 +35,13 @@ Mi recomendación para hacer el curso rápido es que te instales de antemano los
 En mi caso me gusta usar docker como se puede ver en cada paso pero también esta la
 opción sin docker para la gente que no lo usa.
 
-#### Instalación previa con Docker
+### Imagen de docker con todo el workshop
+Esta imagen tiene el codigo, pip requirements (dev, docs y production requirements), node dependencies (pruduction y dev dependencies), ... 
+```bash
+docker pull registry.gitlab.com/fedeg/django-react-workshop:latest
+```
+
+### Instalación previa con Docker
 ```bash
 # Clonar el repositorio
 git clone https://gitlab.com/FedeG/django-react-workshop.git
@@ -54,9 +58,8 @@ docker run -d -it --name workshopjs -v $PWD:/src -p 3000:3000 --workdir /src/wor
 docker exec -it workshopjs npm install yarn --global
 docker exec -it workshopjs yarn install
 ```
-##### Nota: el dia del evento ya va a existir una imagen con todo incluido en el caso de que alguien no tenga red
 
-#### Instalación previa sin Docker
+### Instalación previa sin Docker
 ```bash
 # Clonar el repositorio
 git clone https://gitlab.com/FedeG/django-react-workshop.git
