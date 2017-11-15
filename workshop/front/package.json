@@ -47,7 +47,12 @@
     "react": "^16.0.0",
     "react-cookie": "^2.1.1",
     "react-dom": "^16.0.0",
-    "react-websocket": "^1.2.0"
+    "react-redux": "^5.0.6",
+    "react-websocket": "^1.2.0",
+    "redux": "^3.7.2",
+    "redux-devtools": "^3.4.1",
+    "redux-persist": "^5.3.5",
+    "redux-thunk": "^2.2.0"
   },
   "jest": {
     "globals": {
