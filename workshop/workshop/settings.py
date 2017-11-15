@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'links',
     'webpack_loader',
     'rest_framework',
+    'channels',
 ]
 
 MIDDLEWARE = [
@@ -148,4 +149,11 @@ REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
     ]
+}
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "asgiref.inmemory.ChannelLayer",
+        "ROUTING": "workshop.routing.channel_routing",
+    },
 }
