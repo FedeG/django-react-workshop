@@ -29,7 +29,7 @@ describe('Url utils', () => {
   describe('LINKS_WS_URL', () => {
 
     it('should is LINKS_WS_URL is ws://localhost:5000/update/links/', () => {
-      expect(LINKS_WS_URL).toEqual('ws://localhost:5000/update/links/');
+      expect(LINKS_WS_URL).toEqual('ws://localhost:5000/updates/links/');
     })
 
   })
