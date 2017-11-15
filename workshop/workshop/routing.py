@@ -1,5 +1,10 @@
+"""
+   Routing Module with all Demultiplexers and channel_routing for djnago-channels
+"""
+# pylint: disable=missing-docstring
+
 from channels.generic.websockets import WebsocketDemultiplexer
-from channels.routing import route, route_class
+from channels.routing import route_class
 
 from links.bindings import LinkBinding, TagBinding, LinkTagBinding
 
@@ -42,6 +47,7 @@ class TagDemultiplexer(WebsocketDemultiplexer):
         return ['tag-updates']
 
 
+# pylint: disable=invalid-name
 channel_routing = [
     route_class(APIDemultiplexer, path='^/updates/$'),
     route_class(LinkTagDemultiplexer, path='^/updates/linktags/$'),
