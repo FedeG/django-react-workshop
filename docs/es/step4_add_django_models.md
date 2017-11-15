@@ -56,7 +56,7 @@ class LinkTag(models.Model):
         verbose_name_plural = _('link x tag')
 ```
 
-### Notas
+#### Notas
 - Si nunca viste `gettext` para las traducciones, te recomiendo que aprendas primero sobre [traducción](https://docs.djangoproject.com/en/1.11/topics/i18n/translation/).
 - Si nunca viste `ManyToManyField` con` through`, podrías tomarte un tiempo
 y aprender sobre [campos adicionales en relaciones muchos a muchos] (https://docs.djangoproject.com/en/1.11/topics/db/models/#extra-fields-on-many-to-many-relationships) primero.
