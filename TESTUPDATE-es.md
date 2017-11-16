@@ -33,6 +33,10 @@ En **workshop/front/src/utils/urls.spec.js**:
 
  describe('Url utils', () => {
 
++  beforeAll(() => {
++    global.window = {location: {host: 'localhost:8000'}};
++  })
+
    ...
 
 +  describe('WS_URL', () => {

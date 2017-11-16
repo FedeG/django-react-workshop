@@ -33,20 +33,24 @@ In **workshop/front/src/utils/urls.spec.js**:
 
  describe('Url utils', () => {
 
++  beforeAll(() => {
++    global.window = {location: {host: 'localhost:8000'}};
++  })
+
    ...
 
 +  describe('WS_URL', () => {
 +
-+    it('should is WS_URL is ws://localhost:5000/', () => {
-+      expect(WS_URL).toEqual('ws://localhost:5000/');
++    it('should is WS_URL is ws://${window.location.host}/', () => {
++      expect(WS_URL).toEqual(`ws://${window.location.host}/`);
 +    })
 +
 +  })
 +
 +  describe('LINKS_WS_URL', () => {
 +
-+    it('should is LINKS_WS_URL is ws://localhost:5000/update/links/', () => {
-+      expect(LINKS_WS_URL).toEqual('ws://localhost:5000/updates/links/');
++    it('should is LINKS_WS_URL is ws://${window.location.host}/update/links/', () => {
++      expect(LINKS_WS_URL).toEqual(`ws://${window.location.host}/updates/links/`);
 +    })
 +
 +  })
