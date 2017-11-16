@@ -10,6 +10,7 @@ globals:
  process: true
  __dirname: true
  global: true
+ window: true
 parserOptions:
  ecmaVersion: 6
  sourceType: module
