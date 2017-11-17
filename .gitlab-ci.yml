@@ -27,9 +27,9 @@ heroku:
   image: ruby:2.1
   script:
     - gem install dpl
-    - cp heroku/workshop/front/webpack.local.config.js ./workshop/front/webpack.local.config.js
-    - cp heroku/workshop/front/webpack.prod.config.js ./workshop/front/webpack.prod.config.js
-    - cp heroku/workshop/workshop/settings.py ./workshop/workshop/settings.py
+    - cp heroku/webpack.local.config.js ./workshop/front/webpack.local.config.js
+    - cp heroku/webpack.prod.config.js ./workshop/front/webpack.prod.config.js
+    - cp heroku/settings.py ./workshop/workshop/settings.py
     - cp heroku/package.json ./package.json
     - cp heroku/yarn.lock ./yarn.lock
     - cp heroku/deploy.sh ./deploy.sh
