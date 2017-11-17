@@ -51,7 +51,7 @@ rules:
 settings:
  import/resolver:
    node:
-     paths: ['reactjs/']
+     paths: ['src/']
      extensions:
       - .js
       - .jsx
