@@ -22,7 +22,16 @@
     loadSidebar: false,
     coverpage: true,
     plugins: [
-      window.DocsifyCopyCodePlugin.init()
+      window.DocsifyCopyCodePlugin.init(),
+      function (hook, vm) {
+        hook.afterEach(function(html, next) {
+          next(html);
+          if (window.location.hash !== '#/' && window.location.hash.indexOf('?id=') === -1) {
+            const titleId = document.getElementsByTagName('h1').item(0).id;
+            window.location.hash = window.location.hash + '?id=' + titleId;
+          }
+        })
+      }
     ]
   }
 </script>
