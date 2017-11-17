@@ -324,7 +324,7 @@ En **workshop/front/src/components/LinksDetail/index.jsx**:
 ```
 
 ## Actualizar test
-Como esto es no tan impotante en este paso esta en otro archivo, si queres ver como se actualizaron los tests podes verlo en [Actualización de tests](https://gitlab.com/FedeG/django-react-workshop/blob/step13_django_context_in_react/TESTUPDATE-es.md)
+Como esto es no tan impotante en este paso esta en otro archivo, si queres ver como se actualizaron los tests podes verlo en [Actualización de tests](/es/step13_django_context_in_react_TESTUPDATE.md)
 
 ## Resultado
 En este punto, ya podemos ejecutar el servidor y ver la lista de links en `http://localhost:8000/links/`

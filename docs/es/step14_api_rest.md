@@ -269,7 +269,7 @@ export default class LinksDetail extends React.Component {
 
 ## Actualizar test
 Como esto es no tan impotante en este paso, esta en otro archivo.
-Si queres ver como se actualizaron los tests podes verlo en [Actualización de tests](https://gitlab.com/FedeG/django-react-workshop/blob/step14_api_rest/TESTUPDATE-es.md)
+Si queres ver como se actualizaron los tests podes verlo en [Actualización de tests](/es/step14_api_rest_TESTUPDATE.md)
 
 
 ## Resultado

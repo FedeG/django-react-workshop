@@ -253,7 +253,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(LinksDetail)
 ```
 
 ## Update test
-As this isn't so important in this step is in another file, if you want to see how the tests were updated you can see this in [Update tests](https://gitlab.com/FedeG/django-react-workshop/blob/step16_add_redux/TESTUPDATE.md)
+As this isn't so important in this step is in another file, if you want to see how the tests were updated you can see this in [Update tests](/en/step16_add_redux_TESTUPDATE.md)
 
 ## Result
 At this point, we could run the server, see the links list at `http://localhost:8000/links/`.

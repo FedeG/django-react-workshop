@@ -268,8 +268,7 @@ export default class LinksDetail extends React.Component {
 ```
 
 ## Update test
-As this isn't so important in this step is in another file, if you want to see how the tests were updated you can see this in [Update tests](https://g
-itlab.com/FedeG/django-react-workshop/blob/step14_api_rest/TESTUPDATE.md)
+As this isn't so important in this step is in another file, if you want to see how the tests were updated you can see this in [Update tests](/en/step14_api_rest_TESTUPDATE.md)
 
 
 ## Result
