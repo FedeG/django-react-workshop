@@ -35,7 +35,7 @@ Mi recomendación para hacer el curso rápido es que te instales de antemano los
 En mi caso me gusta usar docker como se puede ver en cada paso pero también esta la
 opción sin docker para la gente que no lo usa.
 
-### Imagen de docker con todo el workshop
+#### Imagen de docker con todo el workshop
 Esta imagen tiene el codigo, pip requirements (dev, docs y production requirements), node dependencies (pruduction y dev dependencies), ... 
 ```bash
 docker pull registry.gitlab.com/fedeg/django-react-workshop:latest

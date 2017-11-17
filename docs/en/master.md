@@ -29,7 +29,7 @@ Each branch has the documentation in Spanish (`README-es.md`) and in English (` 
 My recommendation for the course is you install requirements before start.
 I want use docker (as you can see in each step) but also exists option without docker.
 
-### Docker image (all-inclusive)
+#### Docker image (all-inclusive)
 This image have code, pip requirements (dev, docs and production requirements), node dependencies (pruduction and dev dependencies), ... 
 ```bash
 docker pull registry.gitlab.com/fedeg/django-react-workshop:latest

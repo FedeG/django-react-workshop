@@ -189,7 +189,7 @@ import { LINKS_API_URL, LINKS_WS_URL } from '../../utils/urls'
 import { getUrl } from '../../utils/api'
 
 
-class LinksDetail extends React.Component {
+export class LinksDetail extends React.Component {
   static propTypes = {
     links: PropTypes.array.isRequired,
     setLinks: PropTypes.func.isRequired,
