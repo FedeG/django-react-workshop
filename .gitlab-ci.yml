@@ -22,6 +22,22 @@ pages:
   only:
   - master
 
+heroku:
+  stage: deploy
+  image: ruby:2.1
+  script:
+    - gem install dpl
+    - cp heroku/workshop/front/webpack.local.config.js ./workshop/front/webpack.local.config.js
+    - cp heroku/workshop/front/webpack.prod.config.js ./workshop/front/webpack.prod.config.js
+    - cp heroku/workshop/workshop/settings.py ./workshop/workshop/settings.py
+    - cp heroku/package.json ./package.json
+    - cp heroku/yarn.lock ./yarn.lock
+    - cp heroku/deploy.sh ./deploy.sh
+    - cp heroku/Procfile ./Procfile
+    - dpl --skip_cleanup=true --strategy=api --provider=heroku --app=django-react-workshop --api-key=$HEROKU_API_KEY
+  only:
+  - master
+
 docker_image:
   stage: build
   image: docker:git
