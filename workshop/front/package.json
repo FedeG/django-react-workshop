@@ -102,7 +102,11 @@
     ],
     "collectCoverageFrom": [
       "src/components/**/*.{js,jsx}",
-      "src/containers/**/*.{js,jsx}"
+      "src/containers/**/*.{js,jsx}",
+      "src/utils/**/*.js",
+      "src/actions/**/*.js",
+      "src/reducers/**/*.js",
+      "src/store/**/*.js"
     ]
   }
 }
