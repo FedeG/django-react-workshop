@@ -1,6 +1,11 @@
 # Django + React + Redux workshop
 This repository will be used in the PyconAr2017 to take the step by step for "Django + React + Redux" workshop.
 
+## Status
+[![pipeline status](https://gitlab.com/FedeG/django-react-workshop/badges/master/pipeline.svg)](https://gitlab.com/FedeG/django-react-workshop/commits/master) [![coverage report](https://gitlab.com/FedeG/django-react-workshop/badges/master/coverage.svg)](https://gitlab.com/FedeG/django-react-workshop/commits/master)
+
+### Heroku with app (auto deployment): [web](https://django-react-workshop.herokuapp.com)
+
 ## Repository details
 This repository have the step by step for generate a productive project with these technologies.
 Each step is a branch with the project files for that step.

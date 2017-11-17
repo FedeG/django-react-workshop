@@ -2,6 +2,11 @@
 Este repositorio va a ser usado en la PyconAr2017 para dar el paso a paso del taller
 "Django + React + Redux".
 
+## Estado
+[![pipeline status](https://gitlab.com/FedeG/django-react-workshop/badges/master/pipeline.svg)](https://gitlab.com/FedeG/django-react-workshop/commits/master) [![coverage report](https://gitlab.com/FedeG/django-react-workshop/badges/master/coverage.svg)](https://gitlab.com/FedeG/django-react-workshop/commits/master)
+
+### Heroku con la aplicación: [web](https://django-react-workshop.herokuapp.com)
+
 ## Modalidades del repositorio
 Para poder ir aprendiendo el repositorio hace el paso a paso para generar una
 proyecto productivo con estas tecnologías.
@@ -36,7 +41,7 @@ En mi caso me gusta usar docker como se puede ver en cada paso pero también est
 opción sin docker para la gente que no lo usa.
 
 ##### Imagen de docker con todo el workshop
-Esta imagen tiene el codigo, pip requirements (dev, docs y production requirements), node dependencies (pruduction y dev dependencies), ... 
+Esta imagen tiene el codigo, pip requirements (dev, docs y production requirements), node dependencies (pruduction y dev dependencies), ...
 ```bash
 docker pull registry.gitlab.com/fedeg/django-react-workshop:latest
 ```

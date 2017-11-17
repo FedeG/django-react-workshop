@@ -1,6 +1,11 @@
 # Django + React + Redux workshop
 This repository will be used in the PyconAr2017 to take the step by step for "Django + React + Redux" workshop.
 
+### Heroku with app (auto deployment): [web](https://django-react-workshop.herokuapp.com)
+
+## Status
+[![pipeline status](https://gitlab.com/FedeG/django-react-workshop/badges/master/pipeline.svg)](https://gitlab.com/FedeG/django-react-workshop/commits/master) [![coverage report](https://gitlab.com/FedeG/django-react-workshop/badges/master/coverage.svg)](https://gitlab.com/FedeG/django-react-workshop/commits/master)
+
 ## Repository details
 This repository have the step by step for generate a productive project with these technologies.
 Each step is a branch with the project files for that step.
@@ -30,7 +35,7 @@ My recommendation for the course is you install requirements before start.
 I want use docker (as you can see in each step) but also exists option without docker.
 
 ### Docker image (all-inclusive)
-This image have code, pip requirements (dev, docs and production requirements), node dependencies (pruduction and dev dependencies), ... 
+This image have code, pip requirements (dev, docs and production requirements), node dependencies (pruduction and dev dependencies), ...
 ```bash
 docker pull registry.gitlab.com/fedeg/django-react-workshop:latest
 ```

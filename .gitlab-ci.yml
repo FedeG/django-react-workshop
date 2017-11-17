@@ -34,6 +34,9 @@ heroku:
     - cp heroku/yarn.lock ./yarn.lock
     - cp heroku/deploy.sh ./deploy.sh
     - cp heroku/Procfile ./Procfile
+    - mkdir workshop/links/static
+    - mkdir workshop/workshop/static
+    - mkdir workshop/front/workshop/static
     - dpl --skip_cleanup=true --strategy=api --provider=heroku --app=django-react-workshop --api-key=$HEROKU_API_KEY
   only:
   - master
