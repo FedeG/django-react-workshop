@@ -40,6 +40,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'links',
     'webpack_loader',
+    'rest_framework',
+    'channels',
 ]
 
 MIDDLEWARE = [
@@ -141,4 +143,17 @@ WEBPACK_LOADER = {
         'BUNDLE_DIR_NAME': 'bundles/local/',  # end with slash
         'STATS_FILE': os.path.join(BASE_DIR, 'front/webpack-stats-local.json'),
     }
+}
+
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
+    ]
+}
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "asgiref.inmemory.ChannelLayer",
+        "ROUTING": "workshop.routing.channel_routing",
+    },
 }

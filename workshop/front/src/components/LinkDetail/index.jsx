@@ -8,7 +8,7 @@ export default class LinkDetail extends React.Component {
         url: PropTypes.string,
         name: PropTypes.string,
       })
-    })
+    }).isRequired
   }
 
   render() {
