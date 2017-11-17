@@ -1,9 +1,10 @@
 import React from 'react';
-import LinksDetail from './index.jsx';
+import { LinksDetail } from './index.jsx';
 import { shallow } from 'enzyme';
 
 describe('LinksDetail Component', () => {
-  let links, link, LinksDetailContainerWrapper, LinksDetailContainer;
+  let links, link, LinksDetailContainerWrapper, LinksDetailContainer,
+   setLinks, createLink, updateLink, deleteLink, initialLinks;
 
   beforeAll(() => {
     link = {
@@ -20,11 +21,34 @@ describe('LinksDetail Component', () => {
     links = [link]
   })
 
+  beforeEach(() => {
+    setLinks = jest.fn();
+    createLink = jest.fn();
+    updateLink = jest.fn();
+    deleteLink = jest.fn();
+    initialLinks = [];
+    LinksDetailContainerWrapper = shallow(
+      <LinksDetail
+        links={links}
+        setLinks={setLinks}
+        createLink={createLink}
+        updateLink={updateLink}
+        deleteLink={deleteLink}
+        initialLinks={initialLinks}
+      />
+    );
+  })
+
   describe('props', () => {
 
     it('should declare propsTypes', () => {
-      expect(Object.keys(LinksDetail.propTypes)).toHaveLength(1);
+      expect(Object.keys(LinksDetail.propTypes)).toHaveLength(6);
       expect(LinksDetail.propTypes).toHaveProperty('links');
+      expect(LinksDetail.propTypes).toHaveProperty('setLinks');
+      expect(LinksDetail.propTypes).toHaveProperty('createLink');
+      expect(LinksDetail.propTypes).toHaveProperty('updateLink');
+      expect(LinksDetail.propTypes).toHaveProperty('deleteLink');
+      expect(LinksDetail.propTypes).toHaveProperty('initialLinks');
     })
 
   })
@@ -32,11 +56,10 @@ describe('LinksDetail Component', () => {
   describe('#render', () => {
 
     it('should render the component properly', () => {
-      const wrapper = shallow(<LinksDetail links={links}/>);
       const itemInDOM = `<p>${link.fields.name}: <a href="${link.fields.url}">${link.fields.url}</a></p>`;
       const button = '<button class="btn btn-success" type="button">Refresh</button>';
       const componentInDOM = `<div><div class="container"><div class="row"><div class="col-sm-12"><h1>Links</h1>${button}<div style="margin-top:20px">${itemInDOM}</div></div></div></div><div></div></div>`;
-      expect(wrapper.html()).toBe(componentInDOM);
+      expect(LinksDetailContainerWrapper.html()).toBe(componentInDOM);
     })
 
   })
@@ -68,40 +91,30 @@ describe('LinksDetail Component', () => {
     })
 
     beforeEach(() => {
-      LinksDetailContainerWrapper = shallow(<LinksDetail links={links}/>);
       LinksDetailContainer = LinksDetailContainerWrapper.instance();
     })
 
-    it('should state have links', () => {
-      expect(LinksDetailContainer.state).toHaveProperty('links');
-      expect(LinksDetailContainer.state.links).toEqual(links);
+    it('should call setLinks in construnctor', () => {
+      expect(setLinks).toBeCalled();
+      expect(setLinks).toBeCalledWith(initialLinks);
     })
 
-    it('when send link create event onUpdate should update link', () => {
-      const updatedLink = LinksDetailContainer.getLink(
-        linkUpdate.payload.pk, linkUpdate.payload.data
-      )
-      const expectedLinks = [updatedLink];
+    it('when send link update event onUpdate should call updateLink', () => {
       LinksDetailContainer._onUpdate(JSON.stringify(linkUpdate));
-      expect(LinksDetailContainer.state).toHaveProperty('links');
-      expect(LinksDetailContainer.state.links).toEqual(expectedLinks);
+      expect(updateLink).toBeCalled();
+      expect(updateLink).toBeCalledWith(linkUpdate.payload);
     })
 
-    it('when send link create event onUpdate should append link', () => {
-      const createdLink = LinksDetailContainer.getLink(
-        linkUpdate.payload.pk, linkUpdate.payload.data
-      )
-      const expectedLinks = [...links, createdLink];
+    it('when send link create event onUpdate should call createLink', () => {
       LinksDetailContainer._onUpdate(JSON.stringify(linkCreate));
-      expect(LinksDetailContainer.state).toHaveProperty('links');
-      expect(LinksDetailContainer.state.links).toEqual(expectedLinks);
+      expect(createLink).toBeCalled();
+      expect(createLink).toBeCalledWith(linkCreate.payload);
     })
 
-    it('when send link delete event onUpdate should remove link', () => {
-      const expectedLinks = [];
+    it('when send link delete event onUpdate should call deleteLink', () => {
       LinksDetailContainer._onUpdate(JSON.stringify(linkDelete));
-      expect(LinksDetailContainer.state).toHaveProperty('links');
-      expect(LinksDetailContainer.state.links).toEqual(expectedLinks);
+      expect(deleteLink).toBeCalled();
+      expect(deleteLink).toBeCalledWith(linkDelete.payload);
     })
 
   })
