@@ -4,6 +4,7 @@ This repository will be used in the PyconAr2017 to take the step by step for "Dj
 ## Status
 [![pipeline status](https://gitlab.com/FedeG/django-react-workshop/badges/master/pipeline.svg)](https://gitlab.com/FedeG/django-react-workshop/commits/master) [![coverage report](https://gitlab.com/FedeG/django-react-workshop/badges/master/coverage.svg)](https://gitlab.com/FedeG/django-react-workshop/commits/master)
 
+### [Documentation (english)](https://fedeg.gitlab.io/django-react-workshop/#/en/)
 ### Heroku with app (auto deployment): [web](https://django-react-workshop.herokuapp.com)
 
 ## Repository details
