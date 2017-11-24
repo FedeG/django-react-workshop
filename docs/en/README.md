@@ -49,7 +49,6 @@ cd django-react-workshop
 # Python and Django
 docker run -d -it --name workshop -v $PWD:/src -p 8000:8000 --workdir /src python:3.6 bash
 docker exec -it workshop pip install -r requirements.txt
-docker exec -it workshop pip install -r requirements-doc.txt
 docker exec -it workshop pip install -r requirements-dev.txt
 
 # Node and React
@@ -67,7 +66,6 @@ cd django-react-workshop
 # Python and Django
 ## Install python 3 (3.5 or 3.6)
 pip install -r requirements.txt
-pip install -r requirements-doc.txt
 pip install -r requirements-dev.txt
 
 # Node and React

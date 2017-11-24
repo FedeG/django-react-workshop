@@ -73,7 +73,6 @@ cd django-react-workshop
 # Python y Django
 ## Instalar python 3 (3.5 o 3.6 idealmente)
 pip install -r requirements.txt
-pip install -r requirements-doc.txt
 pip install -r requirements-dev.txt
 
 # Node y React
