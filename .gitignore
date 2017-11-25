@@ -11,3 +11,4 @@ workshop/front/report.html
 htmlcov/
 coverage/
 jest_*
+venv/
