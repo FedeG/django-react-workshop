@@ -12,3 +12,6 @@
 
 [GitLab](https://gitlab.com/FedeG/django-react-workshop)
 [Get Started](/en/)
+
+<!-- background image -->
+![](/assets/background.png)
