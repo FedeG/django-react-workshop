@@ -38,12 +38,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-<<<<<<< HEAD
     'links',
     'webpack_loader',
-=======
-    'links'
->>>>>>> step4_add_django_models
 ]
 
 MIDDLEWARE = [
