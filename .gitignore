@@ -3,3 +3,4 @@ node_modules
 db.sqlite3
 *.mo
 webpack-stats-local.json
+env
