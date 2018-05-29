@@ -133,3 +133,10 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'links/static'),
 ]
+
+WEBPACK_LOADER = {
+    'DEFAULT': {
+            'BUNDLE_DIR_NAME': 'bundles/local/',  # end with slash
+            'STATS_FILE': os.path.join(BASE_DIR, 'front/webpack-stats-local.json'),
+        }
+}
