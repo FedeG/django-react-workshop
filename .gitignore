@@ -4,3 +4,4 @@ db.sqlite3
 *.mo
 webpack-stats-local.json
 workshop/front/workshop/static/
+env
