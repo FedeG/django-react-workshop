@@ -9,3 +9,4 @@ workshop/front/report.html
 .coverage
 .cache
 htmlcov/
+env
