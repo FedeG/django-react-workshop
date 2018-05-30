@@ -14,7 +14,8 @@ class Tag(models.Model):
     name = models.CharField(_('name'), max_length=30)
     description = models.TextField(_('description'), blank=True, null=True)
     user = models.ForeignKey(
-        User, verbose_name=_('user'), blank=True, null=True)
+        User, verbose_name=_('user'), blank=True, null=True,
+        on_delete=models.CASCADE)
 
     def __str__(self):
         return self.name
@@ -33,7 +34,8 @@ class Link(models.Model):
     pending = models.BooleanField(_('pending'), default=False)
     description = models.TextField(_('description'), blank=True, null=True)
     tags = models.ManyToManyField(Tag, through='LinkTag', editable=True)
-    user = models.ForeignKey(User, verbose_name=_('user'))
+    user = models.ForeignKey(User, verbose_name=_('user'),
+                             on_delete=models.CASCADE)
 
     def __str__(self):
         return self.name
@@ -45,10 +47,14 @@ class Link(models.Model):
 
 class LinkTag(models.Model):
     """
-        Model for link-tag relationship
+    Model for link-tag relationship
     """
-    link = models.ForeignKey(Link, verbose_name=_('link'))
-    tag = models.ForeignKey(Tag, verbose_name=_('tag'))
+    link = models.ForeignKey(Link, verbose_name=_('link'),
+                             on_delete=models.CASCADE)
+
+    tag = models.ForeignKey(Tag, verbose_name=_('tag'),
+                            on_delete=models.CASCADE)
+
 
     class Meta:
         unique_together = (('link', 'tag'))
