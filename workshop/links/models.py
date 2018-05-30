@@ -47,13 +47,13 @@ class Link(models.Model):
 
 class LinkTag(models.Model):
     """
-        Model for link-tag relationship
+    Model for link-tag relationship
     """
     link = models.ForeignKey(Link, verbose_name=_('link'),
                              on_delete=models.CASCADE)
 
     tag = models.ForeignKey(Tag, verbose_name=_('tag'),
-                             on_delete=models.CASCADE)
+                            on_delete=models.CASCADE)
 
 
     class Meta:
