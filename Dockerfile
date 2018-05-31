@@ -20,7 +20,7 @@ RUN pip install --no-cache-dir -r requirements-dev.txt
 COPY ./workshop/front/package.json /usr/src/app/front/
 COPY ./workshop/front/yarn.lock /usr/src/app/front/
 WORKDIR /usr/src/app/front
-RUN npm install -g yarn webpack
+RUN npm install -g yarn webpack@1.12.13 webpack-cli@1.12.13
 RUN yarn install
 WORKDIR /usr/src/app
 
