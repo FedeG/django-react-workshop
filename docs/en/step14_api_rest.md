@@ -137,11 +137,12 @@ from . import views
 +
 
 urlpatterns = [
-    url(r'^view2/',
-        generic.TemplateView.as_view(template_name='view2.html')),
-    url(r'^$', views.links_detail),
-+    url(r'^api/', include(router.urls)),
+    path('view2/',
+         generic.TemplateView.as_view(template_name='view2.html')),
+    path('', views.links_detail),
++   path('api/', include(router.urls))
 ]
+
 ```
 
 ## Create button for update data
@@ -268,7 +269,8 @@ export default class LinksDetail extends React.Component {
 ```
 
 ## Update test
-As this isn't so important in this step is in another file, if you want to see how the tests were updated you can see this in [Update tests](/en/step14_api_rest_TESTUPDATE.md)
+As this isn't so important in this step is in another file, if you want to see how the tests were updated you can see this in [Update tests](https://g
+itlab.com/FedeG/django-react-workshop/blob/step14_api_rest/TESTUPDATE.md)
 
 
 ## Result

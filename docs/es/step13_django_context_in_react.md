@@ -244,16 +244,16 @@ def links_detail(request):
 ### Agregar la url para la vista que creamos
 En **workshop/links/urls.py**:
 ```diff
-from django.conf.urls import url
+from django.urls import path
 from django.views import generic
-+from . import views
+from . import views
 
 urlpatterns = [
-    url(r'^view2/',
+    path('view2/',
         generic.TemplateView.as_view(template_name='view2.html')),
--   url(r'^$',
--       generic.TemplateView.as_view(template_name='view1.html')),
-+   url(r'^$', views.links_detail),
+-    path('view2/',
+-        generic.TemplateView.as_view(template_name='view2.html')),
++    path('', views.links_detail)
 ]
 ```
 
@@ -324,7 +324,7 @@ En **workshop/front/src/components/LinksDetail/index.jsx**:
 ```
 
 ## Actualizar test
-Como esto es no tan impotante en este paso esta en otro archivo, si queres ver como se actualizaron los tests podes verlo en [Actualización de tests](/es/step13_django_context_in_react_TESTUPDATE.md)
+Como esto es no tan impotante en este paso esta en otro archivo, si queres ver como se actualizaron los tests podes verlo en [Actualización de tests](https://gitlab.com/FedeG/django-react-workshop/blob/step13_django_context_in_react/TESTUPDATE-es.md)
 
 ## Resultado
 En este punto, ya podemos ejecutar el servidor y ver la lista de links en `http://localhost:8000/links/`

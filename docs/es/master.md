@@ -5,6 +5,7 @@ Este repositorio va a ser usado en la PyconAr2017 para dar el paso a paso del ta
 ## Estado
 [![pipeline status](https://gitlab.com/FedeG/django-react-workshop/badges/master/pipeline.svg)](https://gitlab.com/FedeG/django-react-workshop/commits/master) [![coverage report](https://gitlab.com/FedeG/django-react-workshop/badges/master/coverage.svg)](https://gitlab.com/FedeG/django-react-workshop/commits/master)
 
+### [Documentación (español)](https://fedeg.gitlab.io/django-react-workshop/#/es/)
 ### Heroku con la aplicación: [web](https://django-react-workshop.herokuapp.com)
 
 ## Modalidades del repositorio

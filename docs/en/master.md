@@ -4,6 +4,7 @@ This repository will be used in the PyconAr2017 to take the step by step for "Dj
 ## Status
 [![pipeline status](https://gitlab.com/FedeG/django-react-workshop/badges/master/pipeline.svg)](https://gitlab.com/FedeG/django-react-workshop/commits/master) [![coverage report](https://gitlab.com/FedeG/django-react-workshop/badges/master/coverage.svg)](https://gitlab.com/FedeG/django-react-workshop/commits/master)
 
+### [Documentation (english)](https://fedeg.gitlab.io/django-react-workshop/#/en/)
 ### Heroku with app (auto deployment): [web](https://django-react-workshop.herokuapp.com)
 
 ## Repository details
@@ -35,7 +36,7 @@ My recommendation for the course is you install requirements before start.
 I want use docker (as you can see in each step) but also exists option without docker.
 
 #### Docker image (all-inclusive)
-This image have code, pip requirements (dev, docs and production requirements), node dependencies (pruduction and dev dependencies), ...
+This image have code, pip requirements (dev, docs and production requirements), node dependencies (pruduction and dev dependencies), ... 
 ```bash
 docker pull registry.gitlab.com/fedeg/django-react-workshop:latest
 ```

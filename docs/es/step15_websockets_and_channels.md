@@ -245,7 +245,7 @@ export default class LinksDetail extends React.Component {
 
 ## Actualizar test
 Como esto es no tan impotante en este paso, esta en otro archivo.
-Si queres ver como se actualizaron los tests podes verlo en [Actualización de tests](/es/step15_websockets_and_channels_TESTUPDATE.md)
+Si queres ver como se actualizaron los tests podes verlo en [Actualización de tests](https://gitlab.com/FedeG/django-react-workshop/blob/step15_websockets_and_channels/TESTUPDATE-es.md)
 
 
 ## Resultado

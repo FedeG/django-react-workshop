@@ -255,7 +255,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(LinksDetail)
 
 ## Actualizar test
 Como esto es no tan impotante en este paso, esta en otro archivo.
-Si queres ver como se actualizaron los tests podes verlo en [Actualización de tests](/es/step16_add_redux_TESTUPDATE.md)
+Si queres ver como se actualizaron los tests podes verlo en [Actualización de tests](https://gitlab.com/FedeG/django-react-workshop/blob/step16_add_redux/TESTUPDATE-es.md)
 
 
 ## Resultado

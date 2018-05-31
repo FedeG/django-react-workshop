@@ -137,10 +137,10 @@ from . import views
 +
 
 urlpatterns = [
-    url(r'^view2/',
-        generic.TemplateView.as_view(template_name='view2.html')),
-    url(r'^$', views.links_detail),
-+    url(r'^api/', include(router.urls)),
+    path('view2/',
+         generic.TemplateView.as_view(template_name='view2.html')),
+    path('', views.links_detail),
++   path('api/', include(router.urls))
 ]
 ```
 
@@ -269,7 +269,7 @@ export default class LinksDetail extends React.Component {
 
 ## Actualizar test
 Como esto es no tan impotante en este paso, esta en otro archivo.
-Si queres ver como se actualizaron los tests podes verlo en [Actualización de tests](/es/step14_api_rest_TESTUPDATE.md)
+Si queres ver como se actualizaron los tests podes verlo en [Actualización de tests](https://gitlab.com/FedeG/django-react-workshop/blob/step14_api_rest/TESTUPDATE-es.md)
 
 
 ## Resultado
