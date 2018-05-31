@@ -24,7 +24,7 @@ pages:
 
 heroku:
   stage: deploy
-  image: ruby:2.1
+  image: ruby:2.2
   script:
     - gem install dpl
     - cp heroku/webpack.local.config.js ./workshop/front/webpack.local.config.js
