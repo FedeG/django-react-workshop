@@ -1,4 +1,5 @@
 from django.conf.urls import url, include
+from django.urls import path
 from django.views import generic
 from rest_framework import routers
 
@@ -15,8 +16,8 @@ router.register(r'linktags', LinkTagViewSet)
 
 
 urlpatterns = [
-    url(r'^view2/',
-        generic.TemplateView.as_view(template_name='view2.html')),
-    url(r'^$', views.links_detail),
-    url(r'^api/', include(router.urls)),
+    path('view2/',
+         generic.TemplateView.as_view(template_name='view2.html')),
+    path('api/', include(router.urls)),
+    path('', views.links_detail)
 ]
