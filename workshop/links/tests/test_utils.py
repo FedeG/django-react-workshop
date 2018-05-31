@@ -20,5 +20,5 @@ def test_is_similar_should_return_false_when_strings_not_are_similars():
 def test_is_similar_should_call_SequenceMatcher(sequence_matcher_mock):
     sequence_matcher_mock().ratio.return_value = 4
     is_similar('python', 'pytohn')
-    sequence_matcher_mock.assert_called()
+    assert sequence_matcher_mock.called
     sequence_matcher_mock.assert_called_with(a='python', b='pytohn')
