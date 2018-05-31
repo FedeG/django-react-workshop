@@ -242,16 +242,16 @@ def links_detail(request):
 #### Add the view that we created to urls
 In **workshop/links/urls.py**:
 ```diff
-from django.conf.urls import url
+from django.urls import path
 from django.views import generic
-+from . import views
+from . import views
 
 urlpatterns = [
-    url(r'^view2/',
+    path('view2/',
         generic.TemplateView.as_view(template_name='view2.html')),
--   url(r'^$',
--       generic.TemplateView.as_view(template_name='view1.html')),
-+   url(r'^$', views.links_detail),
+-    path('view2/',
+-        generic.TemplateView.as_view(template_name='view2.html')),
++    path('', views.links_detail)
 ]
 ```
 
