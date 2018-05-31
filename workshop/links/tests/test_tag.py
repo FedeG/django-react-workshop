@@ -39,7 +39,7 @@ def test_get_similars_should_call_is_similar(similar_mock):
     tag = G(Tag, name='python')
     G(Tag, name='python2')
     tag.get_similars()
-    similar_mock.assert_called()
+    assert similar_mock.called
 
 
 @pytest.mark.django_db
@@ -50,7 +50,7 @@ def test_get_similars_should_call_is_similar_will_all_other_tags(similar_mock):
     tag_python2 = G(Tag, name='python2')
     tag_python3 = G(Tag, name='python3')
     tag_python.get_similars()
-    similar_mock.assert_called()
+    assert similar_mock.called
     assert similar_mock.call_count == 2
     similar_mock.assert_any_call(tag_python.name, tag_python2.name)
     similar_mock.assert_any_call(tag_python.name, tag_python3.name)
