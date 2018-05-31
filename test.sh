@@ -69,7 +69,7 @@ function pythonlint {
 
 function pythontest {
   cd workshop/front
-  npm install -g yarn yarnpkg webpack@1.12.13 webpack-cli@1.12.13
+  npm install -g yarn yarnpkg webpack@1.12.13
   yarn install
   timeout 20 npm start || true
   cd -
