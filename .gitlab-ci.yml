@@ -34,8 +34,8 @@ heroku:
     - cp heroku/yarn.lock ./yarn.lock
     - cp heroku/deploy.sh ./deploy.sh
     - cp heroku/Procfile ./Procfile
-    - mkdir workshop/links/static
-    - mkdir workshop/workshop/static
+    - mkdir -p workshop/links/static
+    - mkdir -p workshop/workshop/static
     - mkdir -p workshop/front/workshop/static
     - sed -i -e "s@<Websocket url={LINKS_WS_URL} onMessage={this._onUpdate}/>@@g" workshop/front/src/containers/LinksDetail/index.jsx
     - dpl --skip_cleanup=true --strategy=api --provider=heroku --app=django-react-workshop --api-key=$HEROKU_API_KEY
