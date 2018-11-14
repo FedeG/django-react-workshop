@@ -1,7 +1,7 @@
 # FedeG
 - Systems Engineer Student at UTN.
 - Full-stack developer and devops.
-- Member at [Devecoop](http://devecoop.com/en/).
+- Member at [Devecoop](https://devecoop.com/).
 - Free software enthusiast.
 - Actively participates on free software communities, meetups and talks about different technologies.
 - Eager to learn and face new challenges.
