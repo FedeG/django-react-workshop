@@ -1,6 +1,6 @@
 # Step 17: Production
 
-[Back to Step 16](https://gitlab.com/FedeG/django-react-workshop/tree/step16_add_redux)
+[Back to Step 16](/en/step16_add_redux)
 
 In this step, we will create a production server with the application
 To understand this step we first have to keep in mind how this project works with Django and React.
@@ -31,6 +31,18 @@ We will create a new settings file: `settings_prod.py` in the `workshop/workshop
 In that files we will put the production settings from the configurations we already have (importing the `settings.py`):
 
 ```python
+# pylint: disable=wildcard-import,unused-wildcard-import
+
+"""
+Django production settings for workshop project.
+
+For more information on this file, see
+https://docs.djangoproject.com/en/2.0/topics/settings/
+
+For the full list of settings and their values, see
+https://docs.djangoproject.com/en/2.0/ref/settings/
+"""
+
 import os
 import socket
 import asgi_redis
@@ -170,12 +182,17 @@ To use the `settings_prod.py` that we put together, we first have to put togethe
 In the `workshop/workshop/asgi.py` file we will put:
 
 ```python
+"""
+ASGI config for workshop project.
+"""
+
 import os
 
 from channels.asgi import get_channel_layer
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "workshop.settings")
 
+# pylint: disable=invalid-name
 channel_layer = get_channel_layer()
 ```
 
