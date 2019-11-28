@@ -181,6 +181,20 @@ channel_layer = get_channel_layer()
 
 En este caso vamos a dejar como valor predeterminado de `DJANGO_SETTINGS_MODULE` el `settings.py` original ya que podria usarse y cuando pensemos usar la aplicación en modo producción solamente tenemos que configurar esa variable de entorno con el valor `workshop.settings_prod`.
 
+## Generar los archivos js de React para usar en el servidor productivo
+
+Si vemos los archivos que tenemos en la carpeta `workshop/front` podemos ver uno que es `webpack.prod.config.js`.
+Este archivo esta armado para generar los bundles finales de js que se van a utilizar en producción.
+
+Para crear estos bundles vamos a hacer:
+
+```javascript
+cd workshop/front
+webpack --config webpack.prod.config.js
+```
+
+Este comando igual lo hace el `Dockerfile` que ya tenemos, por ende no es necesario correrlo a mano a menos de que no uses **docker**.
+
 ```bash
 ```
 
