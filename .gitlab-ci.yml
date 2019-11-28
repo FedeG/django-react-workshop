@@ -63,7 +63,7 @@ python-testing:
   stage: testing
   script:
     - curl -sL https://deb.nodesource.com/setup_8.x | bash -
-    - apt install -y nodejs
+    - apt install -y nodejs npm
     - ./test.sh -i backend
   artifacts:
     paths:
