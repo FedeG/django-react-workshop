@@ -31,9 +31,20 @@ Para esto vamos a crear un archivo de settings nuevo: `settings_prod.py` en la c
 En ese archivos vamos a poner las configuraciones de producción a partir de las configuraciones que ya tenemos, es decir importando el `settings.py`:
 
 ```python
+# pylint: disable=wildcard-import,unused-wildcard-import
+
+"""
+Django production settings for workshop project.
+
+For more information on this file, see
+https://docs.djangoproject.com/en/2.0/topics/settings/
+
+For the full list of settings and their values, see
+https://docs.djangoproject.com/en/2.0/ref/settings/
+"""
+
 import os
 import socket
-import asgi_redis
 
 # Import dev settings
 from workshop.settings import *
@@ -170,12 +181,17 @@ Para usar el `settings_prod.py` que armamos, primero tenemos que armar un archiv
 En el archivo `workshop/workshop/asgi.py` vamos a poner:
 
 ```python
+"""
+ASGI config for workshop project.
+"""
+
 import os
 
 from channels.asgi import get_channel_layer
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "workshop.settings")
 
+# pylint: disable=invalid-name
 channel_layer = get_channel_layer()
 ```
 
