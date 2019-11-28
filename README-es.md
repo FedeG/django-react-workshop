@@ -163,6 +163,24 @@ LOGGING = {
 - **CHANNEL_LAYERS**: para `django-channels` vamos a usar un `redis`
 - **LOGGING**; usaremos una configuracion de logs acorde a producción
 
+#### ¿Como usar ese settings?
+
+Para usar el `settings_prod.py` que armamos, primero tenemos que armar un archivo `asgi.py` ya que vamos a estar usando `redis` para poder disparar acciones y encolar tareas.
+
+En el archivo `workshop/workshop/asgi.py` vamos a poner:
+
+```python
+import os
+
+from channels.asgi import get_channel_layer
+
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "workshop.settings")
+
+channel_layer = get_channel_layer()
+```
+
+En este caso vamos a dejar como valor predeterminado de `DJANGO_SETTINGS_MODULE` el `settings.py` original ya que podria usarse y cuando pensemos usar la aplicación en modo producción solamente tenemos que configurar esa variable de entorno con el valor `workshop.settings_prod`.
+
 ```bash
 ```
 
