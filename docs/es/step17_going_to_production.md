@@ -1,34 +1,34 @@
-# Step 17: Production
+# Paso 17: Producción
 
-[Back to Step 16](https://gitlab.com/FedeG/django-react-workshop/tree/step16_add_redux)
+[Volver al paso 16](/es/step16_add_redux)
 
-In this step, we will create a production server with the application
-To understand this step we first have to keep in mind how this project works with Django and React.
+Este paso es importante a la hora de poner en producción tu aplicación.
+Para enterder este paso primero tenemos que tener en mente como funciona este proyecto con Django y React.
 
-For production we will only have Django server working, since the js generated with React will be used as static files.
+Para producción solo vamos a tener a Django trabajando, ya que el js generado con React se va a usar como archivos estaticos.
 
-## Configure Django production server
+## Configuración de produccion de Django
 
-#### New dependencies
+#### Nuevas dependencias
 
-We are going to add two new dependencies:
+Vamos a agregar dos dependencias nuevas:
 
-In the `requirements.txt` we will add:
+En el `requirements.txt` vamos a agregar:
 
 ```conf
 asgi-redis==1.4.3
 psycopg2-binary==2.7.6.1
 ```
 
-- **asgi-redis**: this dependence is for `redis` (save tasks)
+- **asgi-redis**: para poder usar `redis` para encolar tareas
 
-- **psycopg2-binary**: this dependence is for use `postgres` database
+- **psycopg2-binary**: para poder usar `postgres` como base de datos
 
-#### Create a new settings for production
+#### Crear un nuevo settings para produción
 
-We will create a new settings file: `settings_prod.py` in the `workshop/workshop` folder (the same as the `settings.py` we use in development)
+Para esto vamos a crear un archivo de settings nuevo: `settings_prod.py` en la carpeta `workshop/workshop` (la misma que el `settings.py` que usamos en desarrollo)
 
-In that files we will put the production settings from the configurations we already have (importing the `settings.py`):
+En ese archivos vamos a poner las configuraciones de producción a partir de las configuraciones que ya tenemos, es decir importando el `settings.py`:
 
 ```python
 import os
@@ -152,22 +152,22 @@ LOGGING = {
 }
 ```
 
-##### Important details:
+##### Cosas importantes a destacar de este archivo:
 
-- **DEBUG** and **DEBUG_TEMPLATES**: they will be false since production does not debug the code
-- **os.getenv**: we will use environment variables to configure a `.env` file or variables from our console
-- **ALLOWED_HOSTS**: we specify from which domain this application can be accessed
-- **WEBPACK_LOADER**: we use the webpack production stats
-- **DATABASES**: we use a database (in this case postgres)
-- **REST_FRAMEWORK**: the api will only be accessible in read mode for non-logged-in users and will answer JSON by default
-- **CHANNEL_LAYERS**: for `django-channels` we will use a` redis`
-- **LOGGING**; we will use a log configuration according to production
+- **DEBUG** y **DEBUG_TEMPLATES**: van a estar en false ya que en producción no se hace debug del codigo
+- **os.getenv**: usaremos variables de entorno para poder configurar medienta un archivo `.env` o variables de nuestra consola
+- **ALLOWED_HOSTS**: especificamos desde que dominio se puede acceder a esta aplicación
+- **WEBPACK_LOADER**: usamos el stats de producción de webpack
+- **DATABASES**: usamos una base de datos (en este caso postgres)
+- **REST_FRAMEWORK**: la api solo va a ser accesible en modo lectura para usuario no logeados y va a responder JSON de forma predeterminada
+- **CHANNEL_LAYERS**: para `django-channels` vamos a usar un `redis`
+- **LOGGING**; usaremos una configuracion de logs acorde a producción
 
-#### How to use that settings?
+#### ¿Como usar ese settings?
 
-To use the `settings_prod.py` that we put together, we first have to put together an `asgi.py` file since we are going to be using `redis` to be able to shoot actions and glue tasks.
+Para usar el `settings_prod.py` que armamos, primero tenemos que armar un archivo `asgi.py` ya que vamos a estar usando `redis` para poder disparar acciones y encolar tareas.
 
-In the `workshop/workshop/asgi.py` file we will put:
+En el archivo `workshop/workshop/asgi.py` vamos a poner:
 
 ```python
 import os
@@ -179,58 +179,59 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "workshop.settings")
 channel_layer = get_channel_layer()
 ```
 
-In this case we will leave the original `settings.py` as the default value of `DJANGO_SETTINGS_MODULE` as it could be used and when we plan to use the application in production mode we only have to configure that environment variable with the value `workshop.settings_prod`.
+En este caso vamos a dejar como valor predeterminado de `DJANGO_SETTINGS_MODULE` el `settings.py` original ya que podria usarse y cuando pensemos usar la aplicación en modo producción solamente tenemos que configurar esa variable de entorno con el valor `workshop.settings_prod`.
 
-## Generate React js files to use on the production server
+## Generar los archivos js de React para usar en el servidor productivo
 
-If we see the files that we have in the `workshop/front` folder we can see one that is `webpack.prod.config.js`.
-This file is armed to generate the final bundles of js that will be used in production.
+Si vemos los archivos que tenemos en la carpeta `workshop/front` podemos ver uno que es `webpack.prod.config.js`.
+Este archivo esta armado para generar los bundles finales de js que se van a utilizar en producción.
 
-To create these bundles we will do:
+Para crear estos bundles vamos a hacer:
 
 ```javascript
 cd workshop/front
 webpack --config webpack.prod.config.js
 ```
 
-This command does the `Dockerfile` that we already have, so it is not necessary to run it by hand unless you do not use **docker**.
+Este comando igual lo hace el `Dockerfile` que ya tenemos, por ende no es necesario correrlo a mano a menos de que no uses **docker**.
 
-## Full server
+## Servidor completo
 
-To begin with, you have to understand that while this workshop gives a way, there are many different ways to do it.
-In this case we will use `docker-compose` that allows us to control several services and link them together.
+Para empezar hay que comprender que si bien este taller da una forma, hay muchas formas distintas de hacerlo.
+En este caso vamos a usar `docker-compose` que nos permite controlar varios servicios y enlazarlos entre si.
 
-#### Infrastructure
 
-Before detailing the code and files, let's talk about the infrastructure we are going to use:
+#### Infraestructura
 
-- 2 containers with python, one will listen to the requests of the web and another will perform the tasks (for this we will use a tool called `daphne`).
+Antes de detallar el codigo y archivos, vamos a hablar sobre la infraestrutura que vamos a usar:
 
-- 2 containers with nginx, one could simply be used but to make easier the implementation of the domain and ports, we will use one with a nginx configured by us and another one with `nginx-proxy` which is a tool that allows us to work easily with The subject domains and ports.
+- 2 containers con python, uno va a escuchar las peticiones de la web y otro va a realizar las tareas (para esto vamos a usar una herramienta llamada `daphne`).
 
-- 1 container with postgres, this is the database that we will use
+- 2 containers con nginx, podria simplemente usarse uno pero para hacer mas facil la implementación del dominio y puertos, vamos a usar uno con un nginx configurado por nosotros y otro con `nginx-proxy` que es una herramienta que nos permite trabajar facilmente con el tema dominios y puertos.
 
-- 1 container with redis
+- 1 container con postgres, esta es la base de datos que vamos a utilizar
 
-Also to ensure that the data is saved we will use volumes, which are:
+- 1 container con redis
 
-- **/srv/deploys/workshopdata/static**: for the static files of our application
+También para garantizar que los datos esten guardados vamos a usar volumenes, lo cuales son:
 
-- **/srv/deploys/workshopdata/postgres**: for database files
+- **/srv/deploys/workshopdata/static**: para los archivos estaticos de nuestra aplicación
 
-#### Base files:
+- **/srv/deploys/workshopdata/postgres**: para los archivos de la base de datos
 
-We will create files for deploy in the `deploy/docker` folder.
+#### Archivos base:
 
-In this folder we will create two folders: `nginx` and `scripts`
+Vamos a crear archivos para el deploy dentro de la carpeta `deploy/docker`.
+
+En esta carpeta vamos a crear dos carpetas: `nginx` y `scripts`
 
 #### Scripts
 
-This folder will have the scripts that we will use in our `docker-compose`.
+Esta carpeta va a tener los scripts que vamos a utilizar en nuestro `docker-compose`.
 
-One is going to be the application startup script and another is going to be a script that is used to wait for the database to be running before running the other script.
+Uno va a ser el script de arranque de la aplicación y otro va a ser un script que sirve para esperar que la base de datos este andando antes de correr el otro script.
 
-In the `deploy/docker/scripts/wait-for-it.sh` file:
+En el archivo `deploy/docker/scripts/wait-for-it.sh`:
 
 ```bash
 #!/usr/bin/env bash
@@ -412,9 +413,9 @@ else
 fi
 ```
 
-NOTE: this file if you want, you can review it to understand it in more detail, but in summary what it does is expect that a host and port is running something to then run a script that is sent to it by parameter
+NOTA: este archivo si quieren pueden revisarlo para entenderlo en mas detalle, pero en resumen lo que hace es esperar que en un host y puerto este corriendo algo para despues ejecutar un script que se le envia por parametro
 
-In the `deploy/docker/scripts/start_workshop.sh` file:
+En el archivo `deploy/docker/scripts/start_workshop.sh`:
 
 ```bash
 #!/bin/bash
@@ -442,15 +443,15 @@ fi
 python manage.py runworker
 ```
 
-In this script we are going to put the commands that we want to be run to start the container.
+En este script vamos a poner los comandos que queremos que se corrar para iniciar el container.
 
-#### nginx configuration
+#### Configuración del nginx
 
-Nginx is a reverse proxy that allows us to configure the entry points of our application and also in production it will directly serve the static files of the application.
+Nginx es un proxy reverso que nos permite configurar los puntos de entrada de nuestra aplicacíón y ademas en produción va a servir directamente los archivos estaticos de la aplicación.
 
-To configure it we will use an image of **docker** that is named **tutum/nginx ** where with simply changing the `sites-enabled` we can have a nginx ready.
+Para configurarlo vamos a usar una imagen de **docker** que se llama **tutum/nginx** en donde con simplemente cambiar el `sites-enabled` podemos tener un nginx listo.
 
-In the `deploy/docker/nginx/Dockerfile` file:
+En el archivo `deploy/docker/nginx/Dockerfile`:
 
 ```dockerfile
 FROM tutum/nginx
@@ -485,16 +486,16 @@ server {
 }
 ```
 
-### Docker compose and environment variables
+### Docker compose y variables de entorno
 
-We have already defined our nginx and the scripts that we have to use, therefore we just need to have the `docker-compose.yml` with all the services we will use.
+Ya tenemos definido nuestro nginx y los scripts que tenemos que usar, por ende solo nos falta tener el `docker-compose.yml` con todos los servicion que utilizaremos.
 
-#### Environment Variables
+#### Variables de entorno
 
-In order to configure the application and the database we will use a `.env` file.
-In general, a `.env` is not uploaded, but a `.exv.example` or `.env.dist` is left as an example to show what variables we have to configure.
+Para poder configurar la aplicación y la base de datos vamos a usar un archivo `.env`.
+Por lo general no se sube un `.env` sino que se deja un `.env.example` o `.env.dist` como ejemplo para mostrar que variables tenemos para configurar.
 
-In the `.env.dist` file we will put:
+En el archivo `.env.dist` vamos a poner:
 
 ```env
 COMPOSE_HTTP_TIMEOUT=500
@@ -516,13 +517,13 @@ HOST=localhost
 LOAD_INITIAL_DATA=true
 ```
 
-The names of the variables are quite intuitive, so we will not stop to explain each one.
+Los nombres de las variables son bastante intuitivos por lo que no nos vamos a detener en explicar cada uno.
 
-NOTE: To not upload the file **.env** we will add `.env` to the end of the `.gitignore` file.
+NOTA: Para no subir el archivo **.env** vamos a agregar `.env` al final del archivo `.gitignore`.
 
-### Dockerfile update
+### Actualizacion del Dockerfile
 
-In the `Dockerfile` file, we are going to add these lines before the line that says `EXPOSE 8000`:
+En el archivo `Dockerfile`, vamos a agregar estas lineas antes del la linea que dice `EXPOSE 8000`:
 
 ```dockerfile
 # Copy example data folder
@@ -535,13 +536,13 @@ RUN mkdir -p /var/log/workshop/
 RUN touch /var/log/workshop/workshop.log
 ```
 
-With this we are going to add the scripts we did, we are going to create the log files and we are going to have the sample data jsons that we had before.
+Con esto vamos a agregarlo los scripts que hicimos, vamos a crear los archivos de log y vamos a tener los json de data de ejemplo que teniamos de antes.
 
 ### Docker compose
 
-To finalize the files, we are going to add the `docker-compose.yml` that will join everything we put together before.
+Para finalizar los archivos, vamos a agregar el `docker-compose.yml` que va a unir todo lo que armamos anteriormente.
 
-In the file `deploy/docker/docker-compose.yml` we will put:
+En el archivo `deploy/docker/docker-compose.yml` vamos a poner:
 
 ```yaml
 version: '3.4'
@@ -614,16 +615,16 @@ services:
     restart: always
 ```
 
-Important file details:
+Detalles importantes del archivo:
 
-- **EXTERNAL_PORT**: it is the port that we will use to access the application, this variable must be configured in the terminal that executes the `docker-compose` commands
+- **EXTERNAL_PORT**: es el puerto que vamos a usar para acceder a la aplicación, esta variable la tenemos que tener configurada en la terminal que ejecute los comandos de `docker-compose`
 
-- **HOST**: it is the domain that we are going to use to access the application, this variable must be configured in the terminal that executes the commands of `docker-compose`
+- **HOST**: es el dominio que vamos a usar para acceder a la aplicación, esta variable la tenemos que tener configurada en la terminal que ejecute los comandos de `docker-compose`
 
-## Deploy
-At this point, we can already run the production server.
+## Puesta en marcha del servidor
+En este punto, ya podemos ejecutar el servidor productivo.
 
-#### In a terminal we run
+#### En una terminal corremos
 
 ```bash
 
@@ -638,7 +639,7 @@ docker-compsoe up --build -d
 
 - **-d**: hace que corra en segundo plano
 
-#### View logs and check containers status
+#### Ver logs de la aplicación y si todo esta andando
 
 ```bash
 # Ver los logs hasta el momento
@@ -651,21 +652,21 @@ docker-compose logs -f
 docker-compose ps
 ```
 
-#### Stop application
+#### Parar la aplicación
 
 ```bash
 docker-compose stop
 ```
 
-#### Stop application and remove containers
+#### Parar la aplicación y borrar los containers
 
-NOTE: This command remove containers and network but does not remove database data
+NOTA: Esto borra los containers y la red interna pero no los datos de la base
 
 ```bash
 docker-compose down
 ```
 
-## Final result:
+## Resultado final:
 
-You should see the links detail page with the links you have loaded in the browser at `http://localhost/links/`.
-You can try to change something in the admin (in `http://localhost/admin/links/link/`) and it will automatically change in the frontend.
+Deberías ver la página de links detail con los links que tengas cargados en el navegador en `http://localhost/links/`.
+Podes probar de cambiar algo en el admin (en `http://localhost/admin/links/link/`) y automaticamente se va a cambiar en el frontend.
