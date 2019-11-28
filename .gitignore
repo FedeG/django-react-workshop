@@ -13,3 +13,4 @@ coverage/
 jest_*
 venv/
 env
+.env

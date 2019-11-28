@@ -519,6 +519,8 @@ LOAD_INITIAL_DATA=true
 
 Los nombres de las variables son bastante intuitivos por lo que no nos vamos a detener en explicar cada uno.
 
+NOTA: Para no subir el archivo **.env** vamos a agregar `.env` al final del archivo `.gitignore`.
+
 ### Docker compose
 
 Para finalizar los archivos, vamos a agregar el `docker-compose.yml` que va a unir todo lo que armamos anteriormente.
