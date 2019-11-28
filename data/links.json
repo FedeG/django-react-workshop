@@ -180,7 +180,7 @@
       "model":"links.link",
       "pk":13,
       "fields":{
-         "name":"Django Rest Framework ",
+         "name":"Django Rest Framework (DRF)",
          "url":"http://www.django-rest-framework.org/",
          "pending":false,
          "description":"",
@@ -191,7 +191,7 @@
       "model":"links.link",
       "pk":14,
       "fields":{
-         "name":"Django Rest Framework Installation",
+         "name":"DRF Install",
          "url":"http://www.django-rest-framework.org/#installation",
          "pending":false,
          "description":"",
@@ -202,7 +202,7 @@
       "model":"links.link",
       "pk":15,
       "fields":{
-         "name":"Django Rest Framework Viewsets",
+         "name":"DRF Viewsets",
          "url":"http://www.django-rest-framework.org/api-guide/viewsets/",
          "pending":false,
          "description":"",
@@ -213,7 +213,7 @@
       "model":"links.link",
       "pk":16,
       "fields":{
-         "name":"Django Rest Framework Serializers",
+         "name":"DRF Serializers",
          "url":"http://www.django-rest-framework.org/api-guide/serializers/",
          "pending":false,
          "description":"",
@@ -290,7 +290,7 @@
       "model":"links.link",
       "pk":23,
       "fields":{
-         "name":"Twitter Bootstrap CSS Framework",
+         "name":"Twitter Bootstrap CSS",
          "url":"http://getbootstrap.com",
          "pending":false,
          "description":"",
@@ -345,7 +345,7 @@
       "model":"links.link",
       "pk":28,
       "fields":{
-         "name":"Presentational vs container components",
+         "name":"Presentational vs container",
          "url":"https://medium.com/@dan_abramov/smart-and-dumb-components-7ca2f9a7c7d0",
          "pending":false,
          "description":"",
