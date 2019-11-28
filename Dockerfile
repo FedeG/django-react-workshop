@@ -6,7 +6,7 @@ WORKDIR /usr/src/app
 # Install nodejs and gettext
 ENV NODE_VERSION 8.x
 RUN curl -sL https://deb.nodesource.com/setup_${NODE_VERSION} | bash -
-RUN apt-get install -y nodejs gettext \
+RUN apt-get install -y nodejs gettext build-essential npm \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
