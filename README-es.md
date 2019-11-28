@@ -519,11 +519,135 @@ LOAD_INITIAL_DATA=true
 
 Los nombres de las variables son bastante intuitivos por lo que no nos vamos a detener en explicar cada uno.
 
-```bash
+### Docker compose
+
+Para finalizar los archivos, vamos a agregar el `docker-compose.yml` que va a unir todo lo que armamos anteriormente.
+
+En el archivo `deploy/docker/docker-compose.yml` vamos a poner:
+
+```yaml
+version: '3.4'
+
+services:
+  daphne:
+    restart: always
+    build: ../../.
+    depends_on:
+      - worker
+      - redis
+    env_file:
+      - .env
+    environment:
+      - DJANGO_SETTINGS_MODULE=workshop.settings_prod
+    command: bash -c 'daphne -b 0.0.0.0 -p 8000 workshop.asgi:channel_layer'
+
+  worker:
+    restart: always
+    build: ../../.
+    env_file:
+      - .env
+    volumes:
+      - type: bind
+        source: /srv/deploys/workshopdata/static
+        target: /usr/src/app/static
+    environment:
+      - DJANGO_SETTINGS_MODULE=workshop.settings_prod
+    command: ./wait-for-it.sh -p 5432 -h postgres -t 40 -- ./start_workshop.sh
+
+  nginx:
+    restart: always
+    build: ./nginx/
+    depends_on:
+      - daphne
+      - worker
+    volumes:
+      - type: bind
+        source: /srv/deploys/workshopdata/static
+        target: /usr/src/app/static
+        read_only: true
+    environment:
+      - VIRTUAL_HOST=${HOST}
+
+  postgres:
+    restart: always
+    image: postgres:9.6
+    env_file:
+      - ./.env
+    volumes:
+      - type: bind
+        source: /srv/deploys/workshopdata/postgres
+        target: /var/lib/postgresql/data
+
+  nginx-proxy:
+    restart: always
+    image: jwilder/nginx-proxy
+    depends_on:
+      - nginx
+    ports:
+      - '${EXTERNAL_PORT}:80'
+    volumes:
+      - type: bind
+        source: /var/run/docker.sock
+        target: /tmp/docker.sock
+        read_only: true
+
+  redis:
+    image: redis:4.0.2
+    restart: always
 ```
 
-```bash
-```
+Detalles importantes del archivo:
+
+- **EXTERNAL_PORT**: es el puerto que vamos a usar para acceder a la aplicación, esta variable la tenemos que tener configurada en la terminal que ejecute los comandos de `docker-compose`
+
+- **HOST**: es el dominio que vamos a usar para acceder a la aplicación, esta variable la tenemos que tener configurada en la terminal que ejecute los comandos de `docker-compose`
+
+## Puesta en marcha del servidor
+En este punto, ya podemos ejecutar el servidor productivo.
+
+#### En una terminal corremos
 
 ```bash
+
+# En este caso usa localhost pero cuando lo tengas productivo podrias usar el dominio que tengas
+export HOST=localhost
+export EXTERNAL_PORT=80
+
+docker-compsoe up --build -d
 ```
+
+- **--build**: hace que las imagenes se generen de nuevo con el codigo actualizado
+
+- **-d**: hace que corra en segundo plano
+
+#### Ver logs de la aplicación y si todo esta andando
+
+```bash
+# Ver los logs hasta el momento
+docker-compose logs
+
+# Ver los logs y seguir viendo los nuevos
+docker-compose logs -f
+
+# Ver estado de los containers
+docker-compose ps
+```
+
+#### Parar la aplicación
+
+```bash
+docker-compose stop
+```
+
+#### Parar la aplicación y borrar los containers
+
+NOTA: Esto borra los containers y la red interna pero no los datos de la base
+
+```bash
+docker-compose down
+```
+
+## Resultado final:
+
+Deberías ver la página de links detail con los links que tengas cargados en el navegador en `http://localhost/links/`.
+Podes probar de cambiar algo en el admin (en `http://localhost/admin/links/link/`) y automaticamente se va a cambiar en el frontend.
