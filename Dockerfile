@@ -38,6 +38,15 @@ RUN cd /usr/src/app/front && webpack --config webpack.prod.config.js
 # Compile .po files
 RUN python manage.py compilemessages
 
+# Copy example data folder
+COPY ./data /usr/src/app/data
+
+# Copy production files and create production folders
+COPY ./deploy/docker/scripts/start_workshop.sh /usr/src/app/start_workshop.sh
+COPY ./deploy/docker/scripts/wait-for-it.sh /usr/src/app/wait-for-it.sh
+RUN mkdir -p /var/log/workshop/
+RUN touch /var/log/workshop/workshop.log
+
 EXPOSE 8000
 
 VOLUME /usr/src/app

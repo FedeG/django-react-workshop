@@ -521,6 +521,23 @@ Los nombres de las variables son bastante intuitivos por lo que no nos vamos a d
 
 NOTA: Para no subir el archivo **.env** vamos a agregar `.env` al final del archivo `.gitignore`.
 
+### Actualizacion del Dockerfile
+
+En el archivo `Dockerfile`, vamos a agregar estas lineas antes del la linea que dice `EXPOSE 8000`:
+
+```dockerfile
+# Copy example data folder
+COPY ./data /usr/src/app/data
+
+# Copy production files and create production folders
+COPY ./deploy/docker/scripts/start_workshop.sh /usr/src/app/start_workshop.sh
+COPY ./deploy/docker/scripts/wait-for-it.sh /usr/src/app/wait-for-it.sh
+RUN mkdir -p /var/log/workshop/
+RUN touch /var/log/workshop/workshop.log
+```
+
+Con esto vamos a agregarlo los scripts que hicimos, vamos a crear los archivos de log y vamos a tener los json de data de ejemplo que teniamos de antes.
+
 ### Docker compose
 
 Para finalizar los archivos, vamos a agregar el `docker-compose.yml` que va a unir todo lo que armamos anteriormente.
