@@ -445,6 +445,47 @@ python manage.py runworker
 
 En este script vamos a poner los comandos que queremos que se corrar para iniciar el container.
 
+#### Configuración del nginx
+
+Nginx es un proxy reverso que nos permite configurar los puntos de entrada de nuestra aplicacíón y ademas en produción va a servir directamente los archivos estaticos de la aplicación.
+
+Para configurarlo vamos a usar una imagen de **docker** que se llama **tutum/nginx** en donde con simplemente cambiar el `sites-enabled` podemos tener un nginx listo.
+
+En el archivo `deploy/docker/nginx/Dockerfile`:
+
+```dockerfile
+FROM tutum/nginx
+RUN rm /etc/nginx/sites-enabled/default
+ADD sites-enabled/workshop /etc/nginx/sites-enabled/workshop
+```
+
+En el archivo `deploy/docker/nginx/sites-enabled/workshop`:
+
+```conf
+server {
+    listen 80;
+    client_max_body_size 100M;
+
+    location /static {
+        alias /usr/src/app/static;
+    }
+
+    location / {
+            proxy_pass http://daphne:8000;
+            proxy_http_version 1.1;
+            proxy_set_header Upgrade $http_upgrade;
+            proxy_set_header Connection "upgrade";
+
+            proxy_redirect     off;
+            proxy_set_header   Host $host;
+            proxy_set_header   X-Real-IP $remote_addr;
+            proxy_set_header   X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header   X-Forwarded-Host $server_name;
+
+        }
+}
+```
+
 ```bash
 ```
 
