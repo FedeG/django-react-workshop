@@ -195,6 +195,36 @@ webpack --config webpack.prod.config.js
 
 Este comando igual lo hace el `Dockerfile` que ya tenemos, por ende no es necesario correrlo a mano a menos de que no uses **docker**.
 
+## Servidor completo
+
+Para empezar hay que comprender que si bien este taller da una forma, hay muchas formas distintas de hacerlo.
+En este caso vamos a usar `docker-compose` que nos permite controlar varios servicios y enlazarlos entre si.
+
+
+#### Infraestructura
+
+Antes de detallar el codigo y archivos, vamos a hablar sobre la infraestrutura que vamos a usar:
+
+- 2 containers con python, uno va a escuchar las peticiones de la web y otro va a realizar las tareas (para esto vamos a usar una herramienta llamada `daphne`).
+
+- 2 containers con nginx, podria simplemente usarse uno pero para hacer mas facil la implementación del dominio y puertos, vamos a usar uno con un nginx configurado por nosotros y otro con `nginx-proxy` que es una herramienta que nos permite trabajar facilmente con el tema dominios y puertos.
+
+- 1 container con postgres, esta es la base de datos que vamos a utilizar
+
+- 1 container con redis
+
+También para garantizar que los datos esten guardados vamos a usar volumenes, lo cuales son:
+
+- **/srv/deploys/workshopdata/static**: para los archivos estaticos de nuestra aplicación
+
+- **/srv/deploys/workshopdata/postgres**: para los archivos de la base de datos
+
+#### Archivos base:
+
+Vamos a crear archivos para el deploy dentro de la carpeta `deploy/docker`.
+
+En esta carpeta vamos a crear dos carpetas: `nginx` y `scripts`
+
 ```bash
 ```
 
