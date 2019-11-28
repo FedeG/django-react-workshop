@@ -486,6 +486,39 @@ server {
 }
 ```
 
+### Docker compose y variables de entorno
+
+Ya tenemos definido nuestro nginx y los scripts que tenemos que usar, por ende solo nos falta tener el `docker-compose.yml` con todos los servicion que utilizaremos.
+
+#### Variables de entorno
+
+Para poder configurar la aplicación y la base de datos vamos a usar un archivo `.env`.
+Por lo general no se sube un `.env` sino que se deja un `.env.example` o `.env.dist` como ejemplo para mostrar que variables tenemos para configurar.
+
+En el archivo `.env.dist` vamos a poner:
+
+```env
+COMPOSE_HTTP_TIMEOUT=500
+SECRET_KEY='&er^y6-o09sxig_#pp7ezpt+i#mt!t^*(1z^^_-pa6j(twz_i5'
+ALLOWED_HOSTS=["*"]
+POSTGRES_HOST=postgres
+POSTGRES_PORT=5432
+POSTGRES_PASSWORD=secret
+POSTGRES_USER=workshop
+POSTGRES_DB=workshop
+EXTERNAL_PORT=80
+APP_DNS=localhost
+LANGUAGE_CODE=en-US
+TIME_ZONE=UTC
+REDIS_HOST=redis
+REDIS_PORT=6379
+LOG_FILE=/var/log/workshop/workshop.log
+HOST=localhost
+LOAD_INITIAL_DATA=true
+```
+
+Los nombres de las variables son bastante intuitivos por lo que no nos vamos a detener en explicar cada uno.
+
 ```bash
 ```
 
