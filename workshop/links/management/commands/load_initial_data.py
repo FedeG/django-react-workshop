@@ -11,10 +11,10 @@ class Command(BaseCommand):
     help = 'Load data from a file'
 
     def add_arguments(self, parser):
-        pass
+        parser.add_argument('username', type=str)
 
     def handle(self, *args, **options):
-        user = User.objects.get(username='fedeg')
+        user = User.objects.get(username=options['username'])
         tag = Tag.objects.create(name='Sin Tag', user=user, description='Link sin tags')
         tag.save()
         self.stdout.write(self.style.SUCCESS('Todo ok'))

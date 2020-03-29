@@ -12,6 +12,7 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         parser.add_argument('stars', type=int)
+        parser.add_argument('username', type=str)
         parser.add_argument('file', type=argparse.FileType('r'))
 
     def load_link(self, user, url, stars, tag):
@@ -57,7 +58,7 @@ class Command(BaseCommand):
         self.links_r = 0
         self.tags_r = 0
         self.link_tags_r = 0
-        user = User.objects.get(username='fedeg')
+        user = User.objects.get(username=options['username'])
         tag = Tag.objects.get(name='Sin Tag')
         with options['file'] as file_with_links:
             for _, line in enumerate(file_with_links):
