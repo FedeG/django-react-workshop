@@ -26,8 +26,7 @@ SECRET_KEY = '%z_rvno@mag1(h624@f#v+=eyv*)5h0mna8*sf2r_7vqr8a$g$'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = ['*']
 
 # Application definition
 
