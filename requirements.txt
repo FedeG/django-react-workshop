@@ -14,3 +14,5 @@ channels==1.1.8
 psycopg2-binary==2.7.6.1
 requests==2.23.0
 grequests==0.4.0
+selenium==3.141.0
+Pillow==7.0.0
