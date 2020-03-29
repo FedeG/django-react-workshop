@@ -83,8 +83,7 @@ class Link(models.Model):
     screenshot = models.ImageField(
         _('screenshot'),
         upload_to='screenshot/',
-        null=True,
-        blank=True
+        default='screenshot/not-found.png'
     )
 
     def take_screenshot(self):

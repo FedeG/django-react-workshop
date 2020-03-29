@@ -24,7 +24,7 @@ class LinkAdmin(admin.ModelAdmin):
     """
     inlines = [LinkTagInline]
     list_filter = ('status', 'pending', 'tags', 'stars',)
-    list_display = ('name', 'status', 'stars', 'pending', 'get_tags', 'link',)
+    list_display = ('name', 'status', 'stars', 'pending', 'get_tags', 'link', 'screenshot_preview',)
     fields = (
         'name', 'status', 'url', 
         'stars', 'pending', 'description',
@@ -40,7 +40,7 @@ class LinkAdmin(admin.ModelAdmin):
     link.allow_tags = True
 
     def screenshot_preview(self, instance):
-        return format_html('<img src="{}" />'.format(escape(instance.screenshot.url)))
+        return format_html('<img src="{}" width="200px" />'.format(escape(instance.screenshot.url)))
     screenshot_preview.short_description = _('Screenshot')
     screenshot_preview.allow_tags = True
 
