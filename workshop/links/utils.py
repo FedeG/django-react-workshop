@@ -17,7 +17,7 @@ def is_similar(source, target):
 
 
 def get_screenshot(url, filename):
-    driver = webdriver.Firefox()
+    driver = webdriver.Firefox(executable_path='/usr/bin/geckodriver')
     driver.get(url)
     screenshot = driver.save_screenshot(filename)
     driver.quit()
