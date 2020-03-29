@@ -4,7 +4,8 @@
 
 from django.contrib import admin
 from django.db import IntegrityError
-from django.utils.html import format_html
+from django.utils.html import escape, format_html
+from django.utils.translation import ugettext as _
 
 from .models import Link, Tag, LinkTag
 
@@ -24,6 +25,12 @@ class LinkAdmin(admin.ModelAdmin):
     inlines = [LinkTagInline]
     list_filter = ('status', 'pending', 'tags', 'stars',)
     list_display = ('name', 'status', 'stars', 'pending', 'get_tags', 'link',)
+    fields = (
+        'name', 'status', 'url', 
+        'stars', 'pending', 'description',
+        'user', 'screenshot', 'screenshot_preview',
+    )
+    readonly_fields = ('screenshot_preview',)
 
     def get_tags(self, instance):
         return '\n'.join([tag.name for tag in instance.tags.all()])
@@ -31,6 +38,11 @@ class LinkAdmin(admin.ModelAdmin):
     def link(self, instance):
         return format_html('<a href="{}">{}</a>'.format(instance.url, instance.url))
     link.allow_tags = True
+
+    def screenshot_preview(self, instance):
+        return format_html('<img src="{}" />'.format(escape(instance.screenshot.url)))
+    screenshot_preview.short_description = _('Screenshot')
+    screenshot_preview.allow_tags = True
 
 
 def merge_similars(modeladmin, request, queryset):
