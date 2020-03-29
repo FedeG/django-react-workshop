@@ -2,11 +2,13 @@
     Django models for link application
 """
 
+from django.conf import settings
 from django.db import models
 from django.contrib.auth.models import User
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.utils.translation import ugettext as _
-from links.utils import is_similar
+
+from links.utils import is_similar, get_screenshot
 
 
 class Tag(models.Model):
@@ -78,6 +80,19 @@ class Link(models.Model):
         default=0,
         validators=[MaxValueValidator(10), MinValueValidator(0)]
     )
+    screenshot = models.ImageField(
+        _('screenshot'),
+        upload_to='screenshot/',
+        null=True,
+        blank=True
+    )
+
+    def take_screenshot(self):
+        filename = 'screenshot/{}-{}.png'.format(self.id, self.name)
+        full_path = '{}/{}'.format(settings.MEDIA_ROOT, filename)
+        get_screenshot(self.url, full_path)
+        self.screenshot = filename
+        self.save()
 
     def __str__(self):
         return '{}({}): {}'.format(self.name, self.status, self.url)
