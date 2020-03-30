@@ -17,6 +17,12 @@ class LinkTagInline(admin.TabularInline):
     model = LinkTag
 
 
+def take_screenshot(modeladmin, request, queryset):
+    for link in queryset:
+        link.take_screenshot()
+take_screenshot.short_description = "Take screenshots"
+
+
 @admin.register(Link)
 class LinkAdmin(admin.ModelAdmin):
     """
@@ -31,6 +37,7 @@ class LinkAdmin(admin.ModelAdmin):
         'user', 'screenshot', 'screenshot_preview',
     )
     readonly_fields = ('screenshot_preview',)
+    actions = [take_screenshot]
 
     def get_tags(self, instance):
         return '\n'.join([tag.name for tag in instance.tags.all()])
