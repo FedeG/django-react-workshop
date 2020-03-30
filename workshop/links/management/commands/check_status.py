@@ -1,11 +1,9 @@
 import grequests
-from requests.exceptions import MissingSchema
 
 from django.core.management.base import BaseCommand, CommandError
 from django.db import IntegrityError
 
 from links.models import Link
-
 
 def chunker_list(seq, size):
     return (seq[i::size] for i in range(size))
