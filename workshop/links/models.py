@@ -87,12 +87,13 @@ class Link(models.Model):
         default=DEFAULT_SCREENSHOT_FILE
     )
 
-    def take_screenshot(self):
-        filename = 'screenshot/{}-{}.png'.format(self.id, self.name)
-        full_path = '{}/{}'.format(settings.MEDIA_ROOT, filename)
-        get_screenshot(self.url, full_path)
-        self.screenshot = filename
-        self.save()
+    def take_screenshot(self, force=False):
+        if force or self.screenshot.name == DEFAULT_SCREENSHOT_FILE:
+            filename = 'screenshot/{}-{}.png'.format(self.id, self.name)
+            full_path = '{}/{}'.format(settings.MEDIA_ROOT, filename)
+            get_screenshot(self.url, full_path)
+            self.screenshot = filename
+            self.save()
 
     def __str__(self):
         return '{}({}): {}'.format(self.name, self.status, self.url)

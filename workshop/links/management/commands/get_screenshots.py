@@ -14,8 +14,7 @@ class Command(BaseCommand):
         pass
 
     def handle(self, *args, **options):
-        default_image = 'screenshot/not-found.png'
-        links = Link.objects.filter(screenshot=default_image)
+        links = Link.objects.all()
         for index, link in enumerate(links):
             link.take_screenshot()
             self.stdout.write(
