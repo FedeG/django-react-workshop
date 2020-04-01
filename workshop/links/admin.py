@@ -3,10 +3,13 @@
 """
 
 from django.contrib import admin
+from django.contrib.admin import SimpleListFilter
 from django.db import IntegrityError
+from django.db.models import Q
 from django.utils.html import escape, format_html
 from django.utils.translation import ugettext as _
 
+from .constant import DEFAULT_SCREENSHOT_FILE
 from .models import Link, Tag, LinkTag
 
 
@@ -23,16 +26,32 @@ def take_screenshot(modeladmin, request, queryset):
 take_screenshot.short_description = "Take screenshots"
 
 
+class FullFilter(SimpleListFilter):
+    title = 'full'
+    parameter_name = 'full'
+
+    def lookups(self, request, model_admin):
+        return [('full', 'Completo'), ('incomplete', 'Incompleto')]
+
+    def queryset(self, request, queryset):
+        value = self.value()
+        if value:
+            if value == 'full':
+                return queryset.exclude(screenshot=DEFAULT_SCREENSHOT_FILE).exclude(status=Link.CHECK)
+            return queryset.filter(Q(screenshot=DEFAULT_SCREENSHOT_FILE) | Q(status=Link.CHECK))
+        return queryset
+
+
 @admin.register(Link)
 class LinkAdmin(admin.ModelAdmin):
     """
         Link model registration in Django admin
     """
     inlines = [LinkTagInline]
-    list_filter = ('status', 'pending', 'tags', 'stars',)
-    list_display = ('name', 'status', 'stars', 'pending', 'get_tags', 'link', 'screenshot_preview',)
+    list_filter = (FullFilter, 'status', 'pending', 'stars', 'tags',)
+    list_display = ('name', 'full', 'status', 'stars', 'pending', 'get_tags', 'link', 'screenshot_preview',)
     fields = (
-        'name', 'status', 'url', 
+        'name', 'status', 'url',
         'stars', 'pending', 'description',
         'user', 'screenshot', 'screenshot_preview',
     )
