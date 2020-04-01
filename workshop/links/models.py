@@ -87,6 +87,12 @@ class Link(models.Model):
         default=DEFAULT_SCREENSHOT_FILE
     )
 
+    @property
+    def full(self):
+        checked = self.status != Link.CHECK
+        has_screenshot = self.screenshot.name != DEFAULT_SCREENSHOT_FILE
+        return checked and has_screenshot
+
     def take_screenshot(self, force=False):
         if force or self.screenshot.name == DEFAULT_SCREENSHOT_FILE:
             filename = 'screenshot/{}-{}.png'.format(self.id, self.name)
