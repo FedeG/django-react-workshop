@@ -8,7 +8,8 @@ from django.contrib.auth.models import User
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.utils.translation import ugettext as _
 
-from links.utils import is_similar, get_screenshot
+from .constant import DEFAULT_SCREENSHOT_FILE
+from .utils import is_similar, get_screenshot
 
 
 class Tag(models.Model):
@@ -83,7 +84,7 @@ class Link(models.Model):
     screenshot = models.ImageField(
         _('screenshot'),
         upload_to='screenshot/',
-        default='screenshot/not-found.png'
+        default=DEFAULT_SCREENSHOT_FILE
     )
 
     def take_screenshot(self):
