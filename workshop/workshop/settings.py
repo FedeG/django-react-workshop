@@ -159,3 +159,9 @@ CHANNEL_LAYERS = {
         "ROUTING": "workshop.routing.channel_routing",
     },
 }
+
+# VARIABLES
+USE_DISPLAY = False
+DISPLAY_WIDTH = 1440
+DISPLAY_HEIGHT = 900
+BROWSER_TO_SCREENSHOTS = 'firefox'
