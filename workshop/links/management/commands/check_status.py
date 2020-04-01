@@ -1,3 +1,7 @@
+import sys
+del sys.modules['ssl']
+del sys.modules['_ssl']
+
 import grequests
 
 from django.core.management.base import BaseCommand, CommandError
