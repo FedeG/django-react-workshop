@@ -62,7 +62,7 @@ class LinkAdmin(admin.ModelAdmin):
         return '\n'.join([tag.name for tag in instance.tags.all()])
 
     def link(self, instance):
-        return format_html('<a href="{}">{}</a>'.format(instance.url, instance.url))
+        return format_html('<a href="{}">{}</a>'.format(instance.url, instance.url[:100]))
     link.allow_tags = True
 
     def screenshot_preview(self, instance):
